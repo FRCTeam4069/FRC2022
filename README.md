@@ -33,7 +33,7 @@ Installation instructions:
 ### Clean Code
 For organization, please keep the code you write clean and readable.
 
-- Use consistent indenations in your work. This just keeps function calls, variable calls, etc easier to read by making the methods/statements they are nested under more visible.
+- Use consistent indentations in your work. This just keeps function calls, variable calls, etc easier to read by making the methods/statements they are nested under more visible.
 
 - Write comments explaining sections of code and what they do. This doesn't need to be excessive, but adding comments here and there will allow fellow team members to understand the code you have written better.
 
