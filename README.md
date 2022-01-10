@@ -4,9 +4,9 @@ This repository is for the FRC 2022 season.
 For communcation, please use the **#f1-programming_controls** channel on the team's Slack server.
 
 ### Downloads
-For editing, download [VSCode] (https://code.visualstudio.com/download). In VSCode's extension store, download the [WPILib Extension] (https://marketplace.visualstudio.com/items?itemName=wpilibsuite.vscode-wpilib).
+For editing, download [VSCode](https://code.visualstudio.com/download). In VSCode's extension store, download the [WPILib Extension](https://marketplace.visualstudio.com/items?itemName=wpilibsuite.vscode-wpilib).
 
-You may also find that [GitHub Desktop] (https://desktop.github.com/) is a useful tool to use while programming for the robot. GitHub Desktop will track changes to any files that you edit and allow you to commit them to the repository.
+You may also find that [GitHub Desktop](https://desktop.github.com/) is a useful tool to use while programming for the robot. GitHub Desktop will track changes to any files that you edit and allow you to commit them to the repository.
 
 If you are using Linux, VSCode is supported natively. GitHub Desktop doesn't have native Linux support, but it can be installed from the command line using an open-source patch:
 ```
