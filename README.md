@@ -3,9 +3,14 @@ This repository is for the FRC 2022 season.
 
 For communcation, please use the **#f1-programming_controls** channel on the team's Slack server.
 
-### Downloads
+To get started, please download and install the tools listed here.
+
+### Downloads (Windows, macOS, Linux)
+
+#### VSCode IDE
 For editing, download [VSCode](https://code.visualstudio.com/download). In VSCode's extension store, download the [WPILib Extension](https://marketplace.visualstudio.com/items?itemName=wpilibsuite.vscode-wpilib).
 
+#### GitHub Desktop
 You may also find that [GitHub Desktop](https://desktop.github.com/) is a useful tool to use while programming for the robot. GitHub Desktop will track changes to any files that you edit and allow you to commit them to the repository.
 
 If you are using Linux, VSCode is supported natively. GitHub Desktop doesn't have native Linux support, but it can be installed from the command line using an open-source patch:
@@ -14,6 +19,16 @@ sudo wget https://github.com/shiftkey/desktop/releases/download/release-2.6.3-li
 sudo apt-get install gdebi-core
 sudo gdebi GitHubDesktop-linux-2.6.3-linux1.deb
 ```
+
+#### WPILib Tools
+Download [WPILib Tools](https://github.com/wpilibsuite/allwpilib/releases/tag/v2022.1.1) for your respective platform. The releases can be found at the bottom of the page.
+
+Installation instructions:
+1. Open the WPILib installer.
+2. Select "everything".
+3. Click the option to not install VSCode.
+4. When the install is finished, you are good to go.
+
 
 ### Clean Code
 For organization, please keep the code you write clean and readable.
@@ -37,3 +52,5 @@ For organization, please keep the code you write clean and readable.
 public boolean compare(int arg0, int arg1) {
     return arg0 > arg1;
 }
+```
+
