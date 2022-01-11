@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.auto.AutoRoutine;
+import frc.robot.auto.TestAuto;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -15,10 +17,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  // Autonomous routine vars
+  private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
+  private final TestAuto testAuto = new TestAuto(this);
+  // Gets initialized in autonomousInit
+  private AutoRoutine autoRoutine = null;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -26,9 +30,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+
+    // Asks controller which autonomous routine to use
+    // to add: AutoChooser.addOption(String name, AutoRoutine routine);
+    autoChooser.setDefaultOption(testAuto.name(), testAuto);
+    SmartDashboard.putData("Select Autonoumous Routine", autoChooser);
+  
   }
 
   /**
@@ -53,23 +60,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+
+    // Gets selected routine
+    autoRoutine = autoChooser.getSelected();
+    System.out.println("Selected Auto Mode: " + autoRoutine.name());
+  
+    // Initializes that routine
+    autoRoutine.init();
+
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+    // Calls the loop of selected auto
+    autoRoutine.loop();
   }
 
   /** This function is called once when teleop is enabled. */
