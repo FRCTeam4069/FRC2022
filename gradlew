@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 
 #
+# Tweaks added for compatability by FRC Team 4069
+#
+
+#
 # Copyright 2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -103,6 +107,16 @@ else
 Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
 fi
+
+# 4069 jdk version compatibility start
+
+# overwrite JAVACMD with WPILib provided JDK 11 for build
+if [ -x "$HOME/wpilib/2022/jdk/bin/java" ] ; then
+    # Sets JDK path to the one included with the 2022 WPILib tools install
+    JAVACMD="$HOME/wpilib/2022/jdk/bin/java"
+fi
+
+# 4069 jdk version compatibility end
 
 # Increase the maximum file descriptors if we can.
 if [ "$cygwin" = "false" -a "$darwin" = "false" -a "$nonstop" = "false" ] ; then
