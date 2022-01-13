@@ -3,26 +3,31 @@ package frc.robot.components;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.Robot;
 
 import static frc.robot.Constants.*;
 
-public class DriveTrain {
+public class DriveTrain implements RobotComponent {
     
-    private final Robot robot;
+    private Robot robot;
 
     private CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private Encoder leftEncoder, rightEncoder;
     private boolean highGear;
 
-    /**
-     * Initialize Drive Train
-     * @param robot Active Robot instance
-     */
-    public DriveTrain(Robot robot) {
+    private DoubleSolenoid shifter;
 
+    /*
+    * Interface methods
+    */
+
+    @Override
+    public RobotComponent init(Robot robot) {
         // Dependency Injection
         this.robot = robot;
 
@@ -44,10 +49,61 @@ public class DriveTrain {
         leftEncoder.setDistancePerPulse(1);
         rightEncoder.setDistancePerPulse(1);
 
-        // TODO: Include shifter
+        shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, DT_SHIFTER_FWD, DT_SHIFTER_BCK);
 
         highGear = false;
+        
+        return this;
+    }
 
+
+    @Override
+    public void shutdown() {
+        // Closes motors (JNI)
+        leftMaster.close();
+        leftSlave.close();
+        rightMaster.close();
+        rightSlave.close();
+    }
+    
+
+    /*
+    * Basic movement
+    */
+    
+    /**
+     * Stops the drivetrain
+     */
+    public void stop() {
+        leftMaster.stopMotor();
+        rightMaster.stopMotor();
+    }
+
+
+    /*
+    * Gear shifting
+    */
+
+    /**
+     * Sets the gear to high or low
+     * @param highGear True if high gear preferred
+     */
+    public void setGear(boolean highGear) {
+        // Change gear if values differ
+        if (highGear != this.highGear) changeGear();        
+    }
+
+
+    /**
+     * Inverts the gear state
+     * High > Low, Low > High
+     */
+    public void changeGear() {
+        // Flip gear state
+        highGear = !highGear;
+
+        if (highGear) shifter.set(Value.kForward);
+        else shifter.set(Value.kReverse);
     }
 
 }

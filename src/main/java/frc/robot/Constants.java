@@ -24,10 +24,20 @@ public final class Constants {
     /*
     * Gamepad
     */
+
+    // USB IDs
+    public static final int GP1_USB = 0;
+    public static final int GP2_USB = 1;
     
-    public static final int GP1_USB_NUMBER = 0;
-    public static final int GP2_USB_NUMBER = 1;
-    
+
+    /* 
+    * Shared Hardware
+    * *This should only apply to the gyroscope!*
+    */
+
+    // Hardware IDs
+    public static final int SH_TALON_GYRO = 32;
+
     /*
     * Drivetrain
     */

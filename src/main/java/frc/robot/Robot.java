@@ -7,9 +7,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.auto.AutoRoutine;
 import frc.robot.auto.TestAuto;
 import frc.robot.components.DriveTrain;
+
+import static frc.robot.Constants.*;
+
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,13 +28,17 @@ import frc.robot.components.DriveTrain;
  */
 public class Robot extends TimedRobot {
 
+	// Shared Hardware
+	private TalonSRX sharedTalon;
+	private PigeonIMU gyro;
+
+	// Components
+	private DriveTrain driveTrain;
+
 	// Auto routine
 	private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
 	private final TestAuto testAuto = new TestAuto(this);
 	private AutoRoutine autoRoutine = null;
-
-	// Components
-	private DriveTrain driveTrain;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -42,8 +52,12 @@ public class Robot extends TimedRobot {
 		autoChooser.setDefaultOption(testAuto.name(), testAuto);
 		SmartDashboard.putData("Select Autonoumous Routine", autoChooser);
 
+		// Shared hardware initialization
+		sharedTalon = new TalonSRX(SH_TALON_GYRO);
+		gyro = new PigeonIMU(sharedTalon);
+
 		// Component initialization
-		driveTrain = new DriveTrain(this);
+		driveTrain = (DriveTrain) new DriveTrain().init(this);
 
 	}
 
@@ -148,5 +162,13 @@ public class Robot extends TimedRobot {
 	 */
 	public DriveTrain getDriveTrain() {
 		return driveTrain;
+	}
+
+	/**
+	 * Gets the gyroscope attached to the robot
+	 * @return
+	 */
+	public PigeonIMU getGyroscope() {
+		return gyro;
 	}
 }
