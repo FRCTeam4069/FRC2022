@@ -1,8 +1,9 @@
 package frc.robot.components;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -15,12 +16,22 @@ import static frc.robot.Constants.*;
 public class DriveTrain implements RobotComponent {
     
     private Robot robot;
+    private boolean highGear = false;
 
-    private CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
-    private Encoder leftEncoder, rightEncoder;
-    private boolean highGear;
+    private final TalonFX leftMaster = new TalonFX(DT_LEFT_MASTER),
+        leftSlave = new TalonFX(DT_LEFT_SLAVE), 
+        rightMaster = new TalonFX(DT_RIGHT_MASTER), 
+        rightSlave = new TalonFX(DT_RIGHT_SLAVE);
 
-    private DoubleSolenoid shifter;
+    private final Encoder leftEncoder = new Encoder(DT_LEFT_MASTER_ENC, DT_LEFT_SLAVE_ENC, true, EncodingType.k1X),
+        rightEncoder = new Encoder(DT_RIGHT_MASTER_ENC, DT_RIGHT_SLAVE_ENC, false, EncodingType.k1X);;
+    
+
+    private final PIDController leftPid = new PIDController(DT_LEFT_P, DT_LEFT_I, DT_LEFT_D), 
+            rightPid = new PIDController(DT_RIGHT_P, DT_RIGHT_I, DT_RIGHT_D);
+
+    private final DoubleSolenoid shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, DT_SHIFTER_FWD, DT_SHIFTER_BCK);
+
 
     /*
     * Interface methods
@@ -31,27 +42,18 @@ public class DriveTrain implements RobotComponent {
         // Dependency Injection
         this.robot = robot;
 
-        // Motors (src: FRCTeam4069/Preseason2022/src/main/java/frc/robot/subsystems/Drivetrain.java#<init>)
-        leftMaster = new CANSparkMax(DT_LEFT_MASTER, MotorType.kBrushless);
-        leftSlave = new CANSparkMax(DT_LEFT_SLAVE, MotorType.kBrushless);
-        rightMaster = new CANSparkMax(DT_RIGHT_MASTER, MotorType.kBrushless);
-        rightSlave = new CANSparkMax(DT_RIGHT_SLAVE, MotorType.kBrushless);
-
+        // Motors
         leftSlave.follow(leftMaster);
         rightSlave.follow(rightMaster);
 
-        leftEncoder = new Encoder(DT_LEFT_MASTER_ENC, DT_LEFT_SLAVE_ENC, true, EncodingType.k1X);
-        rightEncoder = new Encoder(DT_RIGHT_MASTER_ENC, DT_RIGHT_SLAVE_ENC, false, EncodingType.k1X);
+        rightMaster.setInverted(true);
 
+        // Encoder
         leftEncoder.reset();
         rightEncoder.reset();
 
         leftEncoder.setDistancePerPulse(1);
         rightEncoder.setDistancePerPulse(1);
-
-        shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, DT_SHIFTER_FWD, DT_SHIFTER_BCK);
-
-        highGear = false;
         
         return this;
     }
@@ -59,11 +61,7 @@ public class DriveTrain implements RobotComponent {
 
     @Override
     public void shutdown() {
-        // Closes motors (JNI)
-        leftMaster.close();
-        leftSlave.close();
-        rightMaster.close();
-        rightSlave.close();
+        
     }
     
 
@@ -72,11 +70,21 @@ public class DriveTrain implements RobotComponent {
     */
     
     /**
+     * Sets the power of each side of the drivetrain (-1 to 1)
+     * @param left Left side power
+     * @param right Right side power
+     */
+    public void setPower(double left, double right) {
+        leftMaster.set(ControlMode.PercentOutput, left);
+        rightMaster.set(ControlMode.PercentOutput, right);
+    }
+
+    /**
      * Stops the drivetrain
      */
     public void stop() {
-        leftMaster.stopMotor();
-        rightMaster.stopMotor();
+        leftMaster.set(ControlMode.PercentOutput, 0);
+        rightMaster.set(ControlMode.PercentOutput, 0);
     }
 
 

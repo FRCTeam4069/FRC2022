@@ -38,6 +38,7 @@ public final class Constants {
     // Hardware IDs
     public static final int SH_TALON_GYRO = 32;
 
+    
     /*
     * Drivetrain
     */
@@ -46,6 +47,15 @@ public final class Constants {
     public static final double DT_HIGH_GEAR_SENSITIVITY = 0.35;
     public static final double DT_HIGH_GEAR_MOVING_SENSITIVITY = 0.45;
     public static final double DT_LOW_GEAR_SENSITIVITY = 0.625;
+
+    // PID
+    public static final double DT_LEFT_P = 0.6;
+    public static final double DT_LEFT_I = 0.0;
+    public static final double DT_LEFT_D = 0.0;
+
+    public static final double DT_RIGHT_P = 0.6;
+    public static final double DT_RIGHT_I = 0.0;
+    public static final double DT_RIGHT_D = 0.0;
 
     // Hardware IDs, (2020 port)
     // Motors controlled by Spark Maxes
@@ -62,7 +72,11 @@ public final class Constants {
     public static final int DT_SHIFTER_FWD = 0;
     public static final int DT_SHIFTER_BCK = 7;
 
-    //Shooter
+
+    /*
+    * Shooter
+    */
+
     public static final int FW_FALCON_1 = 13;
     public static final int FW_FALCON_2 = 14;
     public static final int FW_ENC_A = 4;
