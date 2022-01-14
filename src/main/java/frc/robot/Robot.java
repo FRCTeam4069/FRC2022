@@ -123,13 +123,13 @@ public class Robot extends TimedRobot {
 	/** This function is called once when teleop is enabled. */
 	@Override
 	public void teleopInit() {
-
 	}
 
 	/** This function is called periodically during operator control. */
 	@Override
 	public void teleopPeriodic() {
-
+		double velocity = flywheel.simulate(1000);
+		System.out.println("Velocity: " + velocity);
 	}
 
 	/** This function is called once when the robot is disabled. */
