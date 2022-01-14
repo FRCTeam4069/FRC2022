@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.auto.AutoRoutine;
 import frc.robot.auto.TestAuto;
+import frc.robot.components.Climber;
 import frc.robot.components.DriveTrain;
+import frc.robot.components.Shooter.Flywheel;
 
 import static frc.robot.Constants.*;
 
@@ -34,6 +36,8 @@ public class Robot extends TimedRobot {
 
 	// Components
 	private DriveTrain driveTrain;
+	private Climber climber;
+	private Flywheel flywheel;
 
 	// Auto routine
 	private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
@@ -58,7 +62,8 @@ public class Robot extends TimedRobot {
 
 		// Component initialization
 		driveTrain = (DriveTrain) new DriveTrain().init(this);
-
+		climber = (Climber) new Climber().init(this);
+		flywheel = (Flywheel) new Flywheel().init(this);
 	}
 
 	/**
@@ -130,7 +135,11 @@ public class Robot extends TimedRobot {
 	/** This function is called once when the robot is disabled. */
 	@Override
 	public void disabledInit() {
+		System.out.println("Shutting down robot components.");
 
+		driveTrain.shutdown();
+		climber.shutdown();
+		flywheel.shutdown();
 	}
 
 	/** This function is called periodically when disabled. */
@@ -162,6 +171,22 @@ public class Robot extends TimedRobot {
 	 */
 	public DriveTrain getDriveTrain() {
 		return driveTrain;
+	}
+
+	/**
+	 * Gets access to the active Climber component
+	 * @return Active Climber
+	 */
+	public Climber getClimber() {
+		return climber;
+	}
+	
+	/**
+	 * Gets access to the active Flywheel component
+	 * @return
+	 */
+	public Flywheel getFlywheel() {
+		return flywheel;
 	}
 
 	/**
