@@ -65,6 +65,6 @@ public final class Constants {
     //Shooter
     public static final int FW_FALCON_1 = 13;
     public static final int FW_FALCON_2 = 14;
-    public static final int FW_ENC_A = 4;
-    public static final int FW_ENC_B = 5;
+    public static final int FW_ENC_A = 0;
+    public static final int FW_ENC_B = 1;
 }

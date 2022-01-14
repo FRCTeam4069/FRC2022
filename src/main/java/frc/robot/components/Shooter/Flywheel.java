@@ -48,7 +48,7 @@ public class Flywheel implements RobotComponent {
         sim = new FlywheelSim(
             drive,      //Input Gearbox
             1,          //Gearing
-            0           //Moment of inertia
+            0.0023      //Moment of inertia
             );
 
         return this;
