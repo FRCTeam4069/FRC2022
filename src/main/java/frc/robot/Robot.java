@@ -13,6 +13,7 @@ import frc.robot.auto.TestAuto;
 import frc.robot.components.Climber;
 import frc.robot.components.DriveTrain;
 import frc.robot.components.Shooter.Flywheel;
+import frc.robot.components.RearIntake;
 
 import static frc.robot.Constants.*;
 
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
 	private DriveTrain driveTrain;
 	private Climber climber;
 	private Flywheel flywheel;
+	private RearIntake rearIntake;
 
 	// Auto routine
 	private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
@@ -64,6 +66,7 @@ public class Robot extends TimedRobot {
 		driveTrain = (DriveTrain) new DriveTrain().init(this);
 		climber = (Climber) new Climber().init(this);
 		flywheel = (Flywheel) new Flywheel().init(this);
+		rearIntake = (RearIntake) new RearIntake().init(this);
 	}
 
 	/**
@@ -195,5 +198,9 @@ public class Robot extends TimedRobot {
 	 */
 	public PigeonIMU getGyroscope() {
 		return gyro;
+	}
+
+	public RearIntake getRearIntake() {
+		return rearIntake;
 	}
 }
