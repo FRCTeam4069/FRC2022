@@ -143,6 +143,7 @@ public class Robot extends TimedRobot {
 		driveTrain.shutdown();
 		climber.shutdown();
 		flywheel.shutdown();
+		rearIntake.shutdown();
 	}
 
 	/** This function is called periodically when disabled. */
