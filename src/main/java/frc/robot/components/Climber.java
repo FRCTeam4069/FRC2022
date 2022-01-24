@@ -13,14 +13,20 @@ public class Climber implements RobotComponent{
 
     private Robot robot;
 
-
     // Interface mehtods
 
-    @Override
-    public RobotComponent init(Robot robot) {
+    public Climber(Robot robot) {
         this.robot = robot;
+    }
 
+    @Override
+    public RobotComponent init() {
         return this;
+    }
+
+    @Override
+    public void loop() {
+
     }
 
     @Override

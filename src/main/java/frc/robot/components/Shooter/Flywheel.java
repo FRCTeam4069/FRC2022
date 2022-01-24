@@ -1,4 +1,4 @@
-package frc.robot.components.Shooter;
+package frc.robot.components.shooter;
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -21,7 +21,7 @@ import static frc.robot.Constants.*;
  */
 public class Flywheel implements RobotComponent {
 
-    Robot robot;
+    final Robot robot;
 
     TalonFX motor1, motor2;
     Encoder enc;
@@ -33,10 +33,12 @@ public class Flywheel implements RobotComponent {
     EncoderSim encSim;
     FlywheelSim sim;
 
-    @Override
-    public RobotComponent init(Robot robot) {       
+    public Flywheel(Robot robot) {
         this.robot = robot;
+    }
 
+    @Override
+    public RobotComponent init() {       
         //Hardware declarations
         motor1 = new TalonFX(FW_FALCON_1);
         motor2 = new TalonFX(FW_FALCON_2);
@@ -53,6 +55,12 @@ public class Flywheel implements RobotComponent {
 
         return this;
     }
+
+    @Override
+    public void loop() {
+        
+    }
+
     @Override
     public void shutdown() {
         //Close motors (find out how to do that for Talons)

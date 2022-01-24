@@ -5,12 +5,21 @@ import frc.robot.Robot;
 import static frc.robot.Constants.*;
 
 public class FrontIntake implements RobotComponent {
-    private Robot robot;
+
+    private final Robot robot;
+
+    public FrontIntake(Robot robot) {
+        this.robot = robot;
+    }
 
     @Override
-    public RobotComponent init(Robot robot) {
-        this.robot = robot;
+    public RobotComponent init() {
         return this;
+    }
+
+    @Override
+    public void loop() {
+
     }
 
     @Override
