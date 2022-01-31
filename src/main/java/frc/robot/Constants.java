@@ -79,6 +79,8 @@ public final class Constants {
 
     public static final int FW_FALCON_1 = 13;
     public static final int FW_FALCON_2 = 14;
-    public static final int FW_ENC_A = 0;
-    public static final int FW_ENC_B = 1;
+    public static final int FW_ENC_TOP_A = 0;
+    public static final int FW_ENC_TOP_B = 1;
+    public static final int FW_ENC_BOTTOM_A = 2;
+    public static final int FW_ENC_BOTTOM_B = 3;
 }
