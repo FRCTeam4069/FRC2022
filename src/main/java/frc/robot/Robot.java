@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
 		// Component initialization
 		driveTrain = (DriveTrain) new DriveTrain(this, gyro).init();
 		climber = (Climber) new Climber(this).init();
-		flywheel = (Flywheel) new Flywheel(this).init();
+		flywheel = (Flywheel) new Flywheel(this, false).init();
 		rearIntake = (RearIntake) new RearIntake(this).init();
 		frontIntake = (FrontIntake) new FrontIntake(this).init();
 	}

@@ -2,7 +2,6 @@ package frc.robot.components.shooter;
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -109,6 +108,11 @@ public class Flywheel implements RobotComponent {
         return (velUnits / cpr) * 600;
     }
 
+    /**
+     * Update the desired state of the flywheels
+     * @param topRPM Angular velocity of top wheel (RPM)
+     * @param bottomRPM Angilar velocity of bottom wheel (RPM)
+     */
     public void update(double topRPM, double bottomRPM) {
         
         //Using REVCoder
@@ -173,10 +177,6 @@ public class Flywheel implements RobotComponent {
             System.out.println("Bottom Voltage Draw: " + bottomMotor.getMotorOutputVoltage()); 
         }
     }
-
-
-
-
 
     @Override
     public void shutdown() {

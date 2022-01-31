@@ -83,4 +83,12 @@ public final class Constants {
     public static final int FW_ENC_TOP_B = 1;
     public static final int FW_ENC_BOTTOM_A = 2;
     public static final int FW_ENC_BOTTOM_B = 3;
+
+
+    /*
+    * Front Intake
+    */
+
+    public static final int FI_NEO_DRIVE = 0;
+    public static final int FI_NEO_ARTICULATE = 0;
 }
