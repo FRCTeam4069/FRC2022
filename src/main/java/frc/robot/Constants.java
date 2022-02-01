@@ -12,9 +12,12 @@ package frc.robot;
  */
 public final class Constants {
 
+    // Prevent instantiating
+    private Constants() {}
+
     /*
     * Constants are declared as such: 
-    * public static final String EXAMPLE_NAME = "Example Value";
+    * "public static final String EXAMPLE_NAME = "Example Value";"
     * 
     * These can be referenced across the project by simply typing the name of the constant.
     * Given that these variables will be accessible by any class that statically imports this class,
@@ -91,4 +94,12 @@ public final class Constants {
 
     public static final int FI_NEO_DRIVE = 0;
     public static final int FI_NEO_ARTICULATE = 0;
+
+
+    /*
+    * Rear Intake
+    */
+
+    public static final int RI_NEO_DRIVE = 0;
+    public static final int RI_NEO_ARTICULATE = 0;
 }

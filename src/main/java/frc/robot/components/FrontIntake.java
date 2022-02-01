@@ -10,6 +10,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
+/**
+ * Front intake component
+ */
 public class FrontIntake implements RobotComponent {
 
     private final Robot robot;
@@ -18,7 +21,7 @@ public class FrontIntake implements RobotComponent {
     CANSparkMax articulate;
     RelativeEncoder encoder;
 
-    double kP_articulate = 0.0;
+    double kPArticulate = 0.0;
 
     public FrontIntake(Robot robot) {
         this.robot = robot;
@@ -26,8 +29,8 @@ public class FrontIntake implements RobotComponent {
 
     @Override
     public RobotComponent init() {
-        drive = new CANSparkMax(Constants.FI_NEO_DRIVE, MotorType.kBrushless);
-        articulate = new CANSparkMax(Constants.FI_NEO_ARTICULATE, MotorType.kBrushless);
+        drive = new CANSparkMax(FI_NEO_DRIVE, MotorType.kBrushless);
+        articulate = new CANSparkMax(FI_NEO_ARTICULATE, MotorType.kBrushless);
         encoder = articulate.getEncoder(Type.kHallSensor, 42);
         
         return this;
@@ -43,7 +46,7 @@ public class FrontIntake implements RobotComponent {
 
         double error = encoderPos - encoder.getPosition();
 
-        articulate.set(error * kP_articulate);
+        articulate.set(error * kPArticulate);
 
         //Likely need to add D or Feedforward in order to compensate for gravity
     }
