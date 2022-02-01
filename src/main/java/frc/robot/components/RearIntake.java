@@ -22,18 +22,13 @@ public class RearIntake implements RobotComponent {
 
 	private final Robot robot;
 
-	private CANSparkMax drive, articulate;
-	private RelativeEncoder encoder;
-
-	double kPArticulate = 0.0;
+	private CANSparkMax drive;
 
 	/**
 	 * @param robot Robot instance
 	 */
 	public RearIntake(Robot robot) {
 		drive = new CANSparkMax(RI_NEO_DRIVE, MotorType.kBrushless);
-        articulate = new CANSparkMax(RI_NEO_ARTICULATE, MotorType.kBrushless);
-        encoder = articulate.getEncoder(Type.kHallSensor, 42);
 
 		this.robot = robot;
 	}
@@ -47,16 +42,9 @@ public class RearIntake implements RobotComponent {
 	/**
      * Update desired articulation, driven percentage
      * @param drivenPercentage Between -1 and 1, percentage of driven power on intake/feed
-     * @param encoderPos between 0 (fully retracted) and x (fully deployed)
      */
     public void update(double drivenPercentage, double encoderPos) {
         drive.set(drivenPercentage);
-
-        double error = encoderPos - encoder.getPosition();
-
-        articulate.set(error * kPArticulate);
-
-        //Likely need to add D or Feedforward in order to compensate for gravity
     }
 
 	@Override
@@ -68,6 +56,5 @@ public class RearIntake implements RobotComponent {
 	@Override
 	public void shutdown() {
 		drive.close();
-        articulate.close();
 	}
 }

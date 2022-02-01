@@ -92,14 +92,13 @@ public final class Constants {
     * Front Intake
     */
 
-    public static final int FI_NEO_DRIVE = 0;
-    public static final int FI_NEO_ARTICULATE = 0;
+    public static final int FI_NEO_DRIVE = 10;
+    public static final int FI_NEO_ARTICULATE = 11;
 
 
     /*
     * Rear Intake
     */
 
-    public static final int RI_NEO_DRIVE = 0;
-    public static final int RI_NEO_ARTICULATE = 0;
+    public static final int RI_NEO_DRIVE = 14;
 }
