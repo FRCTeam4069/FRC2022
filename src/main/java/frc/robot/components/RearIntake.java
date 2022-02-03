@@ -43,7 +43,7 @@ public class RearIntake implements RobotComponent {
      * Update desired articulation, driven percentage
      * @param drivenPercentage Between -1 and 1, percentage of driven power on intake/feed
      */
-    public void update(double drivenPercentage, double encoderPos) {
+    public void update(double drivenPercentage) {
         drive.set(drivenPercentage);
     }
 

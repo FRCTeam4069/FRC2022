@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -48,6 +49,9 @@ public class Robot extends TimedRobot {
 	private final TestAuto testAuto = new TestAuto(this);
 	private AutoRoutine autoRoutine = null;
 
+	//Controllers
+	XboxController controller1;
+
 	/**
 	 * This function is run when the robot is first started up and should be used
 	 * for any
@@ -70,6 +74,9 @@ public class Robot extends TimedRobot {
 		flywheel = (Flywheel) new Flywheel(this, false).init();
 		rearIntake = (RearIntake) new RearIntake(this).init();
 		frontIntake = (FrontIntake) new FrontIntake(this).init();
+
+		//Controller init
+		controller1 = new XboxController(Constants.GP1_USB);
 	}
 
 	/**
@@ -134,8 +141,26 @@ public class Robot extends TimedRobot {
 	/** This function is called periodically during operator control. */
 	@Override
 	public void teleopPeriodic() {
-		double velocity = flywheel.simulate(1000);
-		System.out.println("Velocity: " + velocity);
+		//Intake Testing
+		double intakePower = 0;
+		double articulatePower = 0;
+
+		double bIntakePower = 0;
+		if(controller1.getAButton()) intakePower = 0.75;
+		else if(controller1.getBButton()) intakePower = -0.75;
+		
+		if(controller1.getXButton()) articulatePower = 0.5;
+		else if(controller1.getYButton()) articulatePower = -0.5;
+
+		if(controller1.getLeftBumper()) bIntakePower = 0.75;
+		else if(controller1.getRightBumper()) bIntakePower = -0.75;
+		
+		
+		frontIntake.updateRaw(intakePower, articulatePower);
+		rearIntake.update(bIntakePower);
+
+
+
 	}
 
 	/** This function is called once when the robot is disabled. */

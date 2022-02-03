@@ -80,8 +80,8 @@ public final class Constants {
     * Shooter
     */
 
-    public static final int FW_FALCON_1 = 13;
-    public static final int FW_FALCON_2 = 14;
+    public static final int FW_FALCON_1 = 8;
+    public static final int FW_FALCON_2 = 9;
     public static final int FW_ENC_TOP_A = 0;
     public static final int FW_ENC_TOP_B = 1;
     public static final int FW_ENC_BOTTOM_A = 2;

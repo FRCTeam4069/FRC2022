@@ -51,6 +51,13 @@ public class FrontIntake implements RobotComponent {
         //Likely need to add D or Feedforward in order to compensate for gravity
     }
 
+    public void updateRaw(double drivenPercentage, double articulatePercentage) {
+        drive.set(drivenPercentage);
+        articulate.set(articulatePercentage);
+
+        System.out.println("Articulated encoder Pos: " + encoder.getPosition());
+    }
+
     @Override
     public void loop() {
 
