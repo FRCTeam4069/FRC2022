@@ -62,15 +62,15 @@ public final class Constants {
 
     // Hardware IDs, (2020 port)
     // Motors controlled by Spark Maxes
-    public static final int DT_LEFT_MASTER = 1;
-    public static final int DT_LEFT_SLAVE = 2;
-    public static final int DT_LEFT_MASTER_ENC = 6; // A (2020 val)
-    public static final int DT_LEFT_SLAVE_ENC = 7; // B
+    public static final int DT_LEFT_MASTER = 4; // 2022
+    public static final int DT_LEFT_SLAVE = 5; // 2022
+    public static final int DT_LEFT_MASTER_ENC = 0; // A to be updated
+    public static final int DT_LEFT_SLAVE_ENC = 1; // B to be updated
 
-    public static final int DT_RIGHT_MASTER = 5;
-    public static final int DT_RIGHT_SLAVE = 6;
-    public static final int DT_RIGHT_MASTER_ENC = 4; // A
-    public static final int DT_RIGHT_SLAVE_ENC = 5; // B
+    public static final int DT_RIGHT_MASTER = 6; // 2022
+    public static final int DT_RIGHT_SLAVE = 7; // 2022
+    public static final int DT_RIGHT_MASTER_ENC = 2; // A to be updated
+    public static final int DT_RIGHT_SLAVE_ENC = 3; // B to be updated
 
     public static final int DT_SHIFTER_FWD = 0;
     public static final int DT_SHIFTER_BCK = 7;
