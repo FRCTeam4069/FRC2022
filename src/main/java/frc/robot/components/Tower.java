@@ -50,11 +50,11 @@ public class Tower implements RobotComponent {
         rightEncoder.setDistancePerPulse(1);
 
         // uses encoder to get RPM
-        RPM.setRate(RPM.getRate() * -1);
+        // RPM.setRate(RPM.getRate() * -1);
 
-        if (RPM.getCurrentTime().equals(Duration.ofMillis(0)) && RPM.getRate() == -1) {
+        // if (RPM.getCurrentTime().equals(Duration.ofMillis(0)) && RPM.getRate() == -1) {
 
-        }
+        // }
 
         return this;
 

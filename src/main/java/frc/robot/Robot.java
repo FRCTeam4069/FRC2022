@@ -34,8 +34,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 public class Robot extends TimedRobot {
 
 	// Shared Hardware
-	private TalonSRX sharedTalon;
-	private PigeonIMU gyro;
+	//private TalonSRX sharedTalon;
+	//private PigeonIMU gyro;
 
 	// Components
 	private DriveTrain driveTrain;
@@ -65,15 +65,15 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Select Autonoumous Routine", autoChooser);
 
 		// Shared hardware initialization
-		sharedTalon = new TalonSRX(SH_TALON_GYRO);
-		gyro = new PigeonIMU(sharedTalon);
+		//sharedTalon = new TalonSRX(SH_TALON_GYRO);
+		//gyro = new PigeonIMU(sharedTalon);
 
 		// Component initialization
-		driveTrain = (DriveTrain) new DriveTrain(this, gyro).init();
-		climber = (Climber) new Climber(this).init();
-		flywheel = (Flywheel) new Flywheel(this, false).init();
-		rearIntake = (RearIntake) new RearIntake(this).init();
-		frontIntake = (FrontIntake) new FrontIntake(this).init();
+		driveTrain = (DriveTrain) new DriveTrain(this).init();
+		//climber = (Climber) new Climber(this).init();
+		//flywheel = (Flywheel) new Flywheel(this, false).init();
+		//rearIntake = (RearIntake) new RearIntake(this).init();
+		//frontIntake = (FrontIntake) new FrontIntake(this).init();
 
 		//Controller init
 		controller1 = new XboxController(Constants.GP1_USB);
@@ -169,10 +169,10 @@ public class Robot extends TimedRobot {
 		System.out.println("Shutting down robot components.");
 
 		driveTrain.shutdown();
-		climber.shutdown();
-		flywheel.shutdown();
-		rearIntake.shutdown();
-		frontIntake.shutdown();
+		//climber.shutdown();
+		//flywheel.shutdown();
+		//rearIntake.shutdown();
+		//frontIntake.shutdown();
 	}
 
 	/** This function is called periodically when disabled. */
@@ -190,7 +190,8 @@ public class Robot extends TimedRobot {
 	/** This function is called periodically during test mode. */
 	@Override
 	public void testPeriodic() {
-
+		if (controller1.getAButtonPressed()) driveTrain.setPower(0.1, 0.1);
+		else driveTrain.stop();
 	}
 
 	/*
@@ -222,13 +223,13 @@ public class Robot extends TimedRobot {
 		return flywheel;
 	}
 
-	/**
-	 * Gets the gyroscope attached to the robot
-	 * @return
-	 */
-	public PigeonIMU getGyroscope() {
-		return gyro;
-	}
+	// /**
+	//  * Gets the gyroscope attached to the robot
+	//  * @return
+	//  */
+	// public PigeonIMU getGyroscope() {
+	// 	return gyro;
+	// }
 
 	public RearIntake getRearIntake() {
 		return rearIntake;

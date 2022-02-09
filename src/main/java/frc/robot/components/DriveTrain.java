@@ -25,16 +25,14 @@ public class DriveTrain implements RobotComponent {
         rightMaster = new TalonFX(DT_RIGHT_MASTER), 
         rightSlave = new TalonFX(DT_RIGHT_SLAVE);
 
-    private final Encoder leftEncoder = new Encoder(DT_LEFT_MASTER_ENC, DT_LEFT_SLAVE_ENC, true, EncodingType.k1X),
-        rightEncoder = new Encoder(DT_RIGHT_MASTER_ENC, DT_RIGHT_SLAVE_ENC, false, EncodingType.k1X);
+    //private final Encoder leftEncoder = new Encoder(DT_LEFT_MASTER_ENC, DT_LEFT_SLAVE_ENC, true, EncodingType.k1X),
+    //    rightEncoder = new Encoder(DT_RIGHT_MASTER_ENC, DT_RIGHT_SLAVE_ENC, false, EncodingType.k1X);
     
 
     private final PIDController leftPid = new PIDController(DT_LEFT_P, DT_LEFT_I, DT_LEFT_D), 
             rightPid = new PIDController(DT_RIGHT_P, DT_RIGHT_I, DT_RIGHT_D);
 
     private final DoubleSolenoid shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, DT_SHIFTER_FWD, DT_SHIFTER_BCK);
-
-    private final PigeonIMU gyro;
 
     /*
     * Interface methods
@@ -44,9 +42,8 @@ public class DriveTrain implements RobotComponent {
      * @param robot Robot instance
      * @param gyro Shared gyro instance
      */
-    public DriveTrain(Robot robot, PigeonIMU gyro) {
+    public DriveTrain(Robot robot) {
         this.robot = robot;
-        this.gyro = gyro;
     }
 
     @Override
@@ -58,11 +55,11 @@ public class DriveTrain implements RobotComponent {
         rightMaster.setInverted(true);
 
         // Encoder
-        leftEncoder.reset();
-        rightEncoder.reset();
+        //leftEncoder.reset();
+        //rightEncoder.reset();
 
-        leftEncoder.setDistancePerPulse(1);
-        rightEncoder.setDistancePerPulse(1);
+        //leftEncoder.setDistancePerPulse(1);
+        //rightEncoder.setDistancePerPulse(1);
         
         return this;
     }
@@ -83,15 +80,18 @@ public class DriveTrain implements RobotComponent {
     */
 
     public double getAvgVelocity() {
-        return leftEncoder.getRate() + rightEncoder.getRate() / 2;
+        //return leftEncoder.getRate() + rightEncoder.getRate() / 2;
+        return 0;
     }
 
     public double getLeftVelocity() {
-        return leftEncoder.getRate();
+        //return leftEncoder.getRate();
+        return 0;
     }
 
     public double getRightVelocity() {
-        return rightEncoder.getRate();
+        //return rightEncoder.getRate();
+        return 0;
     }
 
     /*
