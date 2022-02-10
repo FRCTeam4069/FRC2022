@@ -73,7 +73,7 @@ public final class Constants {
     public static final int DT_RIGHT_SLAVE_ENC = 3; // B to be updated
 
     public static final int DT_SHIFTER_FWD = 0;
-    public static final int DT_SHIFTER_BCK = 7;
+    public static final int DT_SHIFTER_BCK = 1;
 
 
     /*
