@@ -156,13 +156,7 @@ public class Robot extends TimedRobot {
 	/** This function is called once when the robot is disabled. */
 	@Override
 	public void disabledInit() {
-		System.out.println("Shutting down robot components.");
-
-		//driveTrain.shutdown();
-		//climber.shutdown();
-		//flywheel.shutdown();
-		//rearIntake.shutdown();
-		frontIntake.shutdown();
+		
 	}
 
 	/** This function is called periodically when disabled. */

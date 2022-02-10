@@ -31,7 +31,7 @@ public class FrontIntake implements RobotComponent {
     public RobotComponent init() {
         drive = new CANSparkMax(FI_NEO_DRIVE, MotorType.kBrushless);
         //articulate = new CANSparkMax(FI_NEO_ARTICULATE, MotorType.kBrushless);
-        encoder = articulate.getEncoder(Type.kHallSensor, 42);
+        //encoder = articulate.getEncoder(Type.kHallSensor, 42);
         
         return this;
     }
@@ -65,7 +65,7 @@ public class FrontIntake implements RobotComponent {
 
     @Override
     public void shutdown() {
-        drive.close();
+        //drive.close();
         //articulate.close();
     }
 
