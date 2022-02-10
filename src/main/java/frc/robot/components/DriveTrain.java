@@ -10,15 +10,12 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import frc.robot.Robot;
 
 import static frc.robot.Constants.*;
 
 public class DriveTrain implements RobotComponent {
     
     private boolean highGear = false;
-
-    private final Robot robot;
 
     private final TalonFX leftMaster = new TalonFX(DT_LEFT_MASTER),
         leftSlave = new TalonFX(DT_LEFT_SLAVE), 
@@ -29,22 +26,14 @@ public class DriveTrain implements RobotComponent {
     //    rightEncoder = new Encoder(DT_RIGHT_MASTER_ENC, DT_RIGHT_SLAVE_ENC, false, EncodingType.k1X);
     
 
-    private final PIDController leftPid = new PIDController(DT_LEFT_P, DT_LEFT_I, DT_LEFT_D), 
-            rightPid = new PIDController(DT_RIGHT_P, DT_RIGHT_I, DT_RIGHT_D);
+    //private final PIDController leftPid = new PIDController(DT_LEFT_P, DT_LEFT_I, DT_LEFT_D), 
+    //        rightPid = new PIDController(DT_RIGHT_P, DT_RIGHT_I, DT_RIGHT_D);
 
     private final DoubleSolenoid shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, DT_SHIFTER_FWD, DT_SHIFTER_BCK);
 
     /*
     * Interface methods
     */
-
-    /**
-     * @param robot Robot instance
-     * @param gyro Shared gyro instance
-     */
-    public DriveTrain(Robot robot) {
-        this.robot = robot;
-    }
 
     @Override
     public RobotComponent init() {
@@ -53,6 +42,7 @@ public class DriveTrain implements RobotComponent {
         rightSlave.follow(rightMaster);
 
         rightMaster.setInverted(true);
+        rightSlave.setInverted(true);
 
         // Encoder
         //leftEncoder.reset();
@@ -67,13 +57,7 @@ public class DriveTrain implements RobotComponent {
     @Override
     public void loop() {
         
-    }
-
-    @Override
-    public void shutdown() {
-        
-    }
-    
+    }   
 
     /*
     * Readings 

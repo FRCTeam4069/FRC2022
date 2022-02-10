@@ -63,6 +63,8 @@ public class Robot extends TimedRobot {
 
 		// Component init
 		frontIntake = (FrontIntake) new FrontIntake().init();
+		rearIntake = (RearIntake) new RearIntake().init();
+		driveTrain = (DriveTrain) new DriveTrain().init();
 	}
 
 	/**

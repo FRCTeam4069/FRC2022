@@ -24,8 +24,7 @@ public class Tower implements RobotComponent {
     private static final DigitalSource DT_LEFT_MASTER_ENC = null;
     private static final DigitalSource DT_LEFT_SLAVE_ENC = null;
     private static final DigitalSource DT_RIGHT_SLAVE_ENC = null;
-
-    private Robot robot;
+    
     private CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private Encoder leftEncoder, rightEncoder;
 
@@ -58,15 +57,6 @@ public class Tower implements RobotComponent {
 
         return this;
 
-    }
-
-    @Override
-    public void shutdown() {
-
-        leftMaster.close();
-        leftSlave.close();
-        rightMaster.close();
-        rightSlave.close();
     }
 
     public void stop() {

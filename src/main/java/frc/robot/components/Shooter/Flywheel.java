@@ -178,15 +178,6 @@ public class Flywheel implements RobotComponent {
         }
     }
 
-    @Override
-    public void shutdown() {
-        //Close motors (find out how to do that for Talons)
-        topMotor.set(ControlMode.PercentOutput, 0);
-        bottomMotor.set(ControlMode.PercentOutput, 0);
-    }
-
-
-
     // Everything below is simulation-specific
     private final double simFlywheelkP = 0.001;
 

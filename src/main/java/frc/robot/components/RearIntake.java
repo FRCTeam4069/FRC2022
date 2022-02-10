@@ -1,12 +1,9 @@
 package frc.robot.components;
 
-import frc.robot.Robot;
 import static frc.robot.Constants.*;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 /**
  * Rear intake component
@@ -40,11 +37,5 @@ public class RearIntake implements RobotComponent {
 	@Override
 	public void loop() {
 		
-	}
-
-	// Function to turn the component off
-	@Override
-	public void shutdown() {
-		//drive.close();
 	}
 }

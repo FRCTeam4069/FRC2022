@@ -54,11 +54,5 @@ public class FrontIntake implements RobotComponent {
     public void loop() {
 
     }
-
-    @Override
-    public void shutdown() {
-        //drive.close();
-        //articulate.close();
-    }
-
+    
 }
