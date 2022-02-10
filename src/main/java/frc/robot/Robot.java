@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
 		//climber = (Climber) new Climber(this).init();
 		//flywheel = (Flywheel) new Flywheel(this, false).init();
 		//rearIntake = (RearIntake) new RearIntake(this).init();
-		//frontIntake = (FrontIntake) new FrontIntake(this).init();
+		frontIntake = (FrontIntake) new FrontIntake(this).init();
 
 		//Controller init
 		controller1 = new XboxController(GP1_USB);
@@ -136,8 +136,8 @@ public class Robot extends TimedRobot {
 		//Intake Testing
 		double intakePower = 0;
 		double articulatePower = 0;
-
 		double bIntakePower = 0;
+
 		if(controller1.getAButton()) intakePower = 0.75;
 		else if(controller1.getBButton()) intakePower = -0.75;
 		
@@ -149,7 +149,7 @@ public class Robot extends TimedRobot {
 		
 		
 		frontIntake.updateRaw(intakePower, articulatePower);
-		rearIntake.update(bIntakePower);
+		//rearIntake.update(bIntakePower);
 
 	}
 
@@ -162,7 +162,7 @@ public class Robot extends TimedRobot {
 		//climber.shutdown();
 		//flywheel.shutdown();
 		//rearIntake.shutdown();
-		//frontIntake.shutdown();
+		frontIntake.shutdown();
 	}
 
 	/** This function is called periodically when disabled. */
