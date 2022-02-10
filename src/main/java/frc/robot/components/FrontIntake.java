@@ -15,24 +15,16 @@ import com.revrobotics.SparkMaxRelativeEncoder.Type;
  */
 public class FrontIntake implements RobotComponent {
 
-    private final Robot robot;
-
     CANSparkMax drive;
-    CANSparkMax articulate;
-    RelativeEncoder encoder;
+    //CANSparkMax articulate;
+    //RelativeEncoder encoder;
 
-    double kPArticulate = 0.0;
-
-    public FrontIntake(Robot robot) {
-        this.robot = robot;
-    }
+    //double kPArticulate = 0.0;
 
     @Override
     public RobotComponent init() {
         drive = new CANSparkMax(FI_NEO_DRIVE, MotorType.kBrushless);
-        //articulate = new CANSparkMax(FI_NEO_ARTICULATE, MotorType.kBrushless);
-        //encoder = articulate.getEncoder(Type.kHallSensor, 42);
-        
+
         return this;
     }
 
@@ -55,7 +47,7 @@ public class FrontIntake implements RobotComponent {
         drive.set(drivenPercentage);
         //articulate.set(articulatePercentage);
 
-        System.out.println("Articulated encoder Pos: " + encoder.getPosition());
+        //System.out.println("Articulated encoder Pos: " + encoder.getPosition());
     }
 
     @Override

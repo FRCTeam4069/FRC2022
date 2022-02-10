@@ -20,22 +20,12 @@ public class RearIntake implements RobotComponent {
 	(Sorry to those assigned components, we needed this to prototype.)
 	 */
 
-	private final Robot robot;
-
 	private CANSparkMax drive;
-
-	/**
-	 * @param robot Robot instance
-	 */
-	public RearIntake(Robot robot) {
-		drive = new CANSparkMax(RI_NEO_DRIVE, MotorType.kBrushless);
-
-		this.robot = robot;
-	}
 
 	// init function for the RearIntake
 	@Override
 	public RobotComponent init() {
+		drive = new CANSparkMax(RI_NEO_DRIVE, MotorType.kBrushless);
 		return this;
 	}
 
@@ -55,6 +45,6 @@ public class RearIntake implements RobotComponent {
 	// Function to turn the component off
 	@Override
 	public void shutdown() {
-		drive.close();
+		//drive.close();
 	}
 }

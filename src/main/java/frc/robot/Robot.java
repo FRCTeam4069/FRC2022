@@ -19,9 +19,6 @@ import frc.robot.components.RearIntake;
 
 import static frc.robot.Constants.*;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.sensors.PigeonIMU;
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
@@ -40,13 +37,14 @@ public class Robot extends TimedRobot {
 	private RearIntake rearIntake;
 	private FrontIntake frontIntake;
 
+	// Controllers
+	private XboxController controller1;
+	private XboxController controller2;
+
 	// Auto routine
 	private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
 	private final TestAuto testAuto = new TestAuto(this);
 	private AutoRoutine autoRoutine = null;
-
-	//Controllers
-	XboxController controller1;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -55,20 +53,16 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-
 		// Send auto selector
 		autoChooser.setDefaultOption(testAuto.name(), testAuto);
 		SmartDashboard.putData("Select Autonoumous Routine", autoChooser);
 
-		// Component initialization
-		//driveTrain = (DriveTrain) new DriveTrain(this).init();
-		//climber = (Climber) new Climber(this).init();
-		//flywheel = (Flywheel) new Flywheel(this, false).init();
-		//rearIntake = (RearIntake) new RearIntake(this).init();
-		frontIntake = (FrontIntake) new FrontIntake(this).init();
-
-		//Controller init
+		// Controller init
 		controller1 = new XboxController(GP1_USB);
+		controller2 = new XboxController(GP2_USB);
+
+		// Component init
+		frontIntake = (FrontIntake) new FrontIntake().init();
 	}
 
 	/**
@@ -106,23 +100,19 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-
 		// Gets selected routine
 		autoRoutine = autoChooser.getSelected();
 		System.out.println("Selected Auto Mode: " + autoRoutine.name());
 
 		// Initializes that routine
 		autoRoutine.init();
-
 	}
 
 	/** This function is called periodically during autonomous. */
 	@Override
 	public void autonomousPeriodic() {
-
 		// Calls the loop of selected auto
 		autoRoutine.loop();
-	
 	}
 
 	/** This function is called once when teleop is enabled. */
@@ -133,23 +123,6 @@ public class Robot extends TimedRobot {
 	/** This function is called periodically during operator control. */
 	@Override
 	public void teleopPeriodic() {
-		//Intake Testing
-		double intakePower = 0;
-		double articulatePower = 0;
-		double bIntakePower = 0;
-
-		if(controller1.getAButton()) intakePower = 0.75;
-		else if(controller1.getBButton()) intakePower = -0.75;
-		
-		if(controller1.getXButton()) articulatePower = 0.5;
-		else if(controller1.getYButton()) articulatePower = -0.5;
-
-		if(controller1.getLeftBumper()) bIntakePower = 0.75;
-		else if(controller1.getRightBumper()) bIntakePower = -0.75;
-		
-		
-		frontIntake.updateRaw(intakePower, articulatePower);
-		//rearIntake.update(bIntakePower);
 
 	}
 
@@ -200,13 +173,41 @@ public class Robot extends TimedRobot {
 	
 	/**
 	 * Gets access to the active Flywheel component
-	 * @return
+	 * @return Active Flywheel
 	 */
 	public Flywheel getFlywheel() {
 		return flywheel;
 	}
 
+	/**
+	 * Gets access to the active Front Intake component
+	 * @return Active Rear Intake
+	 */
 	public RearIntake getRearIntake() {
 		return rearIntake;
+	}
+
+	/**
+	 * Gets access to the active Front Intake component
+	 * @return Active Front Intake
+	 */
+	public FrontIntake getFrontIntake() {
+		return frontIntake;
+	}
+
+	/**
+	 * Gets the connected gamepad (1)
+	 * @return 1st Gamepad
+	 */
+	public XboxController getGamepad1() {
+		return controller1;
+	}
+
+	/**
+	 * Gets the connected gamepad (2)
+	 * @return 2st Gamepad
+	 */
+	public XboxController getGamepad2() {
+		return controller2;
 	}
 }
