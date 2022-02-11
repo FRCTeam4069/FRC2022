@@ -31,15 +31,6 @@ public final class Constants {
     // USB IDs
     public static final int GP1_USB = 0;
     public static final int GP2_USB = 1;
-    
-
-    /* 
-    * Shared Hardware
-    * *This should only apply to the gyroscope!*
-    */
-
-    // Hardware IDs
-    public static final int SH_TALON_GYRO = 32;
 
     
     /*
@@ -75,6 +66,7 @@ public final class Constants {
     public static final int DT_SHIFTER_FWD = 0;
     public static final int DT_SHIFTER_BCK = 1;
 
+    public static final double DT_ARCADE_DEADBAND = 0.02;
 
     /*
     * Shooter
@@ -101,4 +93,11 @@ public final class Constants {
     */
 
     public static final int RI_NEO_DRIVE = 14;
+
+
+    /*
+    * Pneumatics
+    */
+
+    public static final int PN_PRESSURE_SENSOR = 0;
 }

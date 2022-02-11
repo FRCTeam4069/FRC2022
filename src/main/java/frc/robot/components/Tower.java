@@ -62,7 +62,6 @@ public class Tower implements RobotComponent {
     public void stop() {
         leftMaster.stopMotor();
         rightMaster.stopMotor();
-
     }
 
     @Override

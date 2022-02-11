@@ -149,13 +149,7 @@ public class Robot extends TimedRobot {
 	/** This function is called periodically during test mode. */
 	@Override
 	public void testPeriodic() {
-		// Front & rear
-		if (getGamepad1().getAButton()) frontIntake.update(1, 0);
-		else frontIntake.update(0, 0);
-		if (getGamepad1().getBButton()) rearIntake.update(1);
-		else rearIntake.update(0);
-
-		driveTrain.setPower(getGamepad1().getLeftTriggerAxis(), getGamepad1().getRightTriggerAxis());
+		driveTrain.setPower(getGamepad1().getRightTriggerAxis(), getGamepad1().getLeftX());
 	}
 
 	/*
