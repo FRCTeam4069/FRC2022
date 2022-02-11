@@ -29,8 +29,8 @@ public final class Constants {
     */
 
     // USB IDs
-    public static final int GP1_USB = 0;
-    public static final int GP2_USB = 1;
+    public static final int GP_1 = 0;
+    public static final int GP_2 = 1;
 
     
     /*

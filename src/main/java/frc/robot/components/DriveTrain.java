@@ -2,14 +2,9 @@ package frc.robot.components;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
@@ -109,13 +104,13 @@ public class DriveTrain implements RobotComponent {
      * @param speed Speed of robot
      * @param turn Turn amount
      */
-    public void arcadeDrive(double speed, double turn) {
+    public void tankDrive(double speed, double turn) {
         // SRC: edu.wpi.first.wpilibj.drive.DifferentialDrive
         // Cutoff below certain vals
         speed = MathUtil.applyDeadband(speed, DT_ARCADE_DEADBAND);
         turn = MathUtil.applyDeadband(turn, DT_ARCADE_DEADBAND);
-
-        WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(speed, turn, false);
+        
+        WheelSpeeds speeds = DifferentialDrive.tankDriveIK(speed, turn, false);
 
         leftMaster.set(ControlMode.PercentOutput, speeds.left);
         rightMaster.set(ControlMode.PercentOutput, speeds.right);

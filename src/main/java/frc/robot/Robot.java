@@ -2,6 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// Team 4069
+// Lo-Ellen Robotics
+// Greater Sudbury, ON
+
+// #girlsinSTEM
+// #transgirlsinSTEM
+
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -12,8 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auto.AutoRoutine;
 import frc.robot.auto.TestAuto;
 import frc.robot.components.Climber;
+import frc.robot.components.Controls;
 import frc.robot.components.DriveTrain;
 import frc.robot.components.FrontIntake;
+import frc.robot.components.Pneumatics;
 import frc.robot.components.shooter.Flywheel;
 import frc.robot.components.RearIntake;
 
@@ -30,21 +39,23 @@ import static frc.robot.Constants.*;
  */
 public class Robot extends TimedRobot {
 
-	// Components
+	// Robot mechanism components
 	private DriveTrain driveTrain;
 	private Climber climber;
 	private Flywheel flywheel;
 	private RearIntake rearIntake;
 	private FrontIntake frontIntake;
 
-	// Controllers
-	private XboxController controller1;
-	private XboxController controller2;
+	// Robot util. components
+	private Controls controls;
+	private Pneumatics pneumatics;
 
 	// Auto routine
 	private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
 	private final TestAuto testAuto = new TestAuto(this);
 	private AutoRoutine autoRoutine = null;
+
+	private RobotMode mode = RobotMode.DISABLED;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -57,14 +68,11 @@ public class Robot extends TimedRobot {
 		autoChooser.setDefaultOption(testAuto.name(), testAuto);
 		SmartDashboard.putData("Select Autonoumous Routine", autoChooser);
 
-		// Controller init
-		controller1 = new XboxController(GP1_USB);
-		controller2 = new XboxController(GP2_USB);
-
 		// Component init
 		frontIntake = (FrontIntake) new FrontIntake().init();
 		rearIntake = (RearIntake) new RearIntake().init();
 		driveTrain = (DriveTrain) new DriveTrain().init();
+		controls = (Controls) new Controls(this).init();
 	}
 
 	/**
@@ -102,6 +110,8 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		mode = RobotMode.AUTO;
+
 		// Gets selected routine
 		autoRoutine = autoChooser.getSelected();
 		System.out.println("Selected Auto Mode: " + autoRoutine.name());
@@ -120,6 +130,7 @@ public class Robot extends TimedRobot {
 	/** This function is called once when teleop is enabled. */
 	@Override
 	public void teleopInit() {
+		mode = RobotMode.TELEOP;
 	}
 
 	/** This function is called periodically during operator control. */
@@ -131,7 +142,7 @@ public class Robot extends TimedRobot {
 	/** This function is called once when the robot is disabled. */
 	@Override
 	public void disabledInit() {
-		
+		mode = RobotMode.DISABLED;
 	}
 
 	/** This function is called periodically when disabled. */
@@ -143,13 +154,13 @@ public class Robot extends TimedRobot {
 	/** This function is called once when test mode is enabled. */
 	@Override
 	public void testInit() {
-
+		mode = RobotMode.TEST;
 	}
 
 	/** This function is called periodically during test mode. */
 	@Override
 	public void testPeriodic() {
-		driveTrain.setPower(getGamepad1().getRightTriggerAxis(), getGamepad1().getLeftX());
+		driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
 	}
 
 	/*
@@ -198,11 +209,27 @@ public class Robot extends TimedRobot {
 	}
 
 	/**
+	 * Gets access to the active Controller input component
+	 * @return Active Controls
+	 */
+	public Controls getControls() {
+		return controls;
+	}
+
+	/**
+	 * Gets access to the active Pneumatics component
+	 * @return Active Pneumatics
+	 */
+	public Pneumatics getPneumatics() {
+		return pneumatics;
+	}
+
+	/**
 	 * Gets the connected gamepad (1)
 	 * @return 1st Gamepad
 	 */
 	public XboxController getGamepad1() {
-		return controller1;
+		return controls.getGamepad1();
 	}
 
 	/**
@@ -210,6 +237,24 @@ public class Robot extends TimedRobot {
 	 * @return 2st Gamepad
 	 */
 	public XboxController getGamepad2() {
-		return controller2;
+		return controls.getGamepad2();
+	}
+
+	/**
+	 * Gets the current mode of the robot;
+	 * @return Robot's current mode
+	 */
+	public RobotMode getMode() {
+		return mode;
+	}
+
+	/** 
+	 * Various modes
+	 */
+	public enum RobotMode {
+		DISABLED,
+		TEST,
+		AUTO,
+		TELEOP;
 	}
 }
