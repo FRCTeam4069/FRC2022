@@ -66,7 +66,7 @@ public final class Constants {
     public static final int DT_SHIFTER_FWD = 0;
     public static final int DT_SHIFTER_BCK = 1;
 
-    public static final double DT_ARCADE_DEADBAND = 0.02;
+    public static final double DT_ARCADE_DEADBAND = 0.10;
 
     /*
     * Shooter

@@ -42,7 +42,6 @@ public class Controls implements RobotComponent {
                 break;
             default:
                 break;
-            
         }
     }
 
