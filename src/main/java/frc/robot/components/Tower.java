@@ -43,20 +43,19 @@ public class Tower implements RobotComponent {
         rightEncoder = new Encoder(DT_RIGHT_MASTER_ENC, DT_RIGHT_SLAVE_ENC, false, EncodingType.k1X);
 
         leftEncoder.reset();
-        rightEncoder.reset();
+        rightEncoder.reset(); 
 
         leftEncoder.setDistancePerPulse(1);
         rightEncoder.setDistancePerPulse(1);
 
-        // uses encoder to get RPM
-        // RPM.setRate(RPM.getRate() * -1);
-
-        // if (RPM.getCurrentTime().equals(Duration.ofMillis(0)) && RPM.getRate() == -1) {
-
-        // }
-
         return this;
 
+    }
+
+    public void loop(){
+        if (getGamePad1.getB()==true){
+            //.setPower()
+        }
     }
 
     public void stop() {
