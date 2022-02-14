@@ -100,4 +100,11 @@ public final class Constants {
     */
 
     public static final int PN_PRESSURE_SENSOR = 0;
+
+
+    /*
+    * Tower
+    */
+    public static final int TW_LEFT = 0;
+    public static final int TW_RIGHT = 0;
 }
