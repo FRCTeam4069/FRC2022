@@ -1,7 +1,5 @@
 package frc.robot.components;
 
-import java.time.Duration;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -44,10 +42,10 @@ public class Tower implements RobotComponent {
 
     @Override
     public void loop() {
-        if (robot.getGamepad1().getB()){
-            left.set(ControlMode.PercentOutput, 1);
+        if (robot.getGamepad1().getBButton()){
+            left.set(1);
         } else {
-            left.set(ControlMode.PercentOutput, 0);
+            left.set(0);
         }
     }
 }
