@@ -202,6 +202,16 @@ public class Flywheel implements RobotComponent {
         }
     }
 
+    /**
+     * Updates raw percentage outputs of the shooter
+     * @param topPercent The percentage at which to run the top motor (-1 to 1)
+     * @param bottomPercent The percentage at which to run the bottom motor (-1 to 1)
+     */
+    public void updatePercentage(double topPercent, double bottomPercent) {
+        bottomMotor.set(ControlMode.PercentOutput, bottomPercent);
+        topMotor.set(ControlMode.PercentOutput, topPercent);
+    }
+
     // Everything below is simulation-specific
     private final double simFlywheelkP = 0.001;
 

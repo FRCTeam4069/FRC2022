@@ -29,11 +29,15 @@ public class Indexer implements RobotComponent {
 
     @Override
     public void loop() {
-        if (robot.getGamepad1().getBButton()){
+        
+    }
+
+    public void update(boolean rotateOne, boolean rotateTwo) {
+        if (rotateOne){
             left.set(0.5);
             right.set(-0.5);
         } 
-        else if(robot.getGamepad1().getXButton()) {
+        else if(rotateTwo) {
             left.set(-0.5);
             right.set(0.5);
         }

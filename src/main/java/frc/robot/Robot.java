@@ -25,6 +25,7 @@ import frc.robot.components.Climber;
 import frc.robot.components.Controls;
 import frc.robot.components.DriveTrain;
 import frc.robot.components.FrontIntake;
+import frc.robot.components.Indexer;
 import frc.robot.components.Pneumatics;
 import frc.robot.components.shooter.Flywheel;
 import frc.robot.components.RearIntake;
@@ -45,9 +46,10 @@ public class Robot extends TimedRobot {
 	// Robot mechanism components
 	private DriveTrain driveTrain;
 	private Climber climber;
-	private Flywheel flywheel;
+	private Flywheel shooter;
 	private RearIntake rearIntake;
 	private FrontIntake frontIntake;
+	private Indexer indexer;
 
 	private PowerDistribution pdp;
 
@@ -78,6 +80,9 @@ public class Robot extends TimedRobot {
 		rearIntake = (RearIntake) new RearIntake().init();
 		driveTrain = (DriveTrain) new DriveTrain().init();
 		controls = (Controls) new Controls(this).init();
+		shooter = (Flywheel) new Flywheel(this, false).init();
+		indexer = (Indexer) new Indexer(this).init();
+
 
 		pdp = new PowerDistribution(0, ModuleType.kRev);
 	}
@@ -168,6 +173,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 		driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
+		shooter.updatePercentage(0.5, 0.5);
+		indexer.update(getGamepad1().getAButton(), getGamepad1().getBButton());
 	}
 
 	/*
@@ -196,7 +203,7 @@ public class Robot extends TimedRobot {
 	 * @return Active Flywheel
 	 */
 	public Flywheel getFlywheel() {
-		return flywheel;
+		return shooter;
 	}
 
 	/**
