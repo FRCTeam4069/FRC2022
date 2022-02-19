@@ -11,8 +11,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -46,6 +49,8 @@ public class Robot extends TimedRobot {
 	private RearIntake rearIntake;
 	private FrontIntake frontIntake;
 
+	private PowerDistribution pdp;
+
 	// Robot util. components
 	private Controls controls;
 	private Pneumatics pneumatics;
@@ -73,6 +78,8 @@ public class Robot extends TimedRobot {
 		rearIntake = (RearIntake) new RearIntake().init();
 		driveTrain = (DriveTrain) new DriveTrain().init();
 		controls = (Controls) new Controls(this).init();
+
+		pdp = new PowerDistribution(0, ModuleType.kRev);
 	}
 
 	/**
@@ -246,6 +253,14 @@ public class Robot extends TimedRobot {
 	 */
 	public RobotMode getMode() {
 		return mode;
+	}
+
+	/**
+	 * Get the voltage as read by the PDP
+	 * @return Battery Voltage
+	 */
+	public double getBatteryVoltage() {
+		return pdp.getVoltage();
 	}
 
 	/** 

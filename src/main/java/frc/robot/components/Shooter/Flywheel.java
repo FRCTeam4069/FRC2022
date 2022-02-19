@@ -4,6 +4,7 @@ package frc.robot.components.shooter;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -37,6 +38,17 @@ public class Flywheel implements RobotComponent {
 
     boolean useInternalEncoders = false;
 
+    SimpleMotorFeedforward feedforward_top;
+    SimpleMotorFeedforward feedforward_bottom;
+
+    private double kS_top = 0;
+    private double kV_top = 0;
+    private double kA_top = 0;
+
+    private double kS_bottom = 0;
+    private double kV_bottom = 0;
+    private double kA_bottom = 0;
+
     //For Sim
     DCMotor drive;
     EncoderSim encSim;
@@ -61,6 +73,9 @@ public class Flywheel implements RobotComponent {
         kP_bottom = useInternalEncoders ? 0 : 0;
         kI_bottom = useInternalEncoders ? 0 : 0;
         kD_bototom = useInternalEncoders ? 0 : 0;
+
+        feedforward_top = new SimpleMotorFeedforward(kS_top, kV_top, kA_top);
+        feedforward_bottom = new SimpleMotorFeedforward(kS_bottom, kV_bottom, kA_bottom);
     }
 
     @Override
@@ -78,7 +93,7 @@ public class Flywheel implements RobotComponent {
 
 
         //For SIM
-        if(robot.isReal()) {
+        if(!robot.isReal()) {
             drive = DCMotor.getFalcon500(2);
             sim = new FlywheelSim(
                 drive,      //Input Gearbox
@@ -132,11 +147,20 @@ public class Flywheel implements RobotComponent {
             double topError = topRPM - topV;
             double bottomError = bottomRPM - bottomV;
 
+            double pidOutput_top = kP_top * topError;
+            double pidOutput_bottom = kP_bottom * bottomError;
+
+            double bottomFeedforwardOutput = feedforward_bottom.calculate(bottomRPM);
+            double topFeedforwardOutput = feedforward_top.calculate(topRPM);
+
+            double bottomOutput = (bottomFeedforwardOutput + pidOutput_bottom) / 12.0;
+            double topOutput = (topFeedforwardOutput + pidOutput_top) / 12.0;
+
             //Insert stuff for integral and derivative control if you go that route
             if(topMotor.getSupplyCurrent() < 50 && bottomMotor.getSupplyCurrent() < 50) {
-                if(topError > 0) topMotor.set(ControlMode.PercentOutput, topError * kP_top);
+                if(topError > 0) topMotor.set(ControlMode.PercentOutput, topOutput);
                 else topMotor.set(ControlMode.PercentOutput, 0);
-                if(bottomError > 0) bottomMotor.set(ControlMode.PercentOutput, bottomError * kP_bottom);
+                if(bottomError > 0) bottomMotor.set(ControlMode.PercentOutput, bottomOutput);
                 else bottomMotor.set(ControlMode.PercentOutput, 0);
             }
             

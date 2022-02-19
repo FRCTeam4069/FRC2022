@@ -103,8 +103,8 @@ public final class Constants {
 
 
     /*
-    * Tower
+    * Indexer
     */
-    public static final int TW_LEFT = 0;
-    public static final int TW_RIGHT = 0;
+    public static final int ID_LEFT = 0;
+    public static final int ID_RIGHT = 0;
 }
