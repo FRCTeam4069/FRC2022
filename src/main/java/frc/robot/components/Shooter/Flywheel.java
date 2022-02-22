@@ -130,6 +130,7 @@ public class Flywheel implements RobotComponent {
      */
     public void update(double topRPM, double bottomRPM) {
         
+
         //Using REVCoder
         if(!useInternalEncoders) {
             double topCurPos = topEnc.getDistance();
@@ -208,8 +209,8 @@ public class Flywheel implements RobotComponent {
      * @param bottomPercent The percentage at which to run the bottom motor (-1 to 1)
      */
     public void updatePercentage(double topPercent, double bottomPercent) {
-        bottomMotor.set(ControlMode.PercentOutput, bottomPercent);
-        topMotor.set(ControlMode.PercentOutput, topPercent);
+        bottomMotor.set(ControlMode.PercentOutput, -bottomPercent);
+        topMotor.set(ControlMode.PercentOutput, -topPercent);
     }
 
     // Everything below is simulation-specific

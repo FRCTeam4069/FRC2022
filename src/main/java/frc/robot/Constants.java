@@ -64,7 +64,7 @@ public final class Constants {
     public static final int DT_RIGHT_SLAVE_ENC = 3; // B to be updated
 
     public static final int DT_SHIFTER_FWD = 0;
-    public static final int DT_SHIFTER_BCK = 1;
+    public static final int DT_SHIFTER_BCK = 15;
 
     public static final double DT_ARCADE_DEADBAND = 0.10;
 
@@ -105,6 +105,6 @@ public final class Constants {
     /*
     * Indexer
     */
-    public static final int ID_LEFT = 0;
-    public static final int ID_RIGHT = 0;
+    public static final int ID_LEFT = 21;
+    public static final int ID_RIGHT = 20;
 }

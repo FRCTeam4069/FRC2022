@@ -34,15 +34,16 @@ public class Indexer implements RobotComponent {
 
     public void update(boolean rotateOne, boolean rotateTwo) {
         if (rotateOne){
-            left.set(0.5);
-            right.set(-0.5);
+            left.set(1);
+            right.set(-1);
         } 
         else if(rotateTwo) {
-            left.set(-0.5);
-            right.set(0.5);
+            left.set(-1);
+            right.set(1);
         }
         else {
             left.set(0);
+            right.set(0);
         }
     }
 }

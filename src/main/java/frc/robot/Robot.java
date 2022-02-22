@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -84,7 +85,8 @@ public class Robot extends TimedRobot {
 		indexer = (Indexer) new Indexer(this).init();
 
 
-		pdp = new PowerDistribution(0, ModuleType.kRev);
+		pdp = new PowerDistribution(2, ModuleType.kRev);
+		LiveWindow.disableAllTelemetry();
 	}
 
 	/**
@@ -173,8 +175,22 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 		driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
-		shooter.updatePercentage(0.5, 0.5);
+		if(getGamepad1().getStartButton()) shooter.updatePercentage(0.6, 0.65);
+		else shooter.updatePercentage(0, 0);
 		indexer.update(getGamepad1().getAButton(), getGamepad1().getBButton());
+		double FIdrivenPercentage = 0;
+		if(getGamepad1().getLeftBumper()) FIdrivenPercentage = 1;
+		else if(getGamepad1().getRightBumper()) FIdrivenPercentage = -1;
+
+		double FIarticulatePercentage = 0;
+		if(getGamepad1().getLeftStickButton()) FIarticulatePercentage = 0.75;
+		else if(getGamepad1().getRightStickButton()) FIarticulatePercentage = -0.75;		
+		frontIntake.updateRaw(FIdrivenPercentage, FIarticulatePercentage);
+
+		double RIdrivenPercentage = 0;
+		if(getGamepad1().getXButton()) RIdrivenPercentage = 1;
+		else if(getGamepad1().getYButton()) RIdrivenPercentage = -1;
+		rearIntake.update(RIdrivenPercentage);
 	}
 
 	/*
