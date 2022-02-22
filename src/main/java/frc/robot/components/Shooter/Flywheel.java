@@ -42,12 +42,12 @@ public class Flywheel implements RobotComponent {
     SimpleMotorFeedforward feedforward_bottom;
 
     private double kS_top = 0;
-    private double kV_top = 0;
-    private double kA_top = 0;
+    private double kV_top = 0.4825;
+    private double kA_top = 1.6034;
 
     private double kS_bottom = 0;
-    private double kV_bottom = 0;
-    private double kA_bottom = 0;
+    private double kV_bottom = 0.45403;
+    private double kA_bottom = 2.0836;
 
     //For Sim
     DCMotor drive;
@@ -64,13 +64,13 @@ public class Flywheel implements RobotComponent {
         cpr = useInternalEncoders ? 2048 : 8192;
 
         //PID top    internalEncoder : REVCoder
-        kP_top = useInternalEncoders ? 0 : 0;
+        kP_top = useInternalEncoders ? 0 : 0.72012;
         kI_top = useInternalEncoders ? 0 : 0;
         kD_top = useInternalEncoders ? 0 : 0;
 
 
         //PID bottom   internalEncoder : REVCoder
-        kP_bottom = useInternalEncoders ? 0 : 0;
+        kP_bottom = useInternalEncoders ? 0 : 4.1404;
         kI_bottom = useInternalEncoders ? 0 : 0;
         kD_bototom = useInternalEncoders ? 0 : 0;
 
@@ -83,12 +83,15 @@ public class Flywheel implements RobotComponent {
         //Hardware declarations
         topMotor = new TalonFX(FW_FALCON_1);
         bottomMotor = new TalonFX(FW_FALCON_2);
+
+        topMotor.setInverted(true);
+        bottomMotor.setInverted(true);
         
         if(!useInternalEncoders) {
             topEnc = new Encoder(FW_ENC_TOP_A, FW_ENC_TOP_B, false, EncodingType.k1X);
             bottomEnc = new Encoder(FW_ENC_BOTTOM_A, FW_ENC_BOTTOM_B, false, EncodingType.k1X);
-            topEnc.setDistancePerPulse(1 / 8192);
-            bottomEnc.setDistancePerPulse(1 / 8192);
+            topEnc.setDistancePerPulse(-1.0 / 8192.0);
+            bottomEnc.setDistancePerPulse(1.0 / 8192.0);
         }
 
 
@@ -135,7 +138,7 @@ public class Flywheel implements RobotComponent {
         if(!useInternalEncoders) {
             double topCurPos = topEnc.getDistance();
             double bottomCurPos = bottomEnc.getDistance();
-            double currentTime = System.currentTimeMillis() * 1000 * 60;
+            double currentTime = (System.currentTimeMillis() / 1000.0) / 60.0;
 
             double topDeltaP = topCurPos - topLastPos;
             double bottomDeltaP = bottomCurPos - bottomLastPos;
@@ -175,7 +178,7 @@ public class Flywheel implements RobotComponent {
 
             topLastPos = topEnc.getDistance();
             bottomLastPos = bottomEnc.getDistance();
-            lastTime = System.currentTimeMillis();
+            lastTime = (System.currentTimeMillis() / 1000.0) / 60.0;
         }
         else {
 
@@ -211,6 +214,9 @@ public class Flywheel implements RobotComponent {
     public void updatePercentage(double topPercent, double bottomPercent) {
         bottomMotor.set(ControlMode.PercentOutput, -bottomPercent);
         topMotor.set(ControlMode.PercentOutput, -topPercent);
+
+        System.out.println("Top encoder: " + topEnc.get());
+        System.out.println("Bottom encoder: " + bottomEnc.get());
     }
 
     // Everything below is simulation-specific
