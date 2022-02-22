@@ -174,8 +174,9 @@ public class Robot extends TimedRobot {
 	/** This function is called periodically during test mode. */
 	@Override
 	public void testPeriodic() {
-		driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
-		if(getGamepad1().getStartButton()) shooter.update(3000, 3000);
+	//	driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
+		if(getGamepad1().getStartButton()) shooter.update(0, 1100);
+		else if(getGamepad1().getBackButton()) shooter.update(0, 900);
 		else shooter.updatePercentage(0, 0);
 		indexer.update(getGamepad1().getAButton(), getGamepad1().getBButton());
 		double FIdrivenPercentage = 0;

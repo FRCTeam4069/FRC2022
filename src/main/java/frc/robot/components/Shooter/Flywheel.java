@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
@@ -41,13 +42,13 @@ public class Flywheel implements RobotComponent {
     SimpleMotorFeedforward feedforward_top;
     SimpleMotorFeedforward feedforward_bottom;
 
-    private double kS_top = 0;
+    private double kS_top = 0.19816;
     private double kV_top = 0.4825;
     private double kA_top = 1.6034;
 
-    private double kS_bottom = 0;
-    private double kV_bottom = 0.45403;
-    private double kA_bottom = 2.0836;
+    private double kS_bottom = 1.3065;
+    private double kV_bottom = 0.46247;
+    private double kA_bottom = 3.4751;
 
     //For Sim
     DCMotor drive;
@@ -64,7 +65,7 @@ public class Flywheel implements RobotComponent {
         cpr = useInternalEncoders ? 2048 : 8192;
 
         //PID top    internalEncoder : REVCoder
-        kP_top = useInternalEncoders ? 0 : 0.72012;
+        kP_top = useInternalEncoders ? 0 : 0;
         kI_top = useInternalEncoders ? 0 : 0;
         kD_top = useInternalEncoders ? 0 : 0;
 
@@ -138,7 +139,7 @@ public class Flywheel implements RobotComponent {
         if(!useInternalEncoders) {
             double topCurPos = topEnc.getDistance();
             double bottomCurPos = bottomEnc.getDistance();
-            double currentTime = (System.currentTimeMillis() / 1000.0) / 60.0;
+            double currentTime = Timer.getFPGATimestamp() / 60.0; //(System.currentTimeMillis() / 1000.0) / 60.0;
 
             double topDeltaP = topCurPos - topLastPos;
             double bottomDeltaP = bottomCurPos - bottomLastPos;
@@ -154,31 +155,31 @@ public class Flywheel implements RobotComponent {
             double pidOutput_top = kP_top * topError;
             double pidOutput_bottom = kP_bottom * bottomError;
 
-            double bottomFeedforwardOutput = feedforward_bottom.calculate(bottomRPM);
-            double topFeedforwardOutput = feedforward_top.calculate(topRPM);
+            double bottomFeedforwardOutput = feedforward_bottom.calculate(bottomRPM / 60);
+            double topFeedforwardOutput = feedforward_top.calculate(topRPM / 60);
 
-            double bottomOutput = (bottomFeedforwardOutput + pidOutput_bottom) / 12.0;
-            double topOutput = (topFeedforwardOutput + pidOutput_top) / 12.0;
+            double bottomOutput;
+            if(pidOutput_bottom > 0) bottomOutput = (bottomFeedforwardOutput + pidOutput_bottom) / bottomMotor.getBusVoltage();
+            else bottomOutput = bottomFeedforwardOutput / bottomMotor.getBusVoltage();
 
-            //Insert stuff for integral and derivative control if you go that route
-            if(topMotor.getSupplyCurrent() < 50 && bottomMotor.getSupplyCurrent() < 50) {
-                if(topError > 0) topMotor.set(ControlMode.PercentOutput, topOutput);
-                else topMotor.set(ControlMode.PercentOutput, 0);
-                if(bottomError > 0) bottomMotor.set(ControlMode.PercentOutput, bottomOutput);
-                else bottomMotor.set(ControlMode.PercentOutput, 0);
-            }
+            double topOutput;
+            if(pidOutput_top > 0) topOutput = (topFeedforwardOutput + pidOutput_top) / topMotor.getBusVoltage();
+            else topOutput = topFeedforwardOutput / topMotor.getBusVoltage();
+
+            bottomMotor.set(ControlMode.PercentOutput, bottomOutput);
+            topMotor.set(ControlMode.PercentOutput, topOutput);
             
-            System.out.println("Top Vel: " + topV);
-            System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
-            System.out.println("Top Current Draw: " + topMotor.getSupplyCurrent());
+            // System.out.println("Top Vel: " + topV);
+            // System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
+            // System.out.println("Top Current Draw: " + topMotor.getSupplyCurrent());
 
             System.out.println("Bottom Vel: " + bottomV);
-            System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
-            System.out.println("Bottom Current Draw: " + bottomMotor.getSupplyCurrent());
+            // System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
+            // System.out.println("Bottom Current Draw: " + bottomMotor.getSupplyCurrent());
 
             topLastPos = topEnc.getDistance();
             bottomLastPos = bottomEnc.getDistance();
-            lastTime = (System.currentTimeMillis() / 1000.0) / 60.0;
+            lastTime = Timer.getFPGATimestamp() / 60.0; //(System.currentTimeMillis() / 1000.0) / 60.0;
         }
         else {
 
