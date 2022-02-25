@@ -1,29 +1,23 @@
-package frc.robot.components;
-
-import static frc.robot.Constants.*;
+package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-/**
- * Rear intake component
- */
-public class RearIntake implements RobotComponent {
+/** Rear Intake Subsystem */
+public class RearIntake implements RobotSubsystem {
 
-	/*
-	Front and rear intake are functionally similar.
-
-	Code 'borrowed' from the FrontIntake class.
-	(Sorry to those assigned components, we needed this to prototype.)
-	 */
+	public static final int RI_NEO_DRIVE = 14;
 
 	private CANSparkMax drive;
 
-	// init function for the RearIntake
 	@Override
-	public RobotComponent init() {
+	public void init() {
 		drive = new CANSparkMax(RI_NEO_DRIVE, MotorType.kBrushless);
-		return this;
+	}
+
+	@Override
+	public void loop() {
+		
 	}
 
 	/**
@@ -34,8 +28,4 @@ public class RearIntake implements RobotComponent {
         drive.set(drivenPercentage);
     }
 
-	@Override
-	public void loop() {
-		
-	}
 }

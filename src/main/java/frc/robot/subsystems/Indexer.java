@@ -1,30 +1,21 @@
-package frc.robot.components;
+package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.robot.Robot;
+/** Robot Indexer Subsystem */
+public class Indexer implements RobotSubsystem {
 
-import static frc.robot.Constants.*;
-
-public class Indexer implements RobotComponent {
-    
-    private final Robot robot;
+    public static final int ID_LEFT = 21;
+    public static final int ID_RIGHT = 20;
 
     private CANSparkMax left, right;
     //private Encoder leftEncoder, rightEncoder;
 
-    public Indexer(Robot robot) {
-        this.robot = robot;
-    }
-
     @Override
-    public RobotComponent init() {
-
+    public void init() {
         left = new CANSparkMax(ID_LEFT, MotorType.kBrushless);
         right = new CANSparkMax(ID_RIGHT, MotorType.kBrushless);
-
-        return this;
     }
 
     @Override

@@ -1,19 +1,15 @@
-package frc.robot.components;
-
-import frc.robot.Constants;
-import frc.robot.Robot;
-
-import static frc.robot.Constants.*;
+package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
-/**
- * Front intake component
- */
-public class FrontIntake implements RobotComponent {
+/** Front Intake Component */
+public class FrontIntake implements RobotSubsystem {
+
+    public static final int FI_NEO_DRIVE = 10;
+    public static final int FI_NEO_ARTICULATE = 11;
 
     CANSparkMax drive;
     CANSparkMax articulate;
@@ -22,15 +18,14 @@ public class FrontIntake implements RobotComponent {
     //double kPArticulate = 0.0;
 
     @Override
-    public RobotComponent init() {
+    public void init() {
         drive = new CANSparkMax(FI_NEO_DRIVE, MotorType.kBrushless);
         articulate = new CANSparkMax(FI_NEO_ARTICULATE, MotorType.kBrushless);
-
-        return this;
     }
 
     /**
      * Update desired articulation, driven percentage
+     * 
      * @param drivenPercentage Between -1 and 1, percentage of driven power on intake/feed
      * @param encoderPos between 0 (fully retracted) and x (fully deployed)
      */

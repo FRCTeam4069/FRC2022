@@ -5,13 +5,10 @@
 // Team 4069
 // Lo-Ellen Robotics
 // Greater Sudbury, ON
-
 // #girlsinSTEM
-// #transgirlsinSTEM
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,24 +19,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.auto.AutoRoutine;
 import frc.robot.auto.TestAuto;
-import frc.robot.components.Climber;
-import frc.robot.components.Controls;
-import frc.robot.components.DriveTrain;
-import frc.robot.components.FrontIntake;
-import frc.robot.components.Indexer;
-import frc.robot.components.Pneumatics;
-import frc.robot.components.shooter.Flywheel;
-import frc.robot.components.RearIntake;
-
-import static frc.robot.Constants.*;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.FrontIntake;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.RearIntake;
 
 /**
  * The VM is configured to automatically run this class, and to call the
- * functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the
- * name of this class or
- * the package after creating this project, you must also update the
- * build.gradle file in the
+ * functions corresponding to each mode, as described in the TimedRobot 
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
@@ -54,7 +45,7 @@ public class Robot extends TimedRobot {
 
 	private PowerDistribution pdp;
 
-	// Robot util. components
+	// Robot utils
 	private Controls controls;
 	private Pneumatics pneumatics;
 
@@ -67,8 +58,7 @@ public class Robot extends TimedRobot {
 
 	/**
 	 * This function is run when the robot is first started up and should be used
-	 * for any
-	 * initialization code.
+	 * for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
@@ -76,14 +66,22 @@ public class Robot extends TimedRobot {
 		autoChooser.setDefaultOption(testAuto.name(), testAuto);
 		SmartDashboard.putData("Select Autonoumous Routine", autoChooser);
 
-		// Component init
-		frontIntake = (FrontIntake) new FrontIntake().init();
-		rearIntake = (RearIntake) new RearIntake().init();
-		driveTrain = (DriveTrain) new DriveTrain().init();
-		controls = (Controls) new Controls(this).init();
-		shooter = (Flywheel) new Flywheel(this, false).init();
-		indexer = (Indexer) new Indexer(this).init();
+		// Subsystem init
+		frontIntake = new FrontIntake();
+		rearIntake = new RearIntake();
+		driveTrain = new DriveTrain();
+		shooter = new Flywheel(false);
+		indexer = new Indexer();
 
+		frontIntake.init();
+		rearIntake.init();
+		driveTrain.init();
+		shooter.init();
+		indexer.init();
+
+		// Util init
+		controls = new Controls(this);
+		pneumatics = new Pneumatics();
 
 		pdp = new PowerDistribution(2, ModuleType.kRev);
 		LiveWindow.disableAllTelemetry();
@@ -91,36 +89,29 @@ public class Robot extends TimedRobot {
 
 	/**
 	 * This function is called every robot packet, no matter the mode. Use this for
-	 * items like
-	 * diagnostics that you want ran during disabled, autonomous, teleoperated and
-	 * test.
+	 * items like diagnostics that you want ran during disabled, autonomous,
+	 * teleoperated and test.
 	 *
 	 * <p>
 	 * This runs after the mode specific periodic functions, but before LiveWindow
-	 * and
-	 * SmartDashboard integrated updating.
+	 * and SmartDashboard integrated updating.
 	 */
 	@Override
 	public void robotPeriodic() {
-
+		controls.parseControls();
 	}
 
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different
-	 * autonomous modes using the dashboard. The sendable chooser code works with
-	 * the Java
-	 * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the
-	 * chooser code and
-	 * uncomment the getString line to get the auto name from the text box below the
-	 * Gyro
+	 * between different autonomous modes using the dashboard. The sendable
+	 * chooser code works with the Java SmartDashboard. If you prefer the 
+	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the 
+	 * getString line to get the auto name from the text box below the Gyro
 	 *
 	 * <p>
 	 * You can add additional auto modes by adding additional comparisons to the
-	 * switch structure
-	 * below with additional strings. If using the SendableChooser make sure to add
-	 * them to the
-	 * chooser code above as well.
+	 * switch structure below with additional strings. If using the SendableChooser
+	 * make sure to add them to the chooser code above as well.
 	 */
 	@Override
 	public void autonomousInit() {
@@ -174,122 +165,77 @@ public class Robot extends TimedRobot {
 	/** This function is called periodically during test mode. */
 	@Override
 	public void testPeriodic() {
-	//	driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
-		if(getGamepad1().getStartButton()) shooter.update(0, 1100);
-		else if(getGamepad1().getBackButton()) shooter.update(0, 900);
-		else shooter.updatePercentage(0, 0);
-		indexer.update(getGamepad1().getAButton(), getGamepad1().getBButton());
-		double FIdrivenPercentage = 0;
-		if(getGamepad1().getLeftBumper()) FIdrivenPercentage = 1;
-		else if(getGamepad1().getRightBumper()) FIdrivenPercentage = -1;
-
-		double FIarticulatePercentage = 0;
-		if(getGamepad1().getLeftStickButton()) FIarticulatePercentage = 0.75;
-		else if(getGamepad1().getRightStickButton()) FIarticulatePercentage = -0.75;		
-		frontIntake.updateRaw(FIdrivenPercentage, FIarticulatePercentage);
-
-		double RIdrivenPercentage = 0;
-		if(getGamepad1().getXButton()) RIdrivenPercentage = 1;
-		else if(getGamepad1().getYButton()) RIdrivenPercentage = -1;
-		rearIntake.update(RIdrivenPercentage);
+		// driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
+		
 	}
 
 	/*
 	Non-Static getter methods 
-	**Use dependancy injection to access these in classes**
+	Use dependancy injection to access these in classes
 	*/
 
-	/**
-	 * Gets access to the active DriveTrain component
-	 * @return Active DriveTrain
+	/** Gets the drivetrain subsystem
 	 */
 	public DriveTrain getDriveTrain() {
 		return driveTrain;
 	}
 
-	/**
-	 * Gets access to the active Climber component
-	 * @return Active Climber
-	 */
+	/** Gets the climber subsystem */
 	public Climber getClimber() {
 		return climber;
 	}
 	
-	/**
-	 * Gets access to the active Flywheel component
-	 * @return Active Flywheel
-	 */
+	/** Gets the flywheel (shooter) subsystem */
 	public Flywheel getFlywheel() {
 		return shooter;
 	}
 
-	/**
-	 * Gets access to the active Front Intake component
-	 * @return Active Rear Intake
-	 */
+	/** Gets the rear intake subsystem */
 	public RearIntake getRearIntake() {
 		return rearIntake;
 	}
 
-	/**
-	 * Gets access to the active Front Intake component
-	 * @return Active Front Intake
-	 */
+	/** Gets the front intake subsystem */
 	public FrontIntake getFrontIntake() {
 		return frontIntake;
 	}
 
-	/**
-	 * Gets access to the active Controller input component
-	 * @return Active Controls
-	 */
+	/** Gets the active indexer subsystem */
+	public Indexer getIndexer() {
+		return indexer;
+	}
+
+	/** Gets the active control mapping class */
 	public Controls getControls() {
 		return controls;
 	}
 
-	/**
-	 * Gets access to the active Pneumatics component
-	 * @return Active Pneumatics
-	 */
+	/** Gets the active pneumatics handling class */
 	public Pneumatics getPneumatics() {
 		return pneumatics;
 	}
 
-	/**
-	 * Gets the connected gamepad (1)
-	 * @return 1st Gamepad
-	 */
+	/** Gets the connected gamepad (1) */
 	public XboxController getGamepad1() {
 		return controls.getGamepad1();
 	}
 
-	/**
-	 * Gets the connected gamepad (2)
-	 * @return 2st Gamepad
-	 */
+	/** Gets the connected gamepad (2) */
 	public XboxController getGamepad2() {
 		return controls.getGamepad2();
 	}
 
-	/**
-	 * Gets the current mode of the robot;
-	 * @return Robot's current mode
-	 */
+	/** Gets the current mode of the robot */
 	public RobotMode getMode() {
 		return mode;
 	}
 
-	/**
-	 * Get the voltage as read by the PDP
-	 * @return Battery Voltage
-	 */
+	/** Gets the voltage as read by the PDP */
 	public double getBatteryVoltage() {
 		return pdp.getVoltage();
 	}
 
-	/** 
-	 * Various modes
-	 */
+	/** Modes the robot can be put in */
 	public enum RobotMode {
 		DISABLED,
 		TEST,
