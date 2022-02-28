@@ -6,19 +6,17 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 /** Front Intake Component */
-public class FrontIntake implements RobotSubsystem {
+public class FrontIntake {
 
     public static final int FI_NEO_DRIVE = 10;
     public static final int FI_NEO_ARTICULATE = 11;
 
-    CANSparkMax drive;
-    CANSparkMax articulate;
+    private final CANSparkMax drive, articulate;
     //RelativeEncoder encoder;
 
     //double kPArticulate = 0.0;
 
-    @Override
-    public void init() {
+    public FrontIntake() {
         drive = new CANSparkMax(FI_NEO_DRIVE, MotorType.kBrushless);
         articulate = new CANSparkMax(FI_NEO_ARTICULATE, MotorType.kBrushless);
     }
@@ -44,11 +42,6 @@ public class FrontIntake implements RobotSubsystem {
         articulate.set(articulatePercentage);
 
         //System.out.println("Articulated encoder Pos: " + encoder.getPosition());
-    }
-
-    @Override
-    public void loop() {
-
     }
     
 }

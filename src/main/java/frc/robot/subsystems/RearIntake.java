@@ -4,20 +4,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /** Rear Intake Subsystem */
-public class RearIntake implements RobotSubsystem {
+public class RearIntake {
 
 	public static final int RI_NEO_DRIVE = 14;
 
 	private CANSparkMax drive;
 
-	@Override
-	public void init() {
+	public RearIntake() {
 		drive = new CANSparkMax(RI_NEO_DRIVE, MotorType.kBrushless);
-	}
-
-	@Override
-	public void loop() {
-		
 	}
 
 	/**

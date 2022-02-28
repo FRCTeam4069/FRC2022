@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 
 /** Drivetrain Subsystem */
-public class DriveTrain implements RobotSubsystem {
+public class DriveTrain {
     
     // Gear sensitivity, (2020 port)
     public static final double DT_HIGH_GEAR_SENSITIVITY = 0.35;
@@ -60,6 +60,12 @@ public class DriveTrain implements RobotSubsystem {
         rightMaster = new TalonFX(DT_RIGHT_MASTER);
         rightSlave = new TalonFX(DT_RIGHT_SLAVE);
 
+        leftSlave.follow(leftMaster);
+        rightSlave.follow(rightMaster);
+
+        rightMaster.setInverted(true);
+        rightSlave.setInverted(true);
+
         leftEncoder = new Encoder(DT_LEFT_MASTER_ENC, DT_LEFT_SLAVE_ENC, true, EncodingType.k1X);
         rightEncoder = new Encoder(DT_RIGHT_MASTER_ENC, DT_RIGHT_SLAVE_ENC, false, EncodingType.k1X);
         // leftPid = new PIDController(DT_LEFT_P, DT_LEFT_I, DT_LEFT_D);
@@ -71,28 +77,6 @@ public class DriveTrain implements RobotSubsystem {
         
         shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, DT_SHIFTER_FWD, DT_SHIFTER_BCK);
     }
-
-    @Override
-    public void init() {
-        // Motors
-        leftSlave.follow(leftMaster);
-        rightSlave.follow(rightMaster);
-
-        rightMaster.setInverted(true);
-        rightSlave.setInverted(true);
-
-        // Encoder
-        //leftEncoder.reset();
-        //rightEncoder.reset();
-
-        //leftEncoder.setDistancePerPulse(1);
-        //rightEncoder.setDistancePerPulse(1);
-    }
-
-    @Override
-    public void loop() {
-        
-    }   
 
     /** Average rate between both encoders */
     public double getAvgVelocity() {
@@ -132,13 +116,13 @@ public class DriveTrain implements RobotSubsystem {
      * @param speed Speed of robot
      * @param turn Turn amount
      */
-    public void tankDrive(double speed, double turn) {
+    public void arcadeDrive(double speed, double turn) {
         // SRC: edu.wpi.first.wpilibj.drive.DifferentialDrive
         // Cutoff below certain vals
         speed = MathUtil.applyDeadband(speed, DT_ARCADE_DEADBAND);
         turn = MathUtil.applyDeadband(turn, DT_ARCADE_DEADBAND);
         
-        WheelSpeeds speeds = DifferentialDrive.tankDriveIK(speed, turn, false);
+        WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(speed, turn, false);
 
         leftMaster.set(ControlMode.PercentOutput, speeds.left);
         rightMaster.set(ControlMode.PercentOutput, speeds.right);

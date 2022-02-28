@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 
 /** Shooter flywheel subsystem */
-public class Flywheel implements RobotSubsystem {
+public class Flywheel {
 
     public static final int FW_FALCON_1 = 8;
     public static final int FW_FALCON_2 = 9;
@@ -72,10 +72,7 @@ public class Flywheel implements RobotSubsystem {
 
         feedforward_top = new SimpleMotorFeedforward(kS_top, kV_top, kA_top);
         feedforward_bottom = new SimpleMotorFeedforward(kS_bottom, kV_bottom, kA_bottom);
-    }
 
-    @Override
-    public void init() {       
         //Hardware declarations
         topMotor = new TalonFX(FW_FALCON_1);
         bottomMotor = new TalonFX(FW_FALCON_2);
@@ -99,11 +96,6 @@ public class Flywheel implements RobotSubsystem {
                 0.0023      //Moment of inertia
                 );
         }
-    }
-
-    @Override
-    public void loop() {
-        
     }
 
     //For Update

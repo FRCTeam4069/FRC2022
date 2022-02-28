@@ -13,9 +13,16 @@ public class Pneumatics {
     private final AnalogInput pressureSensor;
     private final Compressor compressor;
 
+    /** Init */
     public Pneumatics() {
         pressureSensor = new AnalogInput(PN_PRESSURE_SENSOR);
         compressor = new Compressor(2, PneumaticsModuleType.REVPH);
+    }
+
+    /** Checks if compressor needs to be running or not */
+    public void update() {
+        if (getPressure() < 100.0 && !compressor.enabled()) compressor.enableDigital();
+        else if (getPressure() >= 110.0) compressor.disable();
     }
 
     /**

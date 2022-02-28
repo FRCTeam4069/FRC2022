@@ -65,27 +65,32 @@ public class Controls {
                  * Right Stick In - FI Articulate Backward
                  * X - RI Forward
                  * Y - RI Backward
+                 * Right Trigger - Drivetrain forward
+                 * Left Trigger - Drivetrain reverse
+                 * Left Joystick X Axis - Drivetrain turn
                  * 
                  */
 
-                if(getGamepad1().getStartButton()) robot.getFlywheel().update(0, 1100);
-		        else if(getGamepad1().getBackButton()) robot.getFlywheel().update(0, 900);
+                if (getGamepad1().getStartButton()) robot.getFlywheel().update(0, 1100);
+		        else if (getGamepad1().getBackButton()) robot.getFlywheel().update(0, 900);
 		        else robot.getFlywheel().updatePercentage(0, 0);
 		        robot.getIndexer().update(getGamepad1().getAButton(), getGamepad1().getBButton());
 
 		        double fiDrivenPercentage = 0;
-		        if(getGamepad1().getLeftBumper()) fiDrivenPercentage = 1;
+		        if (getGamepad1().getLeftBumper()) fiDrivenPercentage = 1;
 		        else if(getGamepad1().getRightBumper()) fiDrivenPercentage = -1;
 
 		        double fiArticulatePercentage = 0;
-		        if(getGamepad1().getLeftStickButton()) fiArticulatePercentage = 0.75;
-		        else if(getGamepad1().getRightStickButton()) fiArticulatePercentage = -0.75;		
+		        if (getGamepad1().getLeftStickButton()) fiArticulatePercentage = 0.75;
+		        else if (getGamepad1().getRightStickButton()) fiArticulatePercentage = -0.75;		
 		        robot.getFrontIntake().updateRaw(fiDrivenPercentage, fiArticulatePercentage);
 
 		        double riDrivenPercentage = 0;
-		        if(getGamepad1().getXButton()) riDrivenPercentage = 1;
-	        	else if(getGamepad1().getYButton()) riDrivenPercentage = -1;
+		        if (getGamepad1().getXButton()) riDrivenPercentage = 1;
+	        	else if (getGamepad1().getYButton()) riDrivenPercentage = -1;
 		        robot.getRearIntake().update(riDrivenPercentage);
+
+                robot.getDriveTrain().arcadeDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
 
                 break;
             default:

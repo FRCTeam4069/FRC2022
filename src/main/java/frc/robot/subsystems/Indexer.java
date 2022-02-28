@@ -4,23 +4,17 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /** Robot Indexer Subsystem */
-public class Indexer implements RobotSubsystem {
+public class Indexer {
 
     public static final int ID_LEFT = 21;
     public static final int ID_RIGHT = 20;
 
-    private CANSparkMax left, right;
+    private final CANSparkMax left, right;
     //private Encoder leftEncoder, rightEncoder;
 
-    @Override
-    public void init() {
+    public Indexer() {
         left = new CANSparkMax(ID_LEFT, MotorType.kBrushless);
         right = new CANSparkMax(ID_RIGHT, MotorType.kBrushless);
-    }
-
-    @Override
-    public void loop() {
-        
     }
 
     public void update(boolean rotateOne, boolean rotateTwo) {

@@ -11,7 +11,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -43,6 +42,7 @@ public class Robot extends TimedRobot {
 	private FrontIntake frontIntake;
 	private Indexer indexer;
 
+	// Robot misc. hardware
 	private PowerDistribution pdp;
 
 	// Robot utils
@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
 	private final TestAuto testAuto = new TestAuto(this);
 	private AutoRoutine autoRoutine = null;
 
+	// Active mode
 	private RobotMode mode = RobotMode.DISABLED;
 
 	/**
@@ -72,12 +73,6 @@ public class Robot extends TimedRobot {
 		driveTrain = new DriveTrain();
 		shooter = new Flywheel(false);
 		indexer = new Indexer();
-
-		frontIntake.init();
-		rearIntake.init();
-		driveTrain.init();
-		shooter.init();
-		indexer.init();
 
 		// Util init
 		controls = new Controls(this);
@@ -99,6 +94,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic() {
 		controls.parseControls();
+		pneumatics.update();
 	}
 
 	/**
@@ -213,16 +209,6 @@ public class Robot extends TimedRobot {
 	/** Gets the active pneumatics handling class */
 	public Pneumatics getPneumatics() {
 		return pneumatics;
-	}
-
-	/** Gets the connected gamepad (1) */
-	public XboxController getGamepad1() {
-		return controls.getGamepad1();
-	}
-
-	/** Gets the connected gamepad (2) */
-	public XboxController getGamepad2() {
-		return controls.getGamepad2();
 	}
 
 	/** Gets the current mode of the robot */
