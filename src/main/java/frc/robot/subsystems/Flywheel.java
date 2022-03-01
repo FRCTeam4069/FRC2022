@@ -18,12 +18,12 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 /** Shooter flywheel subsystem */
 public class Flywheel {
 
-    public static final int FW_FALCON_1 = 8;
-    public static final int FW_FALCON_2 = 9;
-    public static final int FW_ENC_TOP_A = 6;
-    public static final int FW_ENC_TOP_B = 7;
-    public static final int FW_ENC_BOTTOM_A = 4;
-    public static final int FW_ENC_BOTTOM_B = 5;
+    private static final int FALCON_1 = 8;
+    private static final int FALCON_2 = 9;
+    private static final int ENC_TOP_A = 6;
+    private static final int ENC_TOP_B = 7;
+    private static final int ENC_BOTTOM_A = 4;
+    private static final int ENC_BOTTOM_B = 5;
 
     TalonFX topMotor, bottomMotor;
     Encoder topEnc, bottomEnc;
@@ -35,7 +35,7 @@ public class Flywheel {
 
     private double kP_bottom;
     private double kI_bottom;
-    private double kD_bototom;
+    private double kD_bottom;
 
     boolean useInternalEncoders = false;
 
@@ -68,21 +68,21 @@ public class Flywheel {
         //PID bottom   internalEncoder : REVCoder
         kP_bottom = useInternalEncoders ? 0 : 4.1404;
         kI_bottom = useInternalEncoders ? 0 : 0;
-        kD_bototom = useInternalEncoders ? 0 : 0;
+        kD_bottom = useInternalEncoders ? 0 : 0;
 
         feedforward_top = new SimpleMotorFeedforward(kS_top, kV_top, kA_top);
         feedforward_bottom = new SimpleMotorFeedforward(kS_bottom, kV_bottom, kA_bottom);
 
         //Hardware declarations
-        topMotor = new TalonFX(FW_FALCON_1);
-        bottomMotor = new TalonFX(FW_FALCON_2);
+        topMotor = new TalonFX(FALCON_1);
+        bottomMotor = new TalonFX(FALCON_2);
 
         topMotor.setInverted(true);
         bottomMotor.setInverted(true);
         
         if(!useInternalEncoders) {
-            topEnc = new Encoder(FW_ENC_TOP_A, FW_ENC_TOP_B, false, EncodingType.k1X);
-            bottomEnc = new Encoder(FW_ENC_BOTTOM_A, FW_ENC_BOTTOM_B, false, EncodingType.k1X);
+            topEnc = new Encoder(ENC_TOP_A, ENC_TOP_B, false, EncodingType.k1X);
+            bottomEnc = new Encoder(ENC_BOTTOM_A, ENC_BOTTOM_B, false, EncodingType.k1X);
             topEnc.setDistancePerPulse(-1.0 / 8192.0);
             bottomEnc.setDistancePerPulse(1.0 / 8192.0);
         }

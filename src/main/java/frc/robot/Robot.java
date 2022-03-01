@@ -9,6 +9,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
+
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -34,6 +36,9 @@ import frc.robot.subsystems.RearIntake;
  */
 public class Robot extends TimedRobot {
 
+	// SET GYRO ID!
+	private static final int GYRO_ID = 20;
+
 	// Robot mechanism components
 	private DriveTrain driveTrain;
 	private Climber climber;
@@ -44,6 +49,7 @@ public class Robot extends TimedRobot {
 
 	// Robot misc. hardware
 	private PowerDistribution pdp;
+	private PigeonIMU gyro;
 
 	// Robot utils
 	private Controls controls;
@@ -77,6 +83,7 @@ public class Robot extends TimedRobot {
 		// Util init
 		controls = new Controls(this);
 		pneumatics = new Pneumatics();
+		gyro = new PigeonIMU(GYRO_ID);
 
 		pdp = new PowerDistribution(2, ModuleType.kRev);
 		LiveWindow.disableAllTelemetry();
@@ -219,6 +226,11 @@ public class Robot extends TimedRobot {
 	/** Gets the voltage as read by the PDP */
 	public double getBatteryVoltage() {
 		return pdp.getVoltage();
+	}
+
+	/** Gets the PigeonIMU gyroscope */
+	public PigeonIMU getGyroscope() {
+		return gyro;
 	}
 
 	/** Modes the robot can be put in */

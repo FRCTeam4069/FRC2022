@@ -14,37 +14,32 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 
 /** Drivetrain Subsystem */
 public class DriveTrain {
-    
-    // Gear sensitivity, (2020 port)
-    public static final double DT_HIGH_GEAR_SENSITIVITY = 0.35;
-    public static final double DT_HIGH_GEAR_MOVING_SENSITIVITY = 0.45;
-    public static final double DT_LOW_GEAR_SENSITIVITY = 0.625;
 
     // PID
-    public static final double DT_LEFT_P = 0.6;
-    public static final double DT_LEFT_I = 0.0;
-    public static final double DT_LEFT_D = 0.0;
+    private static final double LEFT_P = 0.6;
+    private static final double LEFT_I = 0.0;
+    private static final double LEFT_D = 0.0;
 
-    public static final double DT_RIGHT_P = 0.6;
-    public static final double DT_RIGHT_I = 0.0;
-    public static final double DT_RIGHT_D = 0.0;
+    private static final double RIGHT_P = 0.6;
+    private static final double RIGHT_I = 0.0;
+    private static final double RIGHT_D = 0.0;
 
     // Hardware IDs
-    public static final int DT_LEFT_MASTER = 4;
-    public static final int DT_LEFT_SLAVE = 5;
-    public static final int DT_LEFT_MASTER_ENC = 0;
-    public static final int DT_LEFT_SLAVE_ENC = 1;
+    private static final int LEFT_MASTER = 4;
+    private static final int LEFT_SLAVE = 5;
+    private static final int LEFT_ENC_A = 0;
+    private static final int LEFT_ENC_B = 1;
 
-    public static final int DT_RIGHT_MASTER = 6;
-    public static final int DT_RIGHT_SLAVE = 7;
-    public static final int DT_RIGHT_MASTER_ENC = 2;
-    public static final int DT_RIGHT_SLAVE_ENC = 3;
+    private static final int RIGHT_MASTER = 6;
+    private static final int RIGHT_SLAVE = 7;
+    private static final int RIGHT_ENC_A = 2;
+    private static final int RIGHT_ENC_B = 3;
 
-    public static final int DT_SHIFTER_FWD = 0; // UPDATE
-    public static final int DT_SHIFTER_BCK = 15; // UPDATE
+    private static final int SHIFTER_FWD = 0;
+    private static final int SHIFTER_BCK = 15;
 
     // Deadband for controller stick drift
-    public static final double DT_ARCADE_DEADBAND = 0.12;
+    private static final double ARCADE_DEADBAND = 0.12;
 
     // Drivetrain hardware, etc
     private final TalonFX leftMaster, leftSlave, rightMaster, rightSlave;
@@ -55,10 +50,10 @@ public class DriveTrain {
     private boolean highGear = false;
 
     public DriveTrain() {
-        leftMaster = new TalonFX(DT_LEFT_MASTER);
-        leftSlave = new TalonFX(DT_LEFT_SLAVE);
-        rightMaster = new TalonFX(DT_RIGHT_MASTER);
-        rightSlave = new TalonFX(DT_RIGHT_SLAVE);
+        leftMaster = new TalonFX(LEFT_MASTER);
+        leftSlave = new TalonFX(LEFT_SLAVE);
+        rightMaster = new TalonFX(RIGHT_MASTER);
+        rightSlave = new TalonFX(RIGHT_SLAVE);
 
         leftSlave.follow(leftMaster);
         rightSlave.follow(rightMaster);
@@ -66,16 +61,11 @@ public class DriveTrain {
         rightMaster.setInverted(true);
         rightSlave.setInverted(true);
 
-        leftEncoder = new Encoder(DT_LEFT_MASTER_ENC, DT_LEFT_SLAVE_ENC, true, EncodingType.k1X);
-        rightEncoder = new Encoder(DT_RIGHT_MASTER_ENC, DT_RIGHT_SLAVE_ENC, false, EncodingType.k1X);
-        // leftPid = new PIDController(DT_LEFT_P, DT_LEFT_I, DT_LEFT_D);
-        // rightPid = new PIDController(DT_RIGHT_P, DT_RIGHT_I, DT_RIGHT_D);
-        
-        // TO BE REMOVED AND REPLACED WITH ABOVE
-        leftPid = null;
-        rightPid = null;
-        
-        shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, DT_SHIFTER_FWD, DT_SHIFTER_BCK);
+        leftEncoder = new Encoder(LEFT_ENC_A, LEFT_ENC_B, true, EncodingType.k1X);
+        rightEncoder = new Encoder(RIGHT_ENC_A, RIGHT_ENC_B, false, EncodingType.k1X);
+        leftPid = new PIDController(LEFT_P, LEFT_I, LEFT_D);
+        rightPid = new PIDController(RIGHT_P, RIGHT_I, RIGHT_D);
+        shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, SHIFTER_FWD, SHIFTER_BCK);
     }
 
     /** Average rate between both encoders */
@@ -117,10 +107,9 @@ public class DriveTrain {
      * @param turn Turn amount
      */
     public void arcadeDrive(double speed, double turn) {
-        // SRC: edu.wpi.first.wpilibj.drive.DifferentialDrive
-        // Cutoff below certain vals
-        speed = MathUtil.applyDeadband(speed, DT_ARCADE_DEADBAND);
-        turn = MathUtil.applyDeadband(turn, DT_ARCADE_DEADBAND);
+        // Current controllers have stick drift issues
+        speed = MathUtil.applyDeadband(speed, ARCADE_DEADBAND);
+        turn = MathUtil.applyDeadband(turn, ARCADE_DEADBAND);
         
         WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(speed, turn, false);
 
@@ -138,11 +127,7 @@ public class DriveTrain {
         if (highGear != this.highGear) changeGear();        
     }
 
-    /**
-     * Inverts the gear state
-     * <p>
-     * High > Low, Low > High
-     */
+    /** Inverts the gear state */
     public void changeGear() {
         // Flip gear state
         highGear = !highGear;

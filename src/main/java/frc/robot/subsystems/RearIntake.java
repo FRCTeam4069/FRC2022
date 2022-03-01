@@ -6,20 +6,25 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 /** Rear Intake Subsystem */
 public class RearIntake {
 
-	public static final int RI_NEO_DRIVE = 14;
+	private static final int DRIVE = 14;
+    private static final double DRIVE_MAGNITUDE = 1;
 
 	private CANSparkMax drive;
 
 	public RearIntake() {
-		drive = new CANSparkMax(RI_NEO_DRIVE, MotorType.kBrushless);
+		drive = new CANSparkMax(DRIVE, MotorType.kBrushless);
 	}
 
-	/**
-     * Update desired articulation, driven percentage
-     * @param drivenPercentage Between -1 and 1, percentage of driven power on intake/feed
+    /**
+     * Update the drive state of the rear intake
+     * 
+     * @param enabled Rear intake on, off
+     * @param dir Reverse direction
      */
-    public void update(double drivenPercentage) {
-        drive.set(drivenPercentage);
+    public void drive(boolean enabled, boolean reverse) {
+        if (!enabled) drive.set(0);
+        else if (!reverse) drive.set(DRIVE_MAGNITUDE);
+        else drive.set(-DRIVE_MAGNITUDE);
     }
 
 }

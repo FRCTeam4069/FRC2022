@@ -3,22 +3,53 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 /** Front Intake Component */
 public class FrontIntake {
 
-    public static final int FI_NEO_DRIVE = 10;
-    public static final int FI_NEO_ARTICULATE = 11;
+    private static final int DRIVE_CAN = 10;
+    private static final double DRIVE_MAGNITUDE = 1;
+
+    private static final int ARTICULATE_CAN = 11;
+    private static final double ARTICULATE_MAGNITUDE = 0.75;
 
     private final CANSparkMax drive, articulate;
-    //RelativeEncoder encoder;
+    private final RelativeEncoder articulateEncoder;
 
-    //double kPArticulate = 0.0;
+    // Articulation lock enabled if already running articulation routine
+    private boolean articulateLock = false;
+    // True/false is up/down state of intake
+    private boolean articulateUp = false;
 
     public FrontIntake() {
-        drive = new CANSparkMax(FI_NEO_DRIVE, MotorType.kBrushless);
-        articulate = new CANSparkMax(FI_NEO_ARTICULATE, MotorType.kBrushless);
+        drive = new CANSparkMax(DRIVE_CAN, MotorType.kBrushless);
+        articulate = new CANSparkMax(ARTICULATE_CAN, MotorType.kBrushless);
+        articulateEncoder = articulate.getEncoder();
+    }
+
+    /**
+     * Update the drive state of the front intake
+     * 
+     * @param enabled Front intake on, off
+     * @param dir Reverse direction
+     */
+    public void drive(boolean enabled, boolean reverse) {
+        if (!enabled) drive.set(0);
+        else if (!reverse) drive.set(DRIVE_MAGNITUDE);
+        else drive.set(-DRIVE_MAGNITUDE);
+    }
+
+    /** Raise/lower front intake */
+    public void articulate() {
+        // Lock method
+        if(articulateLock) return;
+        articulateLock = true;
+
+        articulateUp = !articulateUp;
+
+        articulateEncoder.setPosition(0);
+        
+        articulateLock = false;
     }
 
     /**

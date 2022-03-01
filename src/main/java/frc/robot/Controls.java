@@ -26,6 +26,7 @@ public class Controls {
         controller2 = new XboxController(GP_2);
     }
 
+    /** Runs on loop method, checks for controls being pressed & processes them accordingly */
     public void parseControls() {
         // CONTROLS MAPPING
         switch(robot.getMode()) {
@@ -71,25 +72,28 @@ public class Controls {
                  * 
                  */
 
+                // Flywheel
                 if (getGamepad1().getStartButton()) robot.getFlywheel().update(0, 1100);
 		        else if (getGamepad1().getBackButton()) robot.getFlywheel().update(0, 900);
 		        else robot.getFlywheel().updatePercentage(0, 0);
-		        robot.getIndexer().update(getGamepad1().getAButton(), getGamepad1().getBButton());
 
-		        double fiDrivenPercentage = 0;
-		        if (getGamepad1().getLeftBumper()) fiDrivenPercentage = 1;
-		        else if(getGamepad1().getRightBumper()) fiDrivenPercentage = -1;
+                // Indexer 
+                // #drive(enabled = a or b is pressed, reversed = b is pressed)
+		        robot.getIndexer().drive(getGamepad1().getAButton() || getGamepad1().getBButton(), getGamepad1().getBButton());
 
-		        double fiArticulatePercentage = 0;
-		        if (getGamepad1().getLeftStickButton()) fiArticulatePercentage = 0.75;
-		        else if (getGamepad1().getRightStickButton()) fiArticulatePercentage = -0.75;		
-		        robot.getFrontIntake().updateRaw(fiDrivenPercentage, fiArticulatePercentage);
+                // Front intake drive
+                // #drive(enabled = left bumper or right bumper is pressed, reversed = left bumper is pressed)
+		        robot.getRearIntake().drive(getGamepad1().getLeftBumper() || getGamepad1().getRightBumper(), getGamepad1().getLeftBumper());
 
-		        double riDrivenPercentage = 0;
-		        if (getGamepad1().getXButton()) riDrivenPercentage = 1;
-	        	else if (getGamepad1().getYButton()) riDrivenPercentage = -1;
-		        robot.getRearIntake().update(riDrivenPercentage);
+                // Rear intake articulate
+		        // TODO
 
+                // Rear intake drive
+		        // #drive(enabled = x or y is pressed, reversed = x is pressed)
+		        robot.getRearIntake().drive(getGamepad1().getXButton() || getGamepad1().getYButton(), getGamepad1().getXButton());
+
+                // Drivetrain
+                // #arcadeDrive(speed = right trigger - left trigger, turn = left joystick x axis)
                 robot.getDriveTrain().arcadeDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
 
                 break;
@@ -98,10 +102,12 @@ public class Controls {
         }
     }
 
+    /** Gamepad for first driver */
     public XboxController getGamepad1() {
         return controller1;
     }
 
+    /** Gamepad for second driver */
     public XboxController getGamepad2() {
         return controller2;
     }
