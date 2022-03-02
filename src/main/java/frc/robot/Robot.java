@@ -37,7 +37,7 @@ import frc.robot.subsystems.RearIntake;
 public class Robot extends TimedRobot {
 
 	// SET GYRO ID!
-	private static final int GYRO_ID = 20;
+	private static final int GYRO_ID = 3;
 
 	// Robot mechanism components
 	private DriveTrain driveTrain;

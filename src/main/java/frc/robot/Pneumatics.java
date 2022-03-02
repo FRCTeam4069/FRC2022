@@ -9,7 +9,8 @@ import frc.robot.Scheduler.RobotRepeatingTask;
 /** Pneumatics Controls Util */
 public class Pneumatics {
 
-    public static final int PN_PRESSURE_SENSOR = 0;
+    public static final int PRESSURE_SENSOR = 0;
+    public static final int PNEUMATICS_CAN = 1;
 
     private final AnalogInput pressureSensor;
     private final Compressor compressor;
@@ -18,8 +19,8 @@ public class Pneumatics {
 
     /** Init */
     public Pneumatics(Robot robot) {
-        pressureSensor = new AnalogInput(PN_PRESSURE_SENSOR);
-        compressor = new Compressor(2, PneumaticsModuleType.REVPH);
+        pressureSensor = new AnalogInput(PRESSURE_SENSOR);
+        compressor = new Compressor(PNEUMATICS_CAN, PneumaticsModuleType.REVPH);
 
         this.robot = robot;
 
