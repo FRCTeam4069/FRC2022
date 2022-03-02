@@ -157,7 +157,7 @@ public class Flywheel {
             // System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
             // System.out.println("Top Current Draw: " + topMotor.getSupplyCurrent());
 
-            System.out.println("Bottom Vel: " + bottomV);
+            //System.out.println("Bottom Vel: " + bottomV);
             // System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
             // System.out.println("Bottom Current Draw: " + bottomMotor.getSupplyCurrent());
 
@@ -178,14 +178,14 @@ public class Flywheel {
                 topMotor.set(ControlMode.PercentOutput, 0);
             }
 
-            System.out.println("Top Vel: " + (topRPM + velUnitsToRPM(topMotor.getClosedLoopError())));
-            System.out.println("Bottom Vel: " + (bottomRPM + velUnitsToRPM(bottomMotor.getClosedLoopError())));
+            //System.out.println("Top Vel: " + (topRPM + velUnitsToRPM(topMotor.getClosedLoopError())));
+            //System.out.println("Bottom Vel: " + (bottomRPM + velUnitsToRPM(bottomMotor.getClosedLoopError())));
 
-            System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
-            System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
+            //System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
+            //System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
 
-            System.out.println("Top Voltage Draw: " + topMotor.getMotorOutputVoltage());
-            System.out.println("Bottom Voltage Draw: " + bottomMotor.getMotorOutputVoltage()); 
+            //System.out.println("Top Voltage Draw: " + topMotor.getMotorOutputVoltage());
+            //System.out.println("Bottom Voltage Draw: " + bottomMotor.getMotorOutputVoltage()); 
         }
     }
 
@@ -199,8 +199,8 @@ public class Flywheel {
         bottomMotor.set(ControlMode.PercentOutput, -bottomPercent);
         topMotor.set(ControlMode.PercentOutput, -topPercent);
 
-        System.out.println("Top encoder: " + topEnc.get());
-        System.out.println("Bottom encoder: " + bottomEnc.get());
+        //System.out.println("Top encoder: " + topEnc.get());
+        //System.out.println("Bottom encoder: " + bottomEnc.get());
     }
 
     // Everything below is simulation-specific

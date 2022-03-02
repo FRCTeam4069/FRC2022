@@ -92,8 +92,7 @@ public class Controls {
                         robot.getFrontIntake().drive(getGamepad1().getLeftBumper() || getGamepad1().getRightBumper(),
                                 getGamepad1().getLeftBumper());
 
-                        // Rear intake articulate
-                        // TODO
+                        // Front intake articulatess
 
                         // Rear intake drive
                         // #drive(enabled = x or y is pressed, reversed = x is pressed)

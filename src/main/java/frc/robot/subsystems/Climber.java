@@ -87,17 +87,17 @@ public class Climber {
         left.set(ControlMode.PercentOutput, rawInput);
         right.set(ControlMode.PercentOutput, rawInput);
 
-        System.out.println("Left Reading: " + (left.getSelectedSensorPosition() / 240.0) + " degrees");
-        System.out.println("Right Reading: " + (right.getSelectedSensorPosition() / 240.0) + " degrees");
+        //System.out.println("Left Reading: " + (left.getSelectedSensorPosition() / 240.0) + " degrees");
+        //System.out.println("Right Reading: " + (right.getSelectedSensorPosition() / 240.0) + " degrees");
 
-        System.out.println("Left Current: " + left.getStatorCurrent());
-        System.out.println("Right Current: " + right.getStatorCurrent());
+        //System.out.println("Left Current: " + left.getStatorCurrent());
+        //System.out.println("Right Current: " + right.getStatorCurrent());
 
-        System.out.println("Left Voltage: " + left.getBusVoltage());
-        System.out.println("Right Voltage: " + right.getBusVoltage());
+        //System.out.println("Left Voltage: " + left.getBusVoltage());
+        //System.out.println("Right Voltage: " + right.getBusVoltage());
 
-        System.out.println("Raw Left Enc: " + left.getSelectedSensorPosition());
-        System.out.println("Raw Right Enc: " + right.getSelectedSensorPosition());
+        //System.out.println("Raw Left Enc: " + left.getSelectedSensorPosition());
+        //System.out.println("Raw Right Enc: " + right.getSelectedSensorPosition());
     }
 
 }

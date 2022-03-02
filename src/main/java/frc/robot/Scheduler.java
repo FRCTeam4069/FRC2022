@@ -14,11 +14,16 @@ public class Scheduler {
 
     // Runs tasks
     void runRepeatingTasks() {
+        ArrayList<RobotRepeatingTask> removal = new ArrayList<>();
+        // Run tasks
         for (RobotRepeatingTask task : repeatingTasks) {
             task.run();
             if (task.disabled)
-                repeatingTasks.remove(task);
+                removal.add(task);
         }
+        // Purge disabled
+        for (RobotRepeatingTask task : removal)
+            repeatingTasks.remove(task);
     }
 
     // Starts an async repeating task
