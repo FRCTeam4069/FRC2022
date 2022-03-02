@@ -4,6 +4,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import frc.robot.Robot;
+import frc.robot.Scheduler.RobotAsyncTask;
+
 /** Front Intake Component */
 public class FrontIntake {
 
@@ -16,15 +19,18 @@ public class FrontIntake {
     private final CANSparkMax drive, articulate;
     private final RelativeEncoder articulateEncoder;
 
+    private final Robot robot;
+
     // Articulation lock enabled if already running articulation routine
     private boolean articulateLock = false;
     // True/false is up/down state of intake
     private boolean articulateUp = false;
 
-    public FrontIntake() {
+    public FrontIntake(Robot robot) {
         drive = new CANSparkMax(DRIVE_CAN, MotorType.kBrushless);
         articulate = new CANSparkMax(ARTICULATE_CAN, MotorType.kBrushless);
         articulateEncoder = articulate.getEncoder();
+        this.robot = robot;
     }
 
     /**
@@ -44,12 +50,10 @@ public class FrontIntake {
         // Lock method
         if(articulateLock) return;
         articulateLock = true;
-
+        // Flip stored state
         articulateUp = !articulateUp;
-
+        // Reset
         articulateEncoder.setPosition(0);
-        
-        articulateLock = false;
     }
 
     /**

@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
 	// Robot utils
 	private Controls controls;
 	private Pneumatics pneumatics;
+	private Scheduler scheduler;
 
 	// Auto routine
 	private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
@@ -69,12 +70,15 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
+		// Scheduler init
+		scheduler = new Scheduler(this);
+
 		// Send auto selector
 		autoChooser.setDefaultOption(testAuto.name(), testAuto);
 		SmartDashboard.putData("Select Autonoumous Routine", autoChooser);
 
 		// Subsystem init
-		frontIntake = new FrontIntake();
+		frontIntake = new FrontIntake(this);
 		rearIntake = new RearIntake();
 		driveTrain = new DriveTrain();
 		shooter = new Flywheel(false);
@@ -82,7 +86,7 @@ public class Robot extends TimedRobot {
 
 		// Util init
 		controls = new Controls(this);
-		pneumatics = new Pneumatics();
+		pneumatics = new Pneumatics(this);
 		gyro = new PigeonIMU(GYRO_ID);
 
 		pdp = new PowerDistribution(2, ModuleType.kRev);
@@ -100,8 +104,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
-		controls.parseControls();
-		pneumatics.update();
+		scheduler.runRepeatingTasks();
 	}
 
 	/**
@@ -231,6 +234,11 @@ public class Robot extends TimedRobot {
 	/** Gets the PigeonIMU gyroscope */
 	public PigeonIMU getGyroscope() {
 		return gyro;
+	}
+
+	/** Gets the scheduler */
+	public Scheduler getScheduler() {
+		return scheduler;
 	}
 
 	/** Modes the robot can be put in */

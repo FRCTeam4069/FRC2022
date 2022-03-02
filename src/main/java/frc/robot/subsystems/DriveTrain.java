@@ -63,8 +63,10 @@ public class DriveTrain {
 
         leftEncoder = new Encoder(LEFT_ENC_A, LEFT_ENC_B, true, EncodingType.k1X);
         rightEncoder = new Encoder(RIGHT_ENC_A, RIGHT_ENC_B, false, EncodingType.k1X);
-        leftPid = new PIDController(LEFT_P, LEFT_I, LEFT_D);
-        rightPid = new PIDController(RIGHT_P, RIGHT_I, RIGHT_D);
+
+        leftPid = new PIDController(LEFT_P, LEFT_I, LEFT_D, 0.02);
+        rightPid = new PIDController(RIGHT_P, RIGHT_I, RIGHT_D, 0.02);
+
         shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, SHIFTER_FWD, SHIFTER_BCK);
     }
 
@@ -115,6 +117,19 @@ public class DriveTrain {
 
         leftMaster.set(ControlMode.PercentOutput, speeds.left);
         rightMaster.set(ControlMode.PercentOutput, speeds.right);
+    }
+
+    /**
+     * Drives the robot based off encoder tick amounts
+     * 
+     * @param leftTicks Ticks to left side of drivetrain
+     * @param rightTicks Ticks to right side of drivetrain
+     */
+    public void driveEncTick(double leftTicks) {
+        leftEncoder.reset();
+        rightEncoder.reset();
+
+        
     }
 
     /**
