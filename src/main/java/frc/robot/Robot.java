@@ -53,7 +53,6 @@ public class Robot extends TimedRobot {
 
 	// Robot utils
 	private Controls controls;
-	private Pneumatics pneumatics;
 	private Scheduler scheduler;
 
 	// Auto routine
@@ -86,7 +85,6 @@ public class Robot extends TimedRobot {
 
 		// Util init
 		controls = new Controls(this);
-		pneumatics = new Pneumatics(this);
 		gyro = new PigeonIMU(GYRO_ID);
 
 		pdp = new PowerDistribution(2, ModuleType.kRev);
@@ -214,11 +212,6 @@ public class Robot extends TimedRobot {
 	/** Gets the active control mapping class */
 	public Controls getControls() {
 		return controls;
-	}
-
-	/** Gets the active pneumatics handling class */
-	public Pneumatics getPneumatics() {
-		return pneumatics;
 	}
 
 	/** Gets the current mode of the robot */
