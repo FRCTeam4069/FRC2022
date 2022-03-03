@@ -4,13 +4,7 @@ import java.util.ArrayList;
 
 public class Scheduler {
 
-    private final Robot robot;
-
     private ArrayList<RobotRepeatingTask> repeatingTasks = new ArrayList<>();
-
-    Scheduler(Robot robot) {
-        this.robot = robot;
-    }
 
     // Runs tasks
     void runRepeatingTasks() {

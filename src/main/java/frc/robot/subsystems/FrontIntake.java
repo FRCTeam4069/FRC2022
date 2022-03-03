@@ -21,8 +21,6 @@ public class FrontIntake {
 
     private final Robot robot;
 
-    // Articulation lock enabled if already running articulation routine
-    private boolean articulateLock = false;
     // True/false is up/down state of intake
     private boolean articulateUp = true;
 
@@ -47,9 +45,6 @@ public class FrontIntake {
 
     /** Raise/lower front intake */
     public void articulate() {
-        // Lock method
-        if(articulateLock) return;
-        articulateLock = true;
         // Flip stored state
         articulateUp = !articulateUp;
         // Reset
@@ -64,7 +59,6 @@ public class FrontIntake {
                 if ((articulateEncoder.getPosition() < -70 && !articulateUp) ||
                     (articulateEncoder.getPosition() > 70 && articulateUp)) {
                     articulate.set(0);
-                    articulateLock = false;
                     this.disable();
                 }
             }

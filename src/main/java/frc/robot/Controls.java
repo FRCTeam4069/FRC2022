@@ -6,14 +6,22 @@ import frc.robot.Scheduler.RobotRepeatingTask;
 /** Controls handlingß */
 public class Controls {
 
-    public static final int GP_1 = 0;
-    public static final int GP_2 = 1;
+    // IDs
+    private static final int GP_1 = 0, GP_2 = 1;
 
-    private final Robot robot;
+    private static final double FRONT_INTAKE_DEADBAND = 0.05;
+    private static final double INDEXER_DEADBAND = 0.2;
+
+    // Cooldowns (ms)
+    private static final int GEAR_CHANGE_CD = 1000; // 1s
+    private static final int ARTICULATE_CD = 2500; // 2.5s
 
     // Controllers
-    private XboxController controller1;
-    private XboxController controller2;
+    private XboxController controller1, controller2;
+
+    // Call timestamps
+    private long lastGearChange = 0;
+    private long lastArticulate = 0;
 
     /**
      * Requires robot dependancy
@@ -21,8 +29,6 @@ public class Controls {
      * @param robot Robot instance
      */
     public Controls(Robot robot) {
-        this.robot = robot;
-
         controller1 = new XboxController(GP_1);
         controller2 = new XboxController(GP_2);
 
@@ -49,8 +55,59 @@ public class Controls {
 
                         /**
                          * TELEOP MODE CONTROLS
+                         * 
+                         * DRIVER 1:
+                         * L Trigger - Drivetrain Forward
+                         * R Trigger - Drivetrain Backward
+                         * R Bumper - Drivetrain Change Gears
+                         * L X Joystick - Drivetrain Turn
+                         * 
+                         * DRIVER 2:
+                         * L Trigger - Front Intake Out
+                         * R Trigger - Front Intake In
+                         * L Bumper - Rear Intake Out
+                         * R Bumper - Rear Intake In
+                         * L +Y Joystick - Indexer Up
+                         * L -Y Joystick - Indexer Down
+                         * A - Shoter Auto Aim For High
+                         * B - Close Low Goal
+                         * X - Safezone High Goal
+                         * Y - Close High Goal
+                         * Start - Front Intake Articulate
                          */
 
+                        // Drive
+                        robot.getDriveTrain().arcadeDrive(
+                                getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(),
+                                getGamepad1().getLeftX());
+
+                        // Change gear w/ cooldown
+                        if (getGamepad1().getRightBumper()
+                                && lastGearChange + GEAR_CHANGE_CD > System.currentTimeMillis()) {
+                            robot.getDriveTrain().changeGear();
+                            lastGearChange = System.currentTimeMillis();
+                        }
+
+                        // Front Intake
+                        robot.getFrontIntake().drive(getGamepad2().getLeftTriggerAxis() > FRONT_INTAKE_DEADBAND
+                                || getGamepad2().getRightTriggerAxis() > FRONT_INTAKE_DEADBAND,
+                                getGamepad2().getLeftTriggerAxis() > FRONT_INTAKE_DEADBAND);
+                        
+                        // Front Intake Articulate
+                        if (getGamepad2().getStartButton()
+                                && lastArticulate + ARTICULATE_CD > System.currentTimeMillis()) {
+                            robot.getFrontIntake().articulate();
+                            lastArticulate = System.currentTimeMillis();
+                        }
+
+                        // Rear Intake
+                        robot.getRearIntake().drive(getGamepad1().getLeftBumper() || getGamepad1().getRightBumper(),
+                                getGamepad1().getLeftBumper());
+                        
+                        // Indexer
+                        robot.getIndexer().drive(getGamepad2().getLeftY() > INDEXER_DEADBAND
+                                || getGamepad2().getLeftY() < -INDEXER_DEADBAND,
+                                getGamepad2().getLeftTriggerAxis() < -INDEXER_DEADBAND);
                         break;
                     case TEST:
 

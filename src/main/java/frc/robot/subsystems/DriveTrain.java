@@ -47,6 +47,9 @@ public class DriveTrain {
     private final PIDController leftPid, rightPid;
     private final DoubleSolenoid shifter;
 
+    // Control Cooldowns
+    private long gearChangeLast = 0;
+
     private boolean highGear = false;
 
     public DriveTrain() {
@@ -126,10 +129,7 @@ public class DriveTrain {
      * @param rightTicks Ticks to right side of drivetrain
      */
     public void driveEncTick(double leftTicks) {
-        leftEncoder.reset();
-        rightEncoder.reset();
-
-        
+        // TODO
     }
 
     /**

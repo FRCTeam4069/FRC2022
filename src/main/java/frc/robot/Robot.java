@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		// Scheduler init
-		scheduler = new Scheduler(this);
+		scheduler = new Scheduler();
 
 		// Send auto selector
 		autoChooser.setDefaultOption(testAuto.name(), testAuto);
