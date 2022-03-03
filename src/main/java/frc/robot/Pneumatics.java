@@ -15,22 +15,17 @@ public class Pneumatics {
     private final AnalogInput pressureSensor;
     private final Compressor compressor;
 
-    private final Robot robot;
-
     /** Init */
     public Pneumatics(Robot robot) {
         pressureSensor = new AnalogInput(PRESSURE_SENSOR);
         compressor = new Compressor(PNEUMATICS_CAN, PneumaticsModuleType.REVPH);
 
-        this.robot = robot;
+        robot.getScheduler().schedule((RobotRepeatingTask) this::pneumaticsLoop);
+    }
 
-        robot.getScheduler().schedule(new RobotRepeatingTask() {
-            @Override
-            public void run() {
-                if (getPressure() < 100.0 && !compressor.enabled()) compressor.enableDigital();
-                else if (getPressure() >= 110.0) compressor.disable();   
-            }
-        });
+    private void pneumaticsLoop() {
+        if (getPressure() < 100.0 && !compressor.enabled()) compressor.enableDigital();
+        else if (getPressure() >= 110.0) compressor.disable();
     }
 
     /**

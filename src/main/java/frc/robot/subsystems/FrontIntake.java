@@ -5,7 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Robot;
-import frc.robot.Scheduler.RobotRepeatingTask;
+import frc.robot.Scheduler.RobotAsyncTask;
 
 /** Front Intake Component */
 public class FrontIntake {
@@ -53,16 +53,13 @@ public class FrontIntake {
         if(articulateUp) articulate.set(ARTICULATE_MAGNITUDE);
         else articulate.set(-ARTICULATE_MAGNITUDE);
 
-        robot.getScheduler().schedule(new RobotRepeatingTask() {
-            @Override
-            public void run() {
-                if ((articulateEncoder.getPosition() < -70 && !articulateUp) ||
-                    (articulateEncoder.getPosition() > 70 && articulateUp)) {
-                    articulate.set(0);
-                    this.disable();
-                }
-            }
-        });
+        robot.getScheduler().schedule((RobotAsyncTask) this::articulateFunc);
+    }
+
+    private void articulateFunc() {
+        while (!((articulateEncoder.getPosition() < -70 && !articulateUp) ||
+            (articulateEncoder.getPosition() > 70 && articulateUp)));
+        articulate.set(0);
     }
 
     /**

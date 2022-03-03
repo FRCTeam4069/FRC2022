@@ -8,16 +8,8 @@ public class Scheduler {
 
     // Runs tasks
     void runRepeatingTasks() {
-        ArrayList<RobotRepeatingTask> removal = new ArrayList<>();
-        // Run tasks
-        for (RobotRepeatingTask task : repeatingTasks) {
-            task.run();
-            if (task.disabled)
-                removal.add(task);
-        }
-        // Purge disabled
-        for (RobotRepeatingTask task : removal)
-            repeatingTasks.remove(task);
+        for (RobotRepeatingTask task : repeatingTasks)
+            task.run();    
     }
 
     // Starts an async repeating task
@@ -40,24 +32,12 @@ public class Scheduler {
 
     /** Runnable */
     @FunctionalInterface
-    private static interface RobotRunnableIface extends Runnable {}
+    public static interface RobotRunnableIface extends Runnable {}
 
     /** Task to run asynchronously */
     public interface RobotAsyncTask extends RobotRunnableIface {}
 
-    /** Repeating task to run every robot tick in main thread*/
-    public abstract static class RobotRepeatingTask implements RobotRunnableIface {
-        private boolean disabled = false;
-
-        /** Stop running the repeating task */
-        public void disable() {
-            disabled = true;
-        }
-
-        /** Is repeating task disabled */
-        public boolean isDisabled() {
-            return disabled;
-        }
-    }
+    /** Repeating task to run every robot tick in main thread */
+    public interface RobotRepeatingTask extends RobotRunnableIface {}
     
 }
