@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -40,15 +41,17 @@ public class DriveTrain {
 
     // Deadband for controller stick drift
     private static final double ARCADE_DEADBAND = 0.12;
+    
+    // Misc constants
+    private static final double TIME_PERIOD = 0.02;
+    private static final double FILTER_TIME_CONSTANT = 0.1;
 
     // Drivetrain hardware, etc
     private final TalonFX leftMaster, leftSlave, rightMaster, rightSlave;
     private final Encoder leftEncoder, rightEncoder;
     private final PIDController leftPid, rightPid;
     private final DoubleSolenoid shifter;
-
-    // Control Cooldowns
-    private long gearChangeLast = 0;
+    private final LinearFilter leftFilter, rightFilter;
 
     private boolean highGear = false;
 
@@ -67,10 +70,13 @@ public class DriveTrain {
         leftEncoder = new Encoder(LEFT_ENC_A, LEFT_ENC_B, true, EncodingType.k1X);
         rightEncoder = new Encoder(RIGHT_ENC_A, RIGHT_ENC_B, false, EncodingType.k1X);
 
-        leftPid = new PIDController(LEFT_P, LEFT_I, LEFT_D, 0.02);
-        rightPid = new PIDController(RIGHT_P, RIGHT_I, RIGHT_D, 0.02);
+        leftPid = new PIDController(LEFT_P, LEFT_I, LEFT_D, TIME_PERIOD);
+        rightPid = new PIDController(RIGHT_P, RIGHT_I, RIGHT_D, TIME_PERIOD);
 
         shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, SHIFTER_FWD, SHIFTER_BCK);
+
+        leftFilter = LinearFilter.singlePoleIIR(FILTER_TIME_CONSTANT, TIME_PERIOD);
+        rightFilter = LinearFilter.singlePoleIIR(FILTER_TIME_CONSTANT, TIME_PERIOD);
     }
 
     /** Average rate between both encoders */
@@ -95,14 +101,13 @@ public class DriveTrain {
      * @param right Right side power
      */
     public void setPower(double left, double right) {
-        leftMaster.set(ControlMode.PercentOutput, left);
-        rightMaster.set(ControlMode.PercentOutput, right);
+        leftMaster.set(ControlMode.PercentOutput, leftFilter.calculate(left));
+        rightMaster.set(ControlMode.PercentOutput, rightFilter.calculate(right));
     }
 
     /** Stops the drivetrain */
     public void stop() {
-        leftMaster.set(ControlMode.PercentOutput, 0);
-        rightMaster.set(ControlMode.PercentOutput, 0);
+        setPower(0, 0);
     }
 
     /**
@@ -118,8 +123,7 @@ public class DriveTrain {
         
         WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(speed, turn, false);
 
-        leftMaster.set(ControlMode.PercentOutput, speeds.left);
-        rightMaster.set(ControlMode.PercentOutput, speeds.right);
+        setPower(speeds.left, speeds.right);
     }
 
     /**

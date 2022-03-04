@@ -35,9 +35,9 @@ public class Scheduler {
     public static interface RobotRunnableIface extends Runnable {}
 
     /** Task to run asynchronously */
-    public interface RobotAsyncTask extends RobotRunnableIface {}
+    public static interface RobotAsyncTask extends RobotRunnableIface {}
 
     /** Repeating task to run every robot tick in main thread */
-    public interface RobotRepeatingTask extends RobotRunnableIface {}
+    public static interface RobotRepeatingTask extends RobotRunnableIface {}
     
 }

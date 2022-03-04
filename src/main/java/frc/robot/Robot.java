@@ -36,8 +36,8 @@ import frc.robot.subsystems.RearIntake;
  */
 public class Robot extends TimedRobot {
 
-	// SET GYRO ID!
 	private static final int GYRO_ID = 3;
+	private static final int PDP_ID = 2;
 
 	// Robot mechanism components
 	private DriveTrain driveTrain;
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
 		controls = new Controls(this);
 		gyro = new PigeonIMU(GYRO_ID);
 
-		pdp = new PowerDistribution(2, ModuleType.kRev);
+		pdp = new PowerDistribution(PDP_ID, ModuleType.kRev);
 		LiveWindow.disableAllTelemetry();
 	}
 

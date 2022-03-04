@@ -15,6 +15,8 @@ public class FrontIntake {
 
     private static final int ARTICULATE_CAN = 11;
     private static final double ARTICULATE_MAGNITUDE = 0.75;
+    // Magnitude of Position
+    private static final double ARTICULATE_POSITION = 70.0;
 
     private final CANSparkMax drive, articulate;
     private final RelativeEncoder articulateEncoder;
@@ -49,22 +51,26 @@ public class FrontIntake {
         articulateUp = !articulateUp;
         // Reset
         articulateEncoder.setPosition(0);
-
-        if(articulateUp) articulate.set(ARTICULATE_MAGNITUDE);
-        else articulate.set(-ARTICULATE_MAGNITUDE);
-
+        // Run thread
         robot.getScheduler().schedule((RobotAsyncTask) this::articulateFunc);
     }
 
     private void articulateFunc() {
-        while (!((articulateEncoder.getPosition() < -70 && !articulateUp) ||
-            (articulateEncoder.getPosition() > 70 && articulateUp)));
+        // Starts in desired direction
+        if (articulateUp) articulate.set(ARTICULATE_MAGNITUDE);
+        else articulate.set(-ARTICULATE_MAGNITUDE);
+
+        // Locks async thread until desired pos is reached
+        while ((!articulateUp && articulateEncoder.getPosition() > -ARTICULATE_POSITION) ||
+                (articulateUp && articulateEncoder.getPosition() < ARTICULATE_POSITION));
+
+        // Stops
         articulate.set(0);
     }
 
     /**
      * Update desired articulation, driven percentage
-     * 
+     *
      * @param drivenPercentage Between -1 and 1, percentage of driven power on intake/feed
      * @param encoderPos between 0 (fully retracted) and x (fully deployed)
      */
