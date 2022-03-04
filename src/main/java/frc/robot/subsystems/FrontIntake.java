@@ -14,9 +14,9 @@ public class FrontIntake {
     private static final double DRIVE_MAGNITUDE = 1;
 
     private static final int ARTICULATE_CAN = 11;
-    private static final double ARTICULATE_MAGNITUDE = 0.75;
+    private static final double ARTICULATE_MAGNITUDE = 0.3;
     // Magnitude of Position
-    private static final double ARTICULATE_POSITION = 70.0;
+    private static final double ARTICULATE_POSITION = 50.0;
 
     private final CANSparkMax drive, articulate;
     private final RelativeEncoder articulateEncoder;
