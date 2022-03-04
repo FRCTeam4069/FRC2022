@@ -38,9 +38,6 @@ public class DriveTrain {
 
     private static final int SHIFTER_FWD = 0;
     private static final int SHIFTER_BCK = 15;
-
-    // Deadband for controller stick drift
-    private static final double ARCADE_DEADBAND = 0.12;
     
     // Misc constants
     private static final double TIME_PERIOD = 0.02;
@@ -117,12 +114,7 @@ public class DriveTrain {
      * @param turn Turn amount
      */
     public void arcadeDrive(double speed, double turn) {
-        // Current controllers have stick drift issues
-        speed = MathUtil.applyDeadband(speed, ARCADE_DEADBAND);
-        turn = MathUtil.applyDeadband(turn, ARCADE_DEADBAND);
-        
         WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(speed, turn, false);
-
         setPower(speeds.left, speeds.right);
     }
 
@@ -132,8 +124,8 @@ public class DriveTrain {
      * @param leftTicks Ticks to left side of drivetrain
      * @param rightTicks Ticks to right side of drivetrain
      */
-    public void driveEncTick(double leftTicks) {
-        // TODO
+    public void driveEncTick(double leftTicks, double rightTicks) {
+        
     }
 
     /**

@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Scheduler.RobotRepeatingTask;
 
@@ -9,7 +10,9 @@ public class Controls {
     // IDs
     private static final int GP_1 = 0, GP_2 = 1;
 
-    private static final double FRONT_INTAKE_DEADBAND = 0.05;
+    private static final double DRIVETRAIN_TRIGGER_DEADBAND = 0.05;
+    private static final double DRIVETRAIN_STICK_DEADBAND = 0.2;
+    private static final double FRONT_INTAKE_DEADBAND = 0.2;
     private static final double INDEXER_DEADBAND = 0.2;
 
     // Cooldowns (ms)
@@ -83,8 +86,10 @@ public class Controls {
 
                 // Drive
                 robot.getDriveTrain().arcadeDrive(
-                        getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(),
-                        getGamepad1().getLeftX());
+                        MathUtil.applyDeadband(getGamepad1().getRightTriggerAxis(), DRIVETRAIN_TRIGGER_DEADBAND)
+                                - MathUtil.applyDeadband(getGamepad1().getLeftTriggerAxis(),
+                                        DRIVETRAIN_TRIGGER_DEADBAND),
+                        MathUtil.applyDeadband(getGamepad1().getLeftX(), DRIVETRAIN_STICK_DEADBAND));
 
                 // Change gear w/ cooldown
                 if (getGamepad1().getRightBumper()
@@ -94,10 +99,12 @@ public class Controls {
                 }
 
                 // Front Intake
-                robot.getFrontIntake().drive(getGamepad2().getLeftTriggerAxis() > FRONT_INTAKE_DEADBAND
-                        || getGamepad2().getRightTriggerAxis() > FRONT_INTAKE_DEADBAND,
-                        getGamepad2().getLeftTriggerAxis() > FRONT_INTAKE_DEADBAND);
-                
+                robot.getFrontIntake()
+                        .drive(MathUtil.applyDeadband(
+                                getGamepad2().getRightTriggerAxis(), FRONT_INTAKE_DEADBAND)
+                                - MathUtil.applyDeadband(getGamepad2().getLeftTriggerAxis(),
+                                        FRONT_INTAKE_DEADBAND));
+
                 // Front Intake Articulate
                 if (getGamepad2().getStartButton()
                         && lastArticulate + ARTICULATE_CD > System.currentTimeMillis()) {
@@ -108,11 +115,9 @@ public class Controls {
                 // Rear Intake
                 robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
                         getGamepad2().getLeftBumper());
-                
+
                 // Indexer
-                robot.getIndexer().drive(getGamepad2().getLeftY() > INDEXER_DEADBAND
-                        || getGamepad2().getLeftY() < -INDEXER_DEADBAND,
-                        getGamepad2().getLeftTriggerAxis() < -INDEXER_DEADBAND);
+                robot.getIndexer().drive(MathUtil.applyDeadband(getGamepad2().getLeftY(), INDEXER_DEADBAND));
                 break;
             case TEST:
 
@@ -145,14 +150,10 @@ public class Controls {
 
                 // Indexer
                 // #drive(enabled = a or b is pressed, reversed = b is pressed)
-                robot.getIndexer().drive(getGamepad1().getAButton() || getGamepad1().getBButton(),
-                        getGamepad1().getBButton());
 
                 // Front intake drive
                 // #drive(enabled = left bumper or right bumper is pressed, reversed = left
                 // bumper is pressed)
-                robot.getFrontIntake().drive(getGamepad1().getLeftBumper() || getGamepad1().getRightBumper(),
-                        getGamepad1().getLeftBumper());
 
                 // Front intake articulatess
 
