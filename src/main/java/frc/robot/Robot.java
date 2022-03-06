@@ -26,6 +26,7 @@ import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.FrontIntake;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.RearIntake;
+import frc.robot.subsystems.Vision;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -46,6 +47,7 @@ public class Robot extends TimedRobot {
 	private RearIntake rearIntake;
 	private FrontIntake frontIntake;
 	private Indexer indexer;
+	private Vision vision;
 
 	// Robot misc. hardware
 	private PowerDistribution pdp;
@@ -82,6 +84,7 @@ public class Robot extends TimedRobot {
 		driveTrain = new DriveTrain();
 		shooter = new Flywheel(false);
 		indexer = new Indexer();
+		vision = new Vision();
 
 		// Util init
 		controls = new Controls(this);
@@ -170,7 +173,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 		// driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
-		
+		vision.printDistanceToGoal();
 	}
 
 	/*

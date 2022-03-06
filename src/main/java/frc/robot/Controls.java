@@ -140,9 +140,11 @@ public class Controls {
                  * 
                  */
 
-                // Flywheel
+                // Flywheel - Close Shot
                 if (getGamepad1().getStartButton())
                     robot.getFlywheel().update(0, 1100);
+
+                //Distance shot
                 else if (getGamepad1().getBackButton())
                     robot.getFlywheel().update(0, 900);
                 else
