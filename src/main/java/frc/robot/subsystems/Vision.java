@@ -14,16 +14,37 @@ public class Vision {
 
     public Vision() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
-        table.getEntry("ledMode").setNumber(1);
+        table.getEntry("").setNumber(1);
     }
 
     public void printDistanceToGoal() {
+        table.getEntry("ledMode").setNumber(3);
         NetworkTableEntry ty = table.getEntry("ty");
         double verticalOffsetDegs = ty.getDouble(0.0);
 
         double angleToGoal = (verticalOffsetDegs + limelightMountingAngleDegs) * (3.1415926 / 180.0);
         double distance = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
-        System.out.println("Distance to goal: " + distance);
+        double realDistance = (1.48856 * distance) - 45.0587;
+        System.out.println("Distance to goal: " + realDistance);
     }
+
+    public double getDistance() {
+        NetworkTableEntry ty = table.getEntry("ty");
+        double verticalOffsetDegs = ty.getDouble(0.0);
+
+        double angleToGoal = (verticalOffsetDegs + limelightMountingAngleDegs) * (3.1415926 / 180.0);
+        double distance = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
+        double realDistance = (1.48856 * distance) - 45.0587;
+        return realDistance;
+    }
+
+    public void enableLED() {
+        table.getEntry("ledMode").setNumber(3);
+    }
+
+    public void disableLED() {
+        table.getEntry("ledMode").setNumber(1);
+    }
+
     
 }

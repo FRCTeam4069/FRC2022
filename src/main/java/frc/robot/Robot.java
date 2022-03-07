@@ -160,7 +160,7 @@ public class Robot extends TimedRobot {
 	/** This function is called periodically when disabled. */
 	@Override
 	public void disabledPeriodic() {
-
+		vision.disableLED();
 	}
 
 	/** This function is called once when test mode is enabled. */
@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 		// driveTrain.tankDrive(getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(), getGamepad1().getLeftX());
-		vision.printDistanceToGoal();
+		// vision.printDistanceToGoal();
 	}
 
 	/*
@@ -235,6 +235,11 @@ public class Robot extends TimedRobot {
 	/** Gets the scheduler */
 	public Scheduler getScheduler() {
 		return scheduler;
+	}
+
+	/** Gets the Vision system */
+	public Vision getVision() {
+		return vision;
 	}
 
 	/** Modes the robot can be put in */

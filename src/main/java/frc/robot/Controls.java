@@ -142,13 +142,19 @@ public class Controls {
 
                 // Flywheel - Close Shot
                 if (getGamepad1().getStartButton())
-                    robot.getFlywheel().update(0, 1100);
+                    robot.getFlywheel().update(1300, 425);
 
                 //Distance shot
                 else if (getGamepad1().getBackButton())
-                    robot.getFlywheel().update(0, 900);
+                    robot.getFlywheel().update(1300, 900);
                 else
                     robot.getFlywheel().updatePercentage(0, 0);
+
+                if(getGamepad1().getAButton()) robot.getIndexer().drive(1);
+                else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
+                else robot.getIndexer().drive(0);
+
+                robot.getVision().printDistanceToGoal();
 
                 // Indexer
                 // #drive(enabled = a or b is pressed, reversed = b is pressed)
