@@ -113,6 +113,20 @@ public class Flywheel {
     }
 
     /**
+     * Upates the shooter RPM based on the distance in inches from the goal
+     * @param distance distance in inches
+     */
+    public void updateDistance(double distance) {
+
+        double interpolatedM = 0.0;
+        double interpolatedB = 0.0;
+        double bottomWheelSpeed = interpolatedM * distance + interpolatedB;
+
+        update(1350, bottomWheelSpeed);
+
+    }
+
+    /**
      * Update the desired state of the flywheels
      * 
      * @param topRPM Angular velocity of top wheel (RPM)

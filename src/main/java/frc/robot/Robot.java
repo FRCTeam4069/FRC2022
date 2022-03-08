@@ -86,6 +86,8 @@ public class Robot extends TimedRobot {
 		indexer = new Indexer();
 		vision = new Vision();
 
+		vision.disableLED();
+
 		// Util init
 		controls = new Controls(this);
 		gyro = new PigeonIMU(GYRO_ID);

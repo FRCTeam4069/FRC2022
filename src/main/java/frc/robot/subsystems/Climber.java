@@ -87,8 +87,8 @@ public class Climber {
         left.set(ControlMode.PercentOutput, rawInput);
         right.set(ControlMode.PercentOutput, rawInput);
 
-        //System.out.println("Left Reading: " + (left.getSelectedSensorPosition() / 240.0) + " degrees");
-        //System.out.println("Right Reading: " + (right.getSelectedSensorPosition() / 240.0) + " degrees");
+        System.out.println("Left Reading: " + (left.getSelectedSensorPosition() / 240.0) + " degrees");
+        System.out.println("Right Reading: " + (right.getSelectedSensorPosition() / 240.0) + " degrees");
 
         //System.out.println("Left Current: " + left.getStatorCurrent());
         //System.out.println("Right Current: " + right.getStatorCurrent());
