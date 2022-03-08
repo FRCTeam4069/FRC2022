@@ -43,6 +43,7 @@ public class AutoScheduler {
 
             nextCommand.loop();
             if(nextCommand.isFinished()) {
+                nextCommand.close();
                 commandQueue.remove(0);
                 if(commandQueue.size() != 0) {
                     commandQueue.get(0).start();

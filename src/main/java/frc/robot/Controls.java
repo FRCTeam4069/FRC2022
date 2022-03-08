@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Scheduler.RobotRepeatingTask;
 
+
 /** Controls handlingß */
 public class Controls {
 
@@ -46,6 +47,8 @@ public class Controls {
         // CONTROLS MAPPING
         switch (robot.getMode()) {
             case AUTO:
+
+                robot.getAutoScheduler().run();
 
                 /*
                  * AUTO MODE CONTROLS

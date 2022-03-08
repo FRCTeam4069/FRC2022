@@ -13,9 +13,17 @@ public abstract class Command {
     }
 
     //Methods that need to be implemented by each command
+
+    /** Called before first command loop */
     public abstract void start();
+
+    /** Called every loop of auto */
     public abstract void loop();
+
+    /** Return true when command should no longer be run */
     public abstract boolean isFinished();
+
+    /** Cleanup to be run after isFinished returns true */
     public abstract void close();
 }
 
