@@ -5,6 +5,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -12,6 +16,7 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import frc.robot.Robot;
 
 /** Drivetrain Subsystem */
 public class DriveTrain {
@@ -50,9 +55,17 @@ public class DriveTrain {
     private final DoubleSolenoid shifter;
     private final LinearFilter leftFilter, rightFilter;
 
+    private Robot robot;
+
+
+    //Positional Stuff
+    Pose2d currentPose;
+    double lastLeft = 0;
+    double lastRight = 0;
+
     private boolean highGear = false;
 
-    public DriveTrain() {
+    public DriveTrain(Robot robot) {
         leftMaster = new TalonFX(LEFT_MASTER);
         leftSlave = new TalonFX(LEFT_SLAVE);
         rightMaster = new TalonFX(RIGHT_MASTER);
@@ -74,6 +87,9 @@ public class DriveTrain {
 
         leftFilter = LinearFilter.singlePoleIIR(FILTER_TIME_CONSTANT, TIME_PERIOD);
         rightFilter = LinearFilter.singlePoleIIR(FILTER_TIME_CONSTANT, TIME_PERIOD);
+
+        this.robot = robot;
+        currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
     }
 
     /** Average rate between both encoders */
@@ -147,4 +163,39 @@ public class DriveTrain {
         else shifter.set(Value.kReverse);
     }
 
+    /** Re-zeroes */
+    public void resetPos() {
+        rightEncoder.reset();
+        leftEncoder.reset();
+
+        lastLeft = 0;
+        lastRight = 0;
+        currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+    }
+
+    /** Updates the active position of the bot */
+    public void updatePos() {
+        double currLeft = leftEncoder.getDistance();
+        double currRight = rightEncoder.getDistance();
+
+        double deltaLeft = currLeft - lastLeft;
+        double deltaRight = currRight - lastRight;
+
+        double heading = robot.getGyroscope().getFusedHeading();
+
+        double distance = (deltaLeft + deltaRight) / 2;
+
+        var translation = new Translation2d(distance * Math.cos(Math.toRadians(heading)), distance * Math.sin(Math.toRadians(heading)));
+        var rotation = new Rotation2d(Math.toRadians(heading));
+
+        currentPose.transformBy(new Transform2d(translation, rotation));
+
+        lastRight = currRight;
+        lastLeft = currLeft;
+    }
+
+    /** Get Pose */
+    public Pose2d getPose() {
+        return currentPose;
+    }
 }

@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
 		// Subsystem init
 		frontIntake = new FrontIntake(this);
 		rearIntake = new RearIntake();
-		driveTrain = new DriveTrain();
+		driveTrain = new DriveTrain(this);
 		shooter = new Flywheel(false);
 		indexer = new Indexer();
 		vision = new Vision();
