@@ -143,6 +143,7 @@ public class Controls {
                  * 
                  */
 
+                 robot.getDriveTrain().stop();
                 // Flywheel - Close Shot
                 if (getGamepad1().getStartButton())
                     robot.getFlywheel().update(1300, 425);
@@ -157,6 +158,15 @@ public class Controls {
                 else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
                 else robot.getIndexer().drive(0);
 
+                if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
+                else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
+                else robot.getRearIntake().drive(false, false);
+
+                robot.getFrontIntake().rawArticulate(getGamepad1().getLeftY());
+                if(getGamepad1().getLeftBumper()) robot.getFrontIntake().drive(1);
+                else if(getGamepad1().getRightBumper()) robot.getFrontIntake().drive(-1);
+                else robot.getFrontIntake().drive(0);
+
                 robot.getVision().printDistanceToGoal();
 
                 // Indexer
@@ -170,15 +180,15 @@ public class Controls {
 
                 // Rear intake drive
                 // #drive(enabled = x or y is pressed, reversed = x is pressed)
-                robot.getRearIntake().drive(getGamepad1().getXButton() || getGamepad1().getYButton(),
-                        getGamepad1().getXButton());
+                // robot.getRearIntake().drive(getGamepad1().getXButton() || getGamepad1().getYButton(),
+                //         getGamepad1().getXButton());
 
-                // Drivetrain
-                // #arcadeDrive(speed = right trigger - left trigger, turn = left joystick x
-                // axis)
-                robot.getDriveTrain().arcadeDrive(
-                        getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(),
-                        getGamepad1().getLeftX());
+                // // Drivetrain
+                // // #arcadeDrive(speed = right trigger - left trigger, turn = left joystick x
+                // // axis)
+                // robot.getDriveTrain().arcadeDrive(
+                //         getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(),
+                //         getGamepad1().getLeftX());
 
                 break;
             default:
