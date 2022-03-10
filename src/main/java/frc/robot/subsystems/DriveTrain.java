@@ -205,15 +205,16 @@ public class DriveTrain {
 
         double heading = robot.getGyroscope().getFusedHeading();
 
-        double distance = (deltaLeft + deltaRight) / 2;
+
+        double distance = (deltaLeft + deltaRight) / 2.0;
 
         var translation = new Translation2d(distance * Math.cos(Math.toRadians(heading)), distance * Math.sin(Math.toRadians(heading)));
         var rotation = new Rotation2d(Math.toRadians(heading));
 
-        currentPose.transformBy(new Transform2d(translation, rotation));
+        currentPose = currentPose.transformBy(new Transform2d(translation, rotation));
 
-        lastRight = currRight;
-        lastLeft = currLeft;
+        lastRight = leftEncoder.getDistance();
+        lastLeft = rightEncoder.getDistance();
     }
 
     /** Get Pose */

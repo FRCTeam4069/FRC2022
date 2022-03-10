@@ -141,31 +141,45 @@ public class Controls {
                  * 
                  */
 
-                 robot.getDriveTrain().stop();
-                // Flywheel - Close Shot
-                if (getGamepad1().getStartButton())
-                    robot.getFlywheel().update(1300, 425);
+                robot.getDriveTrain().updatePos();
+                System.out.println("X: " + robot.getDriveTrain().getPose().getX());
+                System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
+                System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
 
-                //Distance shot
-                else if (getGamepad1().getBackButton())
-                    robot.getFlywheel().update(1300, 900);
-                else
-                    robot.getFlywheel().updatePercentage(0, 0);
 
-                if(getGamepad1().getAButton()) robot.getIndexer().drive(1);
-                else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
-                else robot.getIndexer().drive(0);
 
-                if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
-                else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
-                else robot.getRearIntake().drive(false, false);
 
-                robot.getFrontIntake().rawArticulate(getGamepad1().getLeftY());
-                if(getGamepad1().getLeftBumper()) robot.getFrontIntake().drive(1);
-                else if(getGamepad1().getRightBumper()) robot.getFrontIntake().drive(-1);
-                else robot.getFrontIntake().drive(0);
 
-                robot.getVision().printDistanceToGoal();
+                //  robot.getDriveTrain().stop();
+                // // Flywheel - Close Shot
+                // if (getGamepad1().getStartButton())
+                //     robot.getFlywheel().update(1300, 425);
+
+                // //Distance shot
+                // else if (getGamepad1().getBackButton())
+                //     robot.getFlywheel().update(1300, 900);
+                // else
+                //     robot.getFlywheel().updatePercentage(0, 0);
+
+                // if(getGamepad1().getAButton()) robot.getIndexer().drive(1);
+                // else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
+                // else robot.getIndexer().drive(0);
+
+                // if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
+                // else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
+                // else robot.getRearIntake().drive(false, false);
+
+                // robot.getFrontIntake().rawArticulate(getGamepad1().getLeftY());
+                // if(getGamepad1().getLeftBumper()) robot.getFrontIntake().drive(1);
+                // else if(getGamepad1().getRightBumper()) robot.getFrontIntake().drive(-1);
+                // else robot.getFrontIntake().drive(0);
+
+                // robot.getVision().printDistanceToGoal();
+
+
+//TEST CODE ENDS
+
+
 
                 // Indexer
                 // #drive(enabled = a or b is pressed, reversed = b is pressed)
