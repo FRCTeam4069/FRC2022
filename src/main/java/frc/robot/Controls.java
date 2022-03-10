@@ -141,12 +141,14 @@ public class Controls {
                  * 
                  */
 
-                robot.getDriveTrain().updatePos();
-                System.out.println("X: " + robot.getDriveTrain().getPose().getX());
-                System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
-                System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
+                // if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
+                // robot.getDriveTrain().updatePos();
+                // System.out.println("X: " + robot.getDriveTrain().getPose().getX());
+                // System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
+                // System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
 
 
+                robot.getClimber().update(180, false);
 
 
 

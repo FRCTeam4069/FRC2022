@@ -80,8 +80,10 @@ public class FrontIntake {
     }
 
     public void rawArticulate(double percent) {
-        if (Math.abs(percent) > 0.25)
+        if (Math.abs(percent) > 0.25 && Math.abs(percent) < 0.5)
             articulate.set(percent);
+        else if(Math.abs(percent) > 0.5)
+            articulate.set(0.5 * Math.signum(percent));
         else
             articulate.set(0);
     }

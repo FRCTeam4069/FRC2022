@@ -55,7 +55,7 @@ public class DriveTrain {
     private final PIDController leftPid, rightPid;
     private final DoubleSolenoid shifter;
     private final LinearFilter leftFilter, rightFilter;
-    private final double distancePerPulse = 0.000038963112;
+    private final double distancePerPulse = 0.000038963112 * (42 / 24) * 2.36498;
 
     private SimpleMotorFeedforward feedforward;
     private double kS = 0.0;
@@ -194,11 +194,14 @@ public class DriveTrain {
         rightEncoder.reset();
         leftEncoder.reset();
 
+        robot.getGyroscope().setFusedHeading(0);
+
         lastLeft = 0;
         lastRight = 0;
         currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
     }
 
+    double lastHeading = 0;
     /** Updates the active position of the bot */
     public void updatePos() {
         double currLeft = leftEncoder.getDistance();
@@ -208,17 +211,18 @@ public class DriveTrain {
         double deltaRight = currRight - lastRight;
 
         double heading = robot.getGyroscope().getFusedHeading();
-
+        double deltaHeading = heading - lastHeading;
 
         double distance = (deltaLeft + deltaRight) / 2.0;
 
-        var translation = new Translation2d(distance * Math.cos(Math.toRadians(heading)), distance * Math.sin(Math.toRadians(heading)));
-        var rotation = new Rotation2d(Math.toRadians(heading));
+        var translation = new Translation2d(distance * Math.cos(Math.toRadians(deltaHeading)), distance * Math.sin(Math.toRadians(deltaHeading)));
+        var rotation = new Rotation2d(Math.toRadians(deltaHeading));
 
         currentPose = currentPose.transformBy(new Transform2d(translation, rotation));
 
         lastRight = leftEncoder.getDistance();
         lastLeft = rightEncoder.getDistance();
+        lastHeading = robot.getGyroscope().getFusedHeading();
     }
 
     /** Get Pose */

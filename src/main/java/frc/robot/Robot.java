@@ -89,6 +89,7 @@ public class Robot extends TimedRobot {
 		shooter = new Flywheel(false);
 		indexer = new Indexer();
 		vision = new Vision();
+		climber = new Climber();
 
 		vision.disableLED();
 
@@ -172,6 +173,7 @@ public class Robot extends TimedRobot {
 	/** This function is called once when test mode is enabled. */
 	@Override
 	public void testInit() {
+		climber.resetEncoders();
 		mode = RobotMode.TEST;
 	}
 
