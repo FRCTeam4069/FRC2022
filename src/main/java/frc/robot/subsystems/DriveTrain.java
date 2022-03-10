@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -55,6 +56,11 @@ public class DriveTrain {
     private final DoubleSolenoid shifter;
     private final LinearFilter leftFilter, rightFilter;
 
+    private SimpleMotorFeedforward feedforward;
+    private double kS = 0.0;
+    private double kV = 0.0;
+    private double kA = 0.0;
+
     private Robot robot;
 
 
@@ -87,6 +93,8 @@ public class DriveTrain {
 
         leftFilter = LinearFilter.singlePoleIIR(FILTER_TIME_CONSTANT, TIME_PERIOD);
         rightFilter = LinearFilter.singlePoleIIR(FILTER_TIME_CONSTANT, TIME_PERIOD);
+
+        feedforward = new SimpleMotorFeedforward(kS, kV, kA);
 
         this.robot = robot;
         currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
@@ -142,6 +150,21 @@ public class DriveTrain {
      */
     public void driveEncTick(double leftTicks, double rightTicks) {
         
+    }
+
+    
+     /**
+      * Updates the left and right output voltages to the drivetriain based on passed wheel speeds
+      * @param leftVel the velocity of the left side of the drivetrain in meters per second
+      * @param rightVel the velocity of the right side of the drivetrain in meters per second
+      */
+    public void updateDriveSpeeds(double leftVel, double rightVel) {
+        
+        double leftOutput = feedforward.calculate(leftVel) / leftMaster.getBusVoltage();
+        double rightOutput = feedforward.calculate(rightVel) / rightMaster.getBusVoltage();
+
+        leftMaster.set(ControlMode.PercentOutput, leftOutput);
+        rightMaster.set(ControlMode.PercentOutput, rightOutput);
     }
 
     /**

@@ -69,18 +69,15 @@ public class TrajectoryFollowerCommand extends Command {
 
         var wheelSpeeds = kinematics.toWheelSpeeds(speeds);
 
-        
+        robot.getDriveTrain().updateDriveSpeeds(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
     }
     @Override
     public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return false;
+        var poseDiff = robot.getDriveTrain().getPose().relativeTo(end);
+        return (Math.abs(poseDiff.getX()) < 0.25) && (Math.abs(poseDiff.getY()) < 0.25) 
+            && (Math.abs(poseDiff.getRotation().getDegrees()) < 10); 
     }
+
     @Override
-    public void close() {
-        // TODO Auto-generated method stub
-        
-    }
-
-
+    public void close() {}
 }

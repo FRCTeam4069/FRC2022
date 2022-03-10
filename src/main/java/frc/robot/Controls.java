@@ -48,8 +48,6 @@ public class Controls {
         switch (robot.getMode()) {
             case AUTO:
 
-                robot.getAutoScheduler().run();
-
                 /*
                  * AUTO MODE CONTROLS
                  */
