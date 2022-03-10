@@ -24,17 +24,12 @@ public class TrajectoryFollowerCommand extends Command {
     Pose2d end;
     Trajectory trajectory;
     RamseteController controller;
-    DriveTrain drivetrain;
-    PigeonIMU gyro;
     Pose2d currentPose;
     DifferentialDriveKinematics kinematics;
     private double trackWidth = 0.0; //meters
 
-    public TrajectoryFollowerCommand(DriveTrain drivetrain, PigeonIMU gyro, Pose2d start, ArrayList<Translation2d> interiorWaypoints, Pose2d end) {
+    public TrajectoryFollowerCommand(Pose2d start, ArrayList<Translation2d> interiorWaypoints, Pose2d end) {
         
-        this.drivetrain = drivetrain;
-        this.gyro = gyro;
-        gyro.setFusedHeading(0);
         config = new TrajectoryConfig(5, 10);
         this.start = start;
         this.interiorWaypoints = interiorWaypoints;

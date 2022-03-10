@@ -55,6 +55,7 @@ public class DriveTrain {
     private final PIDController leftPid, rightPid;
     private final DoubleSolenoid shifter;
     private final LinearFilter leftFilter, rightFilter;
+    private final double distancePerPulse = 0.000038963112;
 
     private SimpleMotorFeedforward feedforward;
     private double kS = 0.0;
@@ -84,6 +85,9 @@ public class DriveTrain {
 
         leftEncoder = new Encoder(LEFT_ENC_A, LEFT_ENC_B, true, EncodingType.k1X);
         rightEncoder = new Encoder(RIGHT_ENC_A, RIGHT_ENC_B, false, EncodingType.k1X);
+
+        leftEncoder.setDistancePerPulse(distancePerPulse);
+        rightEncoder.setDistancePerPulse(distancePerPulse);
 
         leftPid = new PIDController(LEFT_P, LEFT_I, LEFT_D, TIME_PERIOD);
         rightPid = new PIDController(RIGHT_P, RIGHT_I, RIGHT_D, TIME_PERIOD);

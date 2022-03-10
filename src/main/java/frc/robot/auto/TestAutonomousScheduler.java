@@ -34,6 +34,8 @@ public class TestAutonomousScheduler implements AutoRoutine {
         aScheduler.addCommand(new DisableIntakeCommand());
         aScheduler.addCommand(new WaitCommand(0.25));
         aScheduler.addCommand(new ShootCommand(800, 800, 5));
+
+        
     }
 
     @Override
