@@ -26,7 +26,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.FrontIntake;
 import frc.robot.subsystems.Indexer;
-
+import frc.robot.subsystems.PigeonGyro;
 import frc.robot.subsystems.RearIntake;
 import frc.robot.subsystems.Vision;
 
@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
 	// Robot misc. hardware
 	private PowerDistribution pdp;
 	private PigeonIMU gyro;
+	private PigeonGyro imu;
 
 	// Robot utils
 	private Controls controls;
@@ -97,6 +98,8 @@ public class Robot extends TimedRobot {
 		// Util init
 		controls = new Controls(this);
 		gyro = new PigeonIMU(GYRO_ID);
+		imu = new PigeonGyro(gyro);
+		imu.resetHeading();
 
 		pdp = new PowerDistribution(PDP_ID, ModuleType.kRev);
 
@@ -246,11 +249,6 @@ public class Robot extends TimedRobot {
 		return pdp.getVoltage();
 	}
 
-	/** Gets the PigeonIMU gyroscope */
-	public PigeonIMU getGyroscope() {
-		return gyro;
-	}
-
 	/** Gets the scheduler */
 	public Scheduler getScheduler() {
 		return scheduler;
@@ -259,6 +257,11 @@ public class Robot extends TimedRobot {
 	/** Gets the Vision system */
 	public Vision getVision() {
 		return vision;
+	}
+
+	/** Gets the gyro wrapper */
+	public PigeonGyro getIMU() {
+		return imu;
 	}
 
 	/** Modes the robot can be put in */

@@ -15,7 +15,6 @@ public class PathFollowingTest implements AutoRoutine {
     AutoScheduler scheduler;
     public PathFollowingTest(Robot robot) {
         this.robot = robot;
-        robot.getGyroscope().setFusedHeading(0);
     }
 
     @Override
@@ -25,14 +24,18 @@ public class PathFollowingTest implements AutoRoutine {
 
     @Override
     public void init() {
-
-        scheduler = new AutoScheduler(robot);
+        
         robot.getDriveTrain().resetPos();
+        scheduler = new AutoScheduler(robot);
         var start = robot.getDriveTrain().getPose();
         var end = new Pose2d(new Translation2d(6, 1), new Rotation2d(0)); 
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         interiorWaypoints.add(new Translation2d(3, 0.5));
-        scheduler.addCommand(new TrajectoryFollowerCommand(start, interiorWaypoints, end));   
+        scheduler.addCommand(new TrajectoryFollowerCommand(start, interiorWaypoints, end)); 
+        
+        System.out.println("StartingX: " + start.getX());
+        System.out.println("StartingY: " + start.getY());
+        System.out.println("StartingHeading: " + start.getRotation().getDegrees());
     }
 
     @Override

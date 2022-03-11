@@ -195,11 +195,11 @@ public class DriveTrain {
         leftEncoder.reset();
 
         System.out.println("Restarting");
-        robot.getGyroscope().setFusedHeading(0);
+        robot.getIMU().resetHeading();
 
         lastLeft = 0;
         lastRight = 0;
-        currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(Math.toRadians(robot.getGyroscope().getFusedHeading())));
+        currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(Math.toRadians(robot.getIMU().getCurrentHeading())));
     }
 
     double lastHeading = 0;
@@ -211,7 +211,7 @@ public class DriveTrain {
         double deltaLeft = currLeft - lastLeft;
         double deltaRight = currRight - lastRight;
 
-        double heading = robot.getGyroscope().getFusedHeading();
+        double heading = robot.getIMU().getCurrentHeading();
         double deltaHeading = heading - lastHeading;
 
         double distance = (deltaLeft + deltaRight) / 2.0;
@@ -223,7 +223,7 @@ public class DriveTrain {
 
         lastRight = leftEncoder.getDistance();
         lastLeft = rightEncoder.getDistance();
-        lastHeading = robot.getGyroscope().getFusedHeading();
+        lastHeading = robot.getIMU().getCurrentHeading();
     }
 
     /** Get Pose */
@@ -234,6 +234,6 @@ public class DriveTrain {
     public void printImportantStuff() {
         // System.out.println("X: " + currentPose.getX());
         // System.out.println("Y: " + currentPose.getY());
-        System.out.println("heading: " + robot.getGyroscope().getFusedHeading());
+        System.out.println("heading: " + robot.getIMU().getCurrentHeading());
     }
 }

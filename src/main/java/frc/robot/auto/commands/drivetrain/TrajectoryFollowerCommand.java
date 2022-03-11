@@ -45,8 +45,6 @@ public class TrajectoryFollowerCommand extends Command {
     @Override
     public void start() {
         startTime = Timer.getFPGATimestamp();
-        robot.getDriveTrain().resetPos();
-        currentPose = robot.getDriveTrain().getPose();
     }
 
     double deltaX = 0;

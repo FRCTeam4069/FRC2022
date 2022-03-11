@@ -147,12 +147,11 @@ public class Controls {
                 System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
                 System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
 
-
                 // robot.getClimber().test(getGamepad1().getRightY());
 
 
 
-                // robot.getDriveTrain().stop();
+                robot.getDriveTrain().stop();
                 // // // Flywheel - Close Shot
                 // if (getGamepad1().getStartButton())
                 //     robot.getFlywheel().update(800, 950);
