@@ -26,17 +26,16 @@ public class TrajectoryFollowerCommand extends Command {
     RamseteController controller;
     Pose2d currentPose;
     DifferentialDriveKinematics kinematics;
-    private double trackWidth = 0.0; //meters
+    private double trackWidth = 0.5; //meters
 
     public TrajectoryFollowerCommand(Pose2d start, ArrayList<Translation2d> interiorWaypoints, Pose2d end) {
         
-        config = new TrajectoryConfig(5, 10);
+        config = new TrajectoryConfig(1, 0.25);
         this.start = start;
         this.interiorWaypoints = interiorWaypoints;
         this.end = end;
         trajectory = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config);
         controller = new RamseteController();
-        currentPose = robot.getDriveTrain().getPose();
         kinematics = new DifferentialDriveKinematics(trackWidth);
     }
 
@@ -65,14 +64,17 @@ public class TrajectoryFollowerCommand extends Command {
         var wheelSpeeds = kinematics.toWheelSpeeds(speeds);
 
         robot.getDriveTrain().updateDriveSpeeds(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
+        robot.getDriveTrain().printImportantStuff();
     }
     @Override
     public boolean isFinished() {
         var poseDiff = robot.getDriveTrain().getPose().relativeTo(end);
-        return (Math.abs(poseDiff.getX()) < 0.25) && (Math.abs(poseDiff.getY()) < 0.25) 
+        return (Math.abs(poseDiff.getX()) < 0.1) && (Math.abs(poseDiff.getY()) < 0.1) 
             && (Math.abs(poseDiff.getRotation().getDegrees()) < 10); 
     }
 
     @Override
-    public void close() {}
+    public void close() {
+        robot.getDriveTrain().setPower(0, 0);
+    }
 }

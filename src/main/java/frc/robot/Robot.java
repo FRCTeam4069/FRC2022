@@ -17,10 +17,10 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import frc.robot.auto.AutoRoutine;
-import frc.robot.auto.TestAuto;
-import frc.robot.auto.TestAutonomousScheduler;
+import frc.robot.auto.routines.AutoRoutine;
+import frc.robot.auto.routines.PathFollowingTest;
+import frc.robot.auto.routines.TestAuto;
+import frc.robot.auto.routines.TestAutonomousScheduler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
@@ -60,9 +60,10 @@ public class Robot extends TimedRobot {
 	private Scheduler scheduler;
 
 	// Auto routine
-	private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
+	private SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
 	private final TestAuto testAuto = new TestAuto(this);
 	private final TestAutonomousScheduler testAutoScheduler = new TestAutonomousScheduler(this);
+	private PathFollowingTest pathFollower;
 	private AutoRoutine autoRoutine = null;
 
 	// Active mode
@@ -75,12 +76,12 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
+
+		
 		// Scheduler init
 		scheduler = new Scheduler();
 
-		// Send auto selector
-		autoChooser.setDefaultOption(testAuto.name(), testAuto);
-		SmartDashboard.putData("Select Autonoumous Routine", autoChooser);
+		
 
 		// Subsystem init
 		frontIntake = new FrontIntake(this);
@@ -98,6 +99,16 @@ public class Robot extends TimedRobot {
 		gyro = new PigeonIMU(GYRO_ID);
 
 		pdp = new PowerDistribution(PDP_ID, ModuleType.kRev);
+
+		pathFollower = new PathFollowingTest(this);
+
+		// Send auto selector
+		autoChooser.setDefaultOption(testAuto.name(), testAuto);
+		autoChooser.addOption("Test", testAutoScheduler);
+		autoChooser.addOption("Splines", pathFollower);
+
+		SmartDashboard.putData(autoChooser);
+
 		LiveWindow.disableAllTelemetry();
 	}
 

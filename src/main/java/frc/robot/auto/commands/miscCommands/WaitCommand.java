@@ -29,7 +29,7 @@ public class WaitCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return (startingTime - Timer.getFPGATimestamp()) > duration;
+        return (Timer.getFPGATimestamp() - startingTime) > duration;
     }
 
     @Override

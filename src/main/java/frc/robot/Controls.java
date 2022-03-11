@@ -90,7 +90,7 @@ public class Controls {
                         MathUtil.applyDeadband(getGamepad1().getRightTriggerAxis(), DRIVETRAIN_TRIGGER_DEADBAND)
                                 - MathUtil.applyDeadband(getGamepad1().getLeftTriggerAxis(),
                                         DRIVETRAIN_TRIGGER_DEADBAND),
-                        MathUtil.applyDeadband(getGamepad1().getLeftX(), DRIVETRAIN_STICK_DEADBAND));
+                        MathUtil.applyDeadband(getGamepad1().getRightX(), DRIVETRAIN_STICK_DEADBAND));
 
                 // Change gear w/ cooldown
                 if (getGamepad1().getRightBumper()
@@ -141,25 +141,25 @@ public class Controls {
                  * 
                  */
 
-                // if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
-                // robot.getDriveTrain().updatePos();
-                // System.out.println("X: " + robot.getDriveTrain().getPose().getX());
-                // System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
-                // System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
+                if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
+                robot.getDriveTrain().updatePos();
+                System.out.println("X: " + robot.getDriveTrain().getPose().getX());
+                System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
+                System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
 
 
-                robot.getClimber().update(180, false);
+                // robot.getClimber().test(getGamepad1().getRightY());
 
 
 
-                //  robot.getDriveTrain().stop();
-                // // Flywheel - Close Shot
+                // robot.getDriveTrain().stop();
+                // // // Flywheel - Close Shot
                 // if (getGamepad1().getStartButton())
-                //     robot.getFlywheel().update(1300, 425);
+                //     robot.getFlywheel().update(800, 950);
 
                 // //Distance shot
                 // else if (getGamepad1().getBackButton())
-                //     robot.getFlywheel().update(1300, 900);
+                //     robot.getFlywheel().update(800, 900);
                 // else
                 //     robot.getFlywheel().updatePercentage(0, 0);
 
@@ -167,11 +167,11 @@ public class Controls {
                 // else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
                 // else robot.getIndexer().drive(0);
 
-                // if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
-                // else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
-                // else robot.getRearIntake().drive(false, false);
+                 if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
+                 else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
+                 else robot.getRearIntake().drive(false, false);
 
-                // robot.getFrontIntake().rawArticulate(getGamepad1().getLeftY());
+                // robot.getFrontIntake().rawArticulate(getGamepad1().getRightY());
                 // if(getGamepad1().getLeftBumper()) robot.getFrontIntake().drive(1);
                 // else if(getGamepad1().getRightBumper()) robot.getFrontIntake().drive(-1);
                 // else robot.getFrontIntake().drive(0);

@@ -58,9 +58,9 @@ public class DriveTrain {
     private final double distancePerPulse = 0.000038963112 * (42 / 24) * 2.36498;
 
     private SimpleMotorFeedforward feedforward;
-    private double kS = 0.0;
-    private double kV = 0.0;
-    private double kA = 0.0;
+    private double kS = 0.61761;
+    private double kV = 2.7619;
+    private double kA = 0.4833;
 
     private Robot robot;
 
@@ -194,11 +194,12 @@ public class DriveTrain {
         rightEncoder.reset();
         leftEncoder.reset();
 
+        System.out.println("Restarting");
         robot.getGyroscope().setFusedHeading(0);
 
         lastLeft = 0;
         lastRight = 0;
-        currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+        currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(Math.toRadians(robot.getGyroscope().getFusedHeading())));
     }
 
     double lastHeading = 0;
@@ -228,5 +229,11 @@ public class DriveTrain {
     /** Get Pose */
     public Pose2d getPose() {
         return currentPose;
+    }
+
+    public void printImportantStuff() {
+        // System.out.println("X: " + currentPose.getX());
+        // System.out.println("Y: " + currentPose.getY());
+        System.out.println("heading: " + robot.getGyroscope().getFusedHeading());
     }
 }

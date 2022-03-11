@@ -43,6 +43,7 @@ public class ShootCommand extends Command {
     @Override
     public void close() {
         robot.getFlywheel().updatePercentage(0, 0);
+        robot.getIndexer().drive(0);
     }
     
 }

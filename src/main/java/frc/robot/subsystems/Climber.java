@@ -35,7 +35,7 @@ public class Climber {
         left.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35.0, 50.0, 0.5));
         right.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35.0, 50.0, 0.5));
 
-        left.setInverted(true); // Might have to be switched to right at operators discression
+        left.setInverted(true);
     }
 
     double lastTime = 0;

@@ -1,4 +1,4 @@
-package frc.robot.auto;
+package frc.robot.auto.routines;
 
 import frc.robot.Robot;
 
