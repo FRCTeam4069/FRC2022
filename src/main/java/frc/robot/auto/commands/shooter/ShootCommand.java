@@ -14,7 +14,7 @@ public class ShootCommand extends Command {
     /**
      * Setup shoot command
      * 
-     * @param topWheelSpeed in RPM - should probably be 1350
+     * @param topWheelSpeed in RPM - should probably be 1300
      * @param bottomWheelSpeed in RPM
      * @param duration in seconds
      */
@@ -32,7 +32,8 @@ public class ShootCommand extends Command {
     @Override
     public void loop() {
         robot.getFlywheel().update(topWheelSpeed, bottomWheelSpeed);
-        robot.getIndexer().drive(1);
+        
+        if(robot.getFlywheel().getTopVel() > topWheelSpeed) robot.getIndexer().drive(-1);
     }
 
     @Override

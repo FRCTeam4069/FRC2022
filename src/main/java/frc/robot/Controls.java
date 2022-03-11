@@ -100,18 +100,18 @@ public class Controls {
                 }
 
                 // Front Intake
-                robot.getFrontIntake()
-                        .drive(MathUtil.applyDeadband(
-                                getGamepad2().getRightTriggerAxis(), FRONT_INTAKE_DEADBAND)
-                                - MathUtil.applyDeadband(getGamepad2().getLeftTriggerAxis(),
-                                        FRONT_INTAKE_DEADBAND));
+                // robot.getFrontIntake()
+                //         .drive(MathUtil.applyDeadband(
+                //                 getGamepad2().getRightTriggerAxis(), FRONT_INTAKE_DEADBAND)
+                //                 - MathUtil.applyDeadband(getGamepad2().getLeftTriggerAxis(),
+                //                         FRONT_INTAKE_DEADBAND));
 
-                // Front Intake Articulate
-                if (getGamepad2().getStartButton()
-                        && lastArticulate + ARTICULATE_CD > System.currentTimeMillis()) {
-                    robot.getFrontIntake().articulate();
-                    lastArticulate = System.currentTimeMillis();
-                }
+                // // Front Intake Articulate
+                // if (getGamepad2().getStartButton()
+                //         && lastArticulate + ARTICULATE_CD < System.currentTimeMillis()) {
+                //     robot.getFrontIntake().articulate();
+                //     lastArticulate = System.currentTimeMillis();
+                // }
 
                 // Rear Intake
                 robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
@@ -142,16 +142,17 @@ public class Controls {
                  */
 
                 if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
-                robot.getDriveTrain().updatePos();
-                System.out.println("X: " + robot.getDriveTrain().getPose().getX());
-                System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
-                System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
+                // robot.getDriveTrain().updatePos();
+                // System.out.println("X: " + robot.getDriveTrain().getPose().getX());
+                // System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
+                // System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
 
                 // robot.getClimber().test(getGamepad1().getRightY());
 
 
 
                 robot.getDriveTrain().stop();
+                robot.getFrontIntake().driveIntakeOnly(0);
                 // // // Flywheel - Close Shot
                 // if (getGamepad1().getStartButton())
                 //     robot.getFlywheel().update(800, 950);
@@ -166,11 +167,20 @@ public class Controls {
                 // else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
                 // else robot.getIndexer().drive(0);
 
-                 if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
-                 else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
-                 else robot.getRearIntake().drive(false, false);
+                robot.getFrontIntake().update(getGamepad1().getAButton());
 
-                // robot.getFrontIntake().rawArticulate(getGamepad1().getRightY());
+                //  if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
+                //  else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
+                //  else robot.getRearIntake().drive(false, false);
+
+                //  // Change gear w/ cooldown
+                // if (getGamepad1().getRightBumper() && lastGearChange + GEAR_CHANGE_CD < System.currentTimeMillis()) {
+                //     robot.getDriveTrain().changeGear();
+                //     lastGearChange = System.currentTimeMillis();
+                // }
+
+              //  robot.getFrontIntake().printColourVals();
+
                 // if(getGamepad1().getLeftBumper()) robot.getFrontIntake().drive(1);
                 // else if(getGamepad1().getRightBumper()) robot.getFrontIntake().drive(-1);
                 // else robot.getFrontIntake().drive(0);
@@ -197,11 +207,11 @@ public class Controls {
                 //         getGamepad1().getXButton());
 
                 // // Drivetrain
-                // // #arcadeDrive(speed = right trigger - left trigger, turn = left joystick x
-                // // axis)
-                // robot.getDriveTrain().arcadeDrive(
-                //         getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(),
-                //         getGamepad1().getLeftX());
+                // #arcadeDrive(speed = right trigger - left trigger, turn = left joystick x
+                //  axis)
+                robot.getDriveTrain().arcadeDrive(
+                        getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(),
+                        getGamepad1().getLeftX());
 
                 break;
             default:

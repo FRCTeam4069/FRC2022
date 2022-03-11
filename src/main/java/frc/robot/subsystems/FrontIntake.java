@@ -16,10 +16,8 @@ public class FrontIntake {
 
     private static final int ARTICULATE_CAN = 11;
     private static final double ARTICULATE_MAGNITUDE = 0.3;
-    private static final double ARTICULATE_POSITION = 50.0; // |pos|
 
     private final CANSparkMax drive, articulate;
-    private final RelativeEncoder articulateEncoder;
     private final ColorSensorV3 colorSensor;
 
     private final Robot robot;
@@ -32,60 +30,50 @@ public class FrontIntake {
     public FrontIntake(Robot robot) {
         drive = new CANSparkMax(DRIVE_CAN, MotorType.kBrushless);
         articulate = new CANSparkMax(ARTICULATE_CAN, MotorType.kBrushless);
-        articulateEncoder = articulate.getEncoder();
         colorSensor = new ColorSensorV3(Port.kOnboard);
         this.robot = robot;
     }
 
     /** Update the drive state of the front intake */
-    public void drive(double speed) {
-        drive.set(speed);
-    }
+    public void update(boolean intake) {
 
-    /** Raise/lower front intake */
-    public void articulate() {
-        if (locked)
-            return;
-        locked = true;
+        if(intake) {
+            drive.set(1);
 
-        articulateUp = getPosition();
-        // Flip stored state
-        articulateUp = !articulateUp;
-        // Reset
-        articulateEncoder.setPosition(0);
-        // Run thread
-        robot.getScheduler().schedule((RobotAsyncTask) this::articulateFunc);
-    }
+            if(colorSensor.getProximity() > 500) articulate.set(-0.5);
+            else articulate.set(0);
+        }
 
-    // Reset stored articulate position
-    private boolean getPosition() {
-        return false;
-    }
+        else {
+            drive.set(0);
 
-    // Async function to check for articulation stop point
-    private void articulateFunc() {
-        // Starts in desired direction
-        if (articulateUp)
-            articulate.set(ARTICULATE_MAGNITUDE);
-        else
-            articulate.set(-ARTICULATE_MAGNITUDE);
-
-        while (!(articulateEncoder.getPosition() < 0.5 && articulateUp)
-                && !(Math.abs(articulateEncoder.getPosition() - 50) < 1.0 && !articulateUp));
-
-        // Stops
-        articulate.set(0);
-
-        locked = false;
+            if(colorSensor.getProximity() < 500) articulate.set(0.3);
+            else articulate.set(0);
+        }
     }
 
     public void rawArticulate(double percent) {
+        System.out.println("Percent: " + percent);
         if (Math.abs(percent) > 0.25 && Math.abs(percent) < 0.5)
             articulate.set(percent);
         else if(Math.abs(percent) > 0.5)
             articulate.set(0.5 * Math.signum(percent));
         else
             articulate.set(0);
+    }
+
+    public void driveIntakeOnly(double speed) {
+        drive.set(speed);
+    }
+
+    public void printColourVals() {
+        if(colorSensor.isConnected()) {
+            // System.out.println("Red: " + colorSensor.getRed());
+            // System.out.println("Blue: " + colorSensor.getBlue());
+            // System.out.println("Green: " + colorSensor.getGreen());
+            // System.out.println("IR: " + colorSensor.getIR());
+            System.out.println("Distance: " + colorSensor.getProximity());
+        }
     }
 
 }

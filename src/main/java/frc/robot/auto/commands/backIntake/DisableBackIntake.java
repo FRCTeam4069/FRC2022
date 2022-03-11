@@ -1,15 +1,16 @@
-package frc.robot.auto.commands.frontIntake;
+package frc.robot.auto.commands.backIntake;
 
 import frc.robot.auto.Command;
 
-public class DisableIntakeCommand extends Command {
+public class DisableBackIntake extends Command {
+
     @Override
     public void start() {
-        robot.getFrontIntake().driveIntakeOnly(0);
+        robot.getRearIntake().drive(false, false);
     }
 
     @Override
-    public void loop() {}
+    public void loop() { }
 
     @Override
     public boolean isFinished() {
@@ -18,4 +19,5 @@ public class DisableIntakeCommand extends Command {
 
     @Override
     public void close() {}
+    
 }

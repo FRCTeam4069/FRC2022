@@ -1,11 +1,12 @@
-package frc.robot.auto.commands.frontIntake;
+package frc.robot.auto.commands.indexer;
 
 import frc.robot.auto.Command;
 
-public class DisableIntakeCommand extends Command {
+public class DisableIndexer extends Command {
+
     @Override
     public void start() {
-        robot.getFrontIntake().driveIntakeOnly(0);
+        robot.getIndexer().drive(0);
     }
 
     @Override
@@ -18,4 +19,5 @@ public class DisableIntakeCommand extends Command {
 
     @Override
     public void close() {}
+    
 }

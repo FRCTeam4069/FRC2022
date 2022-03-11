@@ -4,9 +4,10 @@ import frc.robot.auto.Command;
 
 public class EnableIntakeCommand extends Command {
 
+    
     @Override
     public void start() {
-        robot.getFrontIntake().drive(1);
+        robot.getFrontIntake().driveIntakeOnly(1);
     }
 
     @Override

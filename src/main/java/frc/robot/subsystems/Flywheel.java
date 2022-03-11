@@ -50,6 +50,9 @@ public class Flywheel {
     private double kV_bottom = 0.46247;
     private double kA_bottom = 3.4751;
 
+    double topV = 0;
+    double bottomV = 0;
+
     //For Sim
     DCMotor drive;
     EncoderSim encSim;
@@ -144,8 +147,8 @@ public class Flywheel {
 
             double deltaT = currentTime - lastTime;
 
-            double topV = topDeltaP / deltaT;
-            double bottomV = bottomDeltaP / deltaT;
+            topV = topDeltaP / deltaT;
+            bottomV = bottomDeltaP / deltaT;
 
             double topError = topRPM - topV;
             double bottomError = bottomRPM - bottomV;
@@ -216,6 +219,9 @@ public class Flywheel {
         //System.out.println("Top encoder: " + topEnc.get());
         //System.out.println("Bottom encoder: " + bottomEnc.get());
     }
+
+    public double getTopVel() {return topV;}
+    public double getBottomVel() {return bottomV;}
 
     // Everything below is simulation-specific
     private final double simFlywheelkP = 0.001;
