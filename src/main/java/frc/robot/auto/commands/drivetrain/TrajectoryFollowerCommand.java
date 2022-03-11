@@ -31,7 +31,7 @@ public class TrajectoryFollowerCommand extends Command {
 
     public TrajectoryFollowerCommand(Pose2d start, ArrayList<Translation2d> interiorWaypoints, Pose2d end, boolean reversed) {
         
-        config = new TrajectoryConfig(1, 0.25);
+        config = new TrajectoryConfig(1.5, 0.5);
         config.setReversed(reversed);
         this.start = start;
         this.interiorWaypoints = interiorWaypoints;
@@ -69,7 +69,7 @@ public class TrajectoryFollowerCommand extends Command {
     @Override
     public boolean isFinished() {
         var poseDiff = robot.getDriveTrain().getPose().relativeTo(end);
-        return (Math.abs(poseDiff.getX()) < 0.1) && (Math.abs(poseDiff.getY()) < 0.1); 
+        return (Math.abs(poseDiff.getX()) < 0.2) && (Math.abs(poseDiff.getY()) < 0.2); 
     }
 
     @Override

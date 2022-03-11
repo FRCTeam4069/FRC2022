@@ -17,19 +17,19 @@ import frc.robot.auto.commands.indexer.DisableIndexer;
 import frc.robot.auto.commands.indexer.EnableIndexer;
 import frc.robot.auto.commands.shooter.ShootCommand;
 
-public class TwoBallAuto implements AutoRoutine {
+public class FourBallAuto implements AutoRoutine {
 
     private Robot robot;
     private AutoScheduler scheduler;
 
-    public TwoBallAuto(Robot robot) {
+    public FourBallAuto(Robot robot) {
         this.robot = robot;
         scheduler = new AutoScheduler(robot);
     }
 
     @Override
     public String name() {
-        return "Two Ball";
+        return "Four Ball";
     }
 
     @Override
@@ -38,18 +38,20 @@ public class TwoBallAuto implements AutoRoutine {
         scheduler.addCommand(new EnableIndexer(1));
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
-        var end = new Pose2d(new Translation2d(-2.5, 0), new Rotation2d(0));
+        var end = new Pose2d(new Translation2d(-2, 0), new Rotation2d(Math.toRadians(15)));
         scheduler.addCommand(new TrajectoryFollowerCommand(start,
          interiorWaypoints, end, true));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
-        var shootingPos = start.transformBy(new Transform2d(new Translation2d(-1, 0),
-         new Rotation2d(Math.toRadians(43))));
-        scheduler.addCommand(new TrajectoryFollowerCommand(end,
-         new ArrayList<Translation2d>(), shootingPos, false));
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 500, 8));
+        scheduler.addCommand(new ShootCommand(1300, 705, 5));
         scheduler.addCommand(new DisableIntakeCommand());
+        scheduler.addCommand(new EnableBakIntake());
+        var backPickup = end.transformBy(new Transform2d(new Translation2d(-3.5, 1.75), new Rotation2d(0)));
+        scheduler.addCommand(new TrajectoryFollowerCommand(end, interiorWaypoints, backPickup, true));
+        scheduler.addCommand(new DisableBackIntake());
+
+        //PICKS UP BALL, JUST NEED TO DRIVE FORWARD AND SHOOT
     }
 
     @Override

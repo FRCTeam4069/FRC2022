@@ -167,7 +167,7 @@ public class Controls {
                 // else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
                 // else robot.getIndexer().drive(0);
 
-                robot.getFrontIntake().update(getGamepad1().getAButton());
+             //   robot.getFrontIntake().update(getGamepad1().getAButton());
 
                 //  if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
                 //  else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
