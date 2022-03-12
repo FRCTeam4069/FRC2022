@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -80,6 +81,11 @@ public class DriveTrain {
         leftSlave.follow(leftMaster);
         rightSlave.follow(rightMaster);
 
+        leftMaster.setNeutralMode(NeutralMode.Brake);
+        leftSlave.setNeutralMode(NeutralMode.Brake);
+        rightMaster.setNeutralMode(NeutralMode.Brake);
+        rightSlave.setNeutralMode(NeutralMode.Brake);
+
         rightMaster.setInverted(true);
         rightSlave.setInverted(true);
 
@@ -101,6 +107,20 @@ public class DriveTrain {
 
         this.robot = robot;
         currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
+    }
+
+    public void setBrake() {
+        leftMaster.setNeutralMode(NeutralMode.Brake);
+        leftSlave.setNeutralMode(NeutralMode.Brake);
+        rightMaster.setNeutralMode(NeutralMode.Brake);
+        rightSlave.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public void setCoast() {
+        leftMaster.setNeutralMode(NeutralMode.Coast);
+        leftSlave.setNeutralMode(NeutralMode.Coast);
+        rightMaster.setNeutralMode(NeutralMode.Coast);
+        rightSlave.setNeutralMode(NeutralMode.Coast);
     }
 
     /** Average rate between both encoders */

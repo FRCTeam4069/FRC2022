@@ -34,22 +34,32 @@ public class FourBallAuto implements AutoRoutine {
 
     @Override
     public void init() {
+        robot.getDriveTrain().setBrake();
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
-        var end = new Pose2d(new Translation2d(-2, 0), new Rotation2d(Math.toRadians(15)));
+        var end = new Pose2d(new Translation2d(-2.7, -0.2), new Rotation2d(Math.toRadians(10)));
         scheduler.addCommand(new TrajectoryFollowerCommand(start,
          interiorWaypoints, end, true));
+    
+        scheduler.addCommand(new DisableIndexer());
+        scheduler.addCommand(new EnableIntakeCommand());
+        scheduler.addCommand(new ShootCommand(1300, 730, 4));
+        scheduler.addCommand(new DisableIntakeCommand());
+        scheduler.addCommand(new EnableBakIntake());
+        scheduler.addCommand(new EnableIndexer(1));
+        var backPickup = end.transformBy(new Transform2d(new Translation2d(-3.1, 1.35), new Rotation2d(Math.toRadians(-10))));
+        scheduler.addCommand(new TrajectoryFollowerCommand(end, interiorWaypoints, backPickup, true));
+
+        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0.4, 0), new Rotation2d(Math.toRadians(-3))));
+        scheduler.addCommand(new TrajectoryFollowerCommand(backPickup, interiorWaypoints, totalEnd, false));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 705, 5));
+        scheduler.addCommand(new ShootCommand(1300, 725, 5));
         scheduler.addCommand(new DisableIntakeCommand());
-        scheduler.addCommand(new EnableBakIntake());
-        var backPickup = end.transformBy(new Transform2d(new Translation2d(-3.5, 1.75), new Rotation2d(0)));
-        scheduler.addCommand(new TrajectoryFollowerCommand(end, interiorWaypoints, backPickup, true));
-        scheduler.addCommand(new DisableBackIntake());
+        
 
         //PICKS UP BALL, JUST NEED TO DRIVE FORWARD AND SHOOT
     }
