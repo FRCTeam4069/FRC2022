@@ -63,6 +63,7 @@ public class FrontIntake {
     }
 
     public void driveIntakeOnly(double speed) {
+        articulate.set(0);
         drive.set(speed);
     }
 

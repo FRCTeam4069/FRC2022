@@ -65,12 +65,24 @@ public class DriveTrain {
 
     private Robot robot;
 
+    private boolean lockedOut = false;
+
     //Positional Stuff
     Pose2d currentPose;
     double lastLeft = 0;
     double lastRight = 0;
 
     private boolean highGear = false;
+
+    /** Lockout for when aligning in teleOp */
+    public void lockout() {
+        lockedOut = true;
+    }
+
+    /** End lockout when done aligning */
+    public void endLockout() {
+        lockedOut = false;
+    }
 
     public DriveTrain(Robot robot) {
         leftMaster = new TalonFX(LEFT_MASTER);
@@ -109,6 +121,34 @@ public class DriveTrain {
         currentPose = new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
     }
 
+    double turnError = 1000;
+
+    public double getTurnError() {
+        return turnError;
+    }
+
+    public void resetTurnError() {
+        turnError = 1000;
+    }
+
+    /** MUST BE CALLED PERIODICALLY WHEN ALIGNING IS TO OCCUR, returns error (-1000 if no target found) */
+    public void alignToGoal() {
+
+        lockedOut = true;
+
+        if(robot.getVision().table.getEntry("tv").getDouble(0.0) == 0.0) return;
+
+        double offsetToGoal = robot.getVision().table.getEntry("tx").getDouble(0.0);
+
+        turnError = 0 - offsetToGoal;
+
+        double turnKP = 0.0;
+
+        double output = turnKP * turnError;
+        leftMaster.set(ControlMode.PercentOutput, output);
+        rightMaster.set(ControlMode.PercentOutput, -output);
+    }
+
     public void setBrake() {
         leftMaster.setNeutralMode(NeutralMode.Brake);
         leftSlave.setNeutralMode(NeutralMode.Brake);
@@ -145,6 +185,7 @@ public class DriveTrain {
      * @param right Right side power
      */
     public void setPower(double left, double right) {
+        if(lockedOut) return;
         leftMaster.set(ControlMode.PercentOutput, leftFilter.calculate(left));
         rightMaster.set(ControlMode.PercentOutput, rightFilter.calculate(right));
     }
@@ -161,6 +202,7 @@ public class DriveTrain {
      * @param turn Turn amount
      */
     public void arcadeDrive(double speed, double turn) {
+        if(lockedOut) return;
         WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(speed, turn, false);
         setPower(speeds.left, speeds.right);
     }

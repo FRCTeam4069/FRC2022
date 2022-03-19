@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Scheduler.RobotRepeatingTask;
 
@@ -13,12 +14,10 @@ public class Controls {
 
     private static final double DRIVETRAIN_TRIGGER_DEADBAND = 0.05;
     private static final double DRIVETRAIN_STICK_DEADBAND = 0.2;
-    private static final double FRONT_INTAKE_DEADBAND = 0.2;
     private static final double INDEXER_DEADBAND = 0.2;
 
     // Cooldowns (ms)
     private static final int GEAR_CHANGE_CD = 1000; // 1s
-    private static final int ARTICULATE_CD = 2500; // 2.5s
 
     private final Robot robot;
 
@@ -27,7 +26,6 @@ public class Controls {
 
     // Call timestamps
     private long lastGearChange = 0;
-    private long lastArticulate = 0;
 
     /**
      * Requires robot dependancy
@@ -66,23 +64,23 @@ public class Controls {
                  * TELEOP MODE CONTROLS
                  * 
                  * DRIVER 1:
-                 * L Trigger - Drivetrain Forward
-                 * R Trigger - Drivetrain Backward
-                 * R Bumper - Drivetrain Change Gears
-                 * L X Joystick - Drivetrain Turn
-                 * 
-                 * DRIVER 2:
-                 * L Trigger - Front Intake Out
-                 * R Trigger - Front Intake In
-                 * L Bumper - Rear Intake Out
-                 * R Bumper - Rear Intake In
-                 * L +Y Joystick - Indexer Up
-                 * L -Y Joystick - Indexer Down
+                 * L Trigger - Drivetrain Forward  *
+                 * R Trigger - Drivetrain Backward  *
+                 * R Bumper - Drivetrain Change Gears  *
+                 * L X Joystick - Drivetrain Turn   *
                  * A - Shoter Auto Aim For High
                  * B - Close Low Goal
                  * X - Safezone High Goal
                  * Y - Close High Goal
-                 * Start - Front Intake Articulate
+                 * 
+                 * DRIVER 2:
+                 * L Trigger - Front Intake Out  *
+                 * R Trigger - Front Intake In  *
+                 * L Bumper - Rear Intake Out  *
+                 * R Bumper - Rear Intake In  *
+                 * L +Y Joystick - Indexer Up  *
+                 * L -Y Joystick - Indexer Down  *
+                 * 
                  */
 
                 // Drive
@@ -100,26 +98,41 @@ public class Controls {
                 }
 
                 // Front Intake
-                // robot.getFrontIntake()
-                //         .drive(MathUtil.applyDeadband(
-                //                 getGamepad2().getRightTriggerAxis(), FRONT_INTAKE_DEADBAND)
-                //                 - MathUtil.applyDeadband(getGamepad2().getLeftTriggerAxis(),
-                //                         FRONT_INTAKE_DEADBAND));
-
-                // // Front Intake Articulate
-                // if (getGamepad2().getStartButton()
-                //         && lastArticulate + ARTICULATE_CD < System.currentTimeMillis()) {
-                //     robot.getFrontIntake().articulate();
-                //     lastArticulate = System.currentTimeMillis();
-                // }
+                if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(-1);
+                else robot.getFrontIntake().update(getGamepad2().getRightTriggerAxis() > 0.5);
+                
 
                 // Rear Intake
                 robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
                         getGamepad2().getLeftBumper());
 
                 // Indexer
-                robot.getIndexer().drive(MathUtil.applyDeadband(getGamepad2().getLeftY(), INDEXER_DEADBAND));
+                if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(-1);
+                else if(getGamepad2().getLeftY() < 0.5) robot.getIndexer().drive(1);
+                else robot.getIndexer().drive(0);
+
+                boolean startedShootingProcess = false;
+                // Shooter
+                if(getGamepad1().getAButton()) {
+
+                    if(!startedShootingProcess) {
+                        startedShootingProcess = true;
+                        robot.getDriveTrain().resetTurnError();
+                        robot.getVision().enableLED();
+                    }
+
+                    if(robot.getDriveTrain().getTurnError() > 2.0) robot.getDriveTrain().alignToGoal();
+                    else robot.getDriveTrain().stop();
+
+                    robot.getFlywheel().updateDistance(robot.getVision().getDistance());
+
+                }
+                else startedShootingProcess = false;
+
                 break;
+
+
+
             case TEST:
 
                 /**
