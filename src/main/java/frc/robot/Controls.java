@@ -68,10 +68,10 @@ public class Controls {
                  * R Trigger - Drivetrain Backward  *
                  * R Bumper - Drivetrain Change Gears  *
                  * L X Joystick - Drivetrain Turn   *
-                 * A - Shoter Auto Aim For High
-                 * B - Close Low Goal
-                 * X - Safezone High Goal
-                 * Y - Close High Goal
+                 * A - Shoter Auto Aim For High  *
+                 * B - Close Low Goal *
+                 * X - Safezone High Goal *
+                 * Y - Close High Goal  *
                  * 
                  * DRIVER 2:
                  * L Trigger - Front Intake Out  *
@@ -115,19 +115,32 @@ public class Controls {
                 // Shooter
                 if(getGamepad1().getAButton()) {
 
+                    if(!robot.getVision().hasTarget()) {
+                        System.out.println("no target, assuming close shot");
+                        robot.getFlywheel().update(1300, 450);
+                        return;
+                    }
+
                     if(!startedShootingProcess) {
                         startedShootingProcess = true;
                         robot.getDriveTrain().resetTurnError();
                         robot.getVision().enableLED();
+                        robot.getDriveTrain().setGear(false);
                     }
 
                     if(robot.getDriveTrain().getTurnError() > 2.0) robot.getDriveTrain().alignToGoal();
                     else robot.getDriveTrain().stop();
 
                     robot.getFlywheel().updateDistance(robot.getVision().getDistance());
-
                 }
                 else startedShootingProcess = false;
+
+                //Chip shot - Speeds need testing and updating
+                if(getGamepad1().getBButton()) robot.getFlywheel().update(0, 0);
+
+                //Protected shot - Speeds need testing and updating
+                if(getGamepad1().getXButton()) robot.getFlywheel().update(0, 0);
+
 
                 break;
 

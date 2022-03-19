@@ -38,6 +38,10 @@ public class Vision {
         return realDistance;
     }
 
+    public boolean hasTarget() {
+        return table.getEntry("tv").getDouble(0) == 1;
+    }
+
     public void enableLED() {
         table.getEntry("ledMode").setNumber(3);
     }
