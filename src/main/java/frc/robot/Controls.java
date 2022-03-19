@@ -141,18 +141,18 @@ public class Controls {
                  * 
                  */
 
-                if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
+                //if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
                 // robot.getDriveTrain().updatePos();
                 // System.out.println("X: " + robot.getDriveTrain().getPose().getX());
                 // System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
                 // System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
 
-                // robot.getClimber().test(getGamepad1().getRightY());
+                robot.getClimber().test(getGamepad1().getRightY());
 
 
 
                 robot.getDriveTrain().stop();
-                robot.getFrontIntake().driveIntakeOnly(0);
+                //robot.getFrontIntake().driveIntakeOnly(0);
                 // // // Flywheel - Close Shot
                 // if (getGamepad1().getStartButton())
                 //     robot.getFlywheel().update(800, 950);
@@ -163,15 +163,15 @@ public class Controls {
                 // else
                 //     robot.getFlywheel().updatePercentage(0, 0);
 
-                // if(getGamepad1().getAButton()) robot.getIndexer().drive(1);
-                // else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
-                // else robot.getIndexer().drive(0);
+                if(getGamepad1().getAButton()) robot.getIndexer().drive(1);
+                else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
+                else robot.getIndexer().drive(0);
 
-             //   robot.getFrontIntake().update(getGamepad1().getAButton());
+                robot.getFrontIntake().update(getGamepad1().getLeftBumper());
 
-                //  if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
-                //  else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
-                //  else robot.getRearIntake().drive(false, false);
+                 if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
+                 else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
+                 else robot.getRearIntake().drive(false, false);
 
                 //  // Change gear w/ cooldown
                 // if (getGamepad1().getRightBumper() && lastGearChange + GEAR_CHANGE_CD < System.currentTimeMillis()) {
