@@ -112,11 +112,11 @@ public class Robot extends TimedRobot {
 		fourBall = new FourBallAuto(this);
 
 		// Send auto selector
-		autoChooser.setDefaultOption(testAuto.name(), fourBall);
 		autoChooser.addOption("Test", testAutoScheduler);
 		autoChooser.addOption("Splines", pathFollower);
 		autoChooser.addOption(twoBall.name(), twoBall);
 		autoChooser.addOption(fourBall.name(), fourBall);
+		autoChooser.setDefaultOption(testAuto.name(), fourBall);
 
 		SmartDashboard.putData(autoChooser);
 
@@ -155,6 +155,9 @@ public class Robot extends TimedRobot {
 
 		// Gets selected routine
 		autoRoutine = autoChooser.getSelected();
+		if (autoRoutine == null)
+			return;
+
 		System.out.println("Selected Auto Mode: " + autoRoutine.name());
 
 		// Initializes that routine
@@ -165,7 +168,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		// Calls the loop of selected auto
-		autoRoutine.loop();
+		if (autoRoutine != null)
+			autoRoutine.loop();
 	}
 
 	/** This function is called once when teleop is enabled. */
