@@ -122,7 +122,7 @@ public class Flywheel {
     public void updateDistance(double distance) {
 
         double interpolatedM = 3.85417;
-        double interpolatedB = 165;
+        double interpolatedB = 155;
         double bottomWheelSpeed = interpolatedM * distance + interpolatedB;
 
         update(1300, bottomWheelSpeed);

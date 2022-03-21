@@ -45,7 +45,7 @@ public class FourBallAuto implements AutoRoutine {
     
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 730, 4));
+        scheduler.addCommand(new ShootCommand(1300, 730, 2.7));
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
@@ -57,7 +57,7 @@ public class FourBallAuto implements AutoRoutine {
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 725, 5));
+        scheduler.addCommand(new ShootCommand(1300, 725, 3));
         scheduler.addCommand(new DisableIntakeCommand());
         
 

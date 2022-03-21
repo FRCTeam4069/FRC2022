@@ -22,6 +22,8 @@ public class FrontIntake {
 
     private final Robot robot;
 
+    public boolean shooterLock = false;
+
     // True/false is up/down state of intake
     private boolean articulateUp = true;
 
@@ -34,20 +36,35 @@ public class FrontIntake {
         this.robot = robot;
     }
 
+
+    public void dropForShot() {
+        shooterLock = true;
+
+        if(colorSensor.getProximity() > 300) articulate.set(-0.5);
+        else articulate.set(0);
+    }
+
+    public void raise() {
+        if(colorSensor.getProximity() < 300) articulate.set(0.3);
+        else articulate.set(0);
+    }
+
     /** Update the drive state of the front intake */
     public void update(boolean intake) {
+
+        if(shooterLock) return;
 
         if(intake) {
             drive.set(1);
 
-            if(colorSensor.getProximity() > 500) articulate.set(-0.5);
+            if(colorSensor.getProximity() > 300) articulate.set(-0.5);
             else articulate.set(0);
         }
 
         else {
             drive.set(0);
 
-            if(colorSensor.getProximity() < 500) articulate.set(0.3);
+            if(colorSensor.getProximity() < 300) articulate.set(0.3);
             else articulate.set(0);
         }
     }

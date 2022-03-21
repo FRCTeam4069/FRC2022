@@ -41,6 +41,8 @@ public class Controls {
         robot.getScheduler().schedule((RobotRepeatingTask) this::controlsCheck);
     }
 
+    boolean intakeUp = true;
+    boolean shooterIntakeLockout = false;
     private void controlsCheck() {
         // CONTROLS MAPPING
         switch (robot.getMode()) {
@@ -88,18 +90,24 @@ public class Controls {
                         MathUtil.applyDeadband(getGamepad1().getRightTriggerAxis(), DRIVETRAIN_TRIGGER_DEADBAND)
                                 - MathUtil.applyDeadband(getGamepad1().getLeftTriggerAxis(),
                                         DRIVETRAIN_TRIGGER_DEADBAND),
-                        MathUtil.applyDeadband(getGamepad1().getRightX(), DRIVETRAIN_STICK_DEADBAND));
+                        MathUtil.applyDeadband(getGamepad1().getLeftX(), DRIVETRAIN_STICK_DEADBAND));
 
                 // Change gear w/ cooldown
                 if (getGamepad1().getRightBumper()
-                        && lastGearChange + GEAR_CHANGE_CD > System.currentTimeMillis()) {
+                        && lastGearChange + GEAR_CHANGE_CD < System.currentTimeMillis()) {
                     robot.getDriveTrain().changeGear();
                     lastGearChange = System.currentTimeMillis();
                 }
 
                 // Front Intake
-                if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(-1);
-                else robot.getFrontIntake().update(getGamepad2().getRightTriggerAxis() > 0.5);
+                if(getGamepad2().getRightTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(-1);
+                else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(1);
+                else robot.getFrontIntake().driveIntakeOnly(0);
+
+                if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
+
+                if(intakeUp) robot.getFrontIntake().raise();
+                else robot.getFrontIntake().dropForShot();
                 
 
                 // Rear Intake
@@ -107,19 +115,17 @@ public class Controls {
                         getGamepad2().getLeftBumper());
 
                 // Indexer
-                if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(-1);
-                else if(getGamepad2().getLeftY() < 0.5) robot.getIndexer().drive(1);
+                if(getGamepad2().getLeftBumper()) robot.getIndexer().drive(1);
+                else if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(1);
+                else if(getGamepad2().getLeftY() < -0.5) robot.getIndexer().drive(-1);
                 else robot.getIndexer().drive(0);
 
                 boolean startedShootingProcess = false;
                 // Shooter
                 if(getGamepad1().getAButton()) {
 
-                    if(!robot.getVision().hasTarget()) {
-                        System.out.println("no target, assuming close shot");
-                        robot.getFlywheel().update(1300, 450);
-                        return;
-                    }
+                    intakeUp = false;
+                    shooterIntakeLockout = true;
 
                     if(!startedShootingProcess) {
                         startedShootingProcess = true;
@@ -128,12 +134,32 @@ public class Controls {
                         robot.getDriveTrain().setGear(false);
                     }
 
-                    if(robot.getDriveTrain().getTurnError() > 2.0) robot.getDriveTrain().alignToGoal();
-                    else robot.getDriveTrain().stop();
+                    if(!robot.getVision().hasTarget()) {
+                        System.out.println("no target, assuming close shot");
+                        robot.getDriveTrain().stop();
+                        // robot.getFlywheel().update(1300, 410);
+                        return;
+                    }
 
-                    robot.getFlywheel().updateDistance(robot.getVision().getDistance());
+
+                    if(Math.abs(robot.getDriveTrain().getTurnError()) > 3.0) {
+                        robot.getDriveTrain().alignToGoal();
+                    }
+                    else {
+                        robot.getDriveTrain().stop();
+                    }
+
+                    // robot.getFlywheel().updateDistance(robot.getVision().getDistance());
                 }
-                else startedShootingProcess = false;
+                else {
+                    startedShootingProcess = false;
+                    robot.getVision().disableLED();
+                    robot.getFlywheel().update(0, 0);
+                    robot.getDriveTrain().alignFirstTime = true;
+                    robot.getDriveTrain().endLockout();
+                    robot.getFrontIntake().shooterLock = false;
+                    shooterIntakeLockout = false;
+                }
 
                 //Chip shot - Speeds need testing and updating
                 if(getGamepad1().getBButton()) robot.getFlywheel().update(0, 0);
@@ -167,7 +193,7 @@ public class Controls {
                  * 
                  */
 
-                //if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
+                if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
                 // robot.getDriveTrain().updatePos();
                 // System.out.println("X: " + robot.getDriveTrain().getPose().getX());
                 // System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
@@ -189,15 +215,15 @@ public class Controls {
                 // else
                 //     robot.getFlywheel().updatePercentage(0, 0);
 
-                if(getGamepad1().getAButton()) robot.getIndexer().drive(1);
-                else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
-                else robot.getIndexer().drive(0);
+                // if(getGamepad1().getAButton()) robot.getIndexer().drive(1);
+                // else if(getGamepad1().getBButton()) robot.getIndexer().drive(-1);
+                // else robot.getIndexer().drive(0);
 
-                robot.getFrontIntake().update(getGamepad1().getLeftBumper());
+                // robot.getFrontIntake().update(getGamepad1().getLeftBumper());
 
-                 if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
-                 else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
-                 else robot.getRearIntake().drive(false, false);
+                //  if(getGamepad1().getXButton()) robot.getRearIntake().drive(true, false);
+                //  else if(getGamepad1().getYButton()) robot.getRearIntake().drive(true, true);
+                //  else robot.getRearIntake().drive(false, false);
 
                 //  // Change gear w/ cooldown
                 // if (getGamepad1().getRightBumper() && lastGearChange + GEAR_CHANGE_CD < System.currentTimeMillis()) {

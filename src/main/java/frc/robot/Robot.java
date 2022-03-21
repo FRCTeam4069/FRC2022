@@ -191,6 +191,7 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {
 		vision.disableLED();
 		driveTrain.setCoast();
+		driveTrain.stop();
 	}
 
 	/** This function is called once when test mode is enabled. */

@@ -34,22 +34,23 @@ public class TwoBallAuto implements AutoRoutine {
 
     @Override
     public void init() {
+        robot.getDriveTrain().setBrake();
+        scheduler.addCommand(new EnableBakIntake());
+        robot.getDriveTrain().setBrake();
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
-        var end = new Pose2d(new Translation2d(-2.5, 0), new Rotation2d(0));
+        var end = new Pose2d(new Translation2d(-2.7, -0.2), new Rotation2d(Math.toRadians(7)));
         scheduler.addCommand(new TrajectoryFollowerCommand(start,
          interiorWaypoints, end, true));
-        scheduler.addCommand(new DisableBackIntake());
+    
         scheduler.addCommand(new DisableIndexer());
-        var shootingPos = start.transformBy(new Transform2d(new Translation2d(-1, 0),
-         new Rotation2d(Math.toRadians(43))));
-        scheduler.addCommand(new TrajectoryFollowerCommand(end,
-         new ArrayList<Translation2d>(), shootingPos, false));
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 500, 8));
+        scheduler.addCommand(new ShootCommand(1300, 730, 2.7));
         scheduler.addCommand(new DisableIntakeCommand());
+        scheduler.addCommand(new DisableIndexer());
+        scheduler.addCommand(new DisableBackIntake());
     }
 
     @Override

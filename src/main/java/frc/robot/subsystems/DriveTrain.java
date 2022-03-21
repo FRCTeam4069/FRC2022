@@ -131,20 +131,25 @@ public class DriveTrain {
         turnError = 1000;
     }
 
+    public boolean alignFirstTime = true;
+    private double offsetToGoal = 0;
+    private double desiredGyroHeading = 0;
     /** MUST BE CALLED PERIODICALLY WHEN ALIGNING IS TO OCCUR, returns error (-1000 if no target found) */
     public void alignToGoal() {
 
         lockedOut = true;
 
         if(robot.getVision().table.getEntry("tv").getDouble(0.0) == 0.0) return;
-
-        double offsetToGoal = robot.getVision().table.getEntry("tx").getDouble(0.0);
+        
+        offsetToGoal = robot.getVision().table.getEntry("tx").getDouble(0.0);
 
         turnError = 0 - offsetToGoal;
 
-        double turnKP = 0.0;
+        double turnKP = -0.015;
 
         double output = turnKP * turnError;
+
+        System.out.println("Current vision offset: " + robot.getVision().table.getEntry("tx").getDouble(0));
         leftMaster.set(ControlMode.PercentOutput, output);
         rightMaster.set(ControlMode.PercentOutput, -output);
     }
