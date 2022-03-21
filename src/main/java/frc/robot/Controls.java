@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Scheduler.RobotRepeatingTask;
@@ -13,7 +14,7 @@ public class Controls {
     private static final int GP_1 = 0, GP_2 = 1;
 
     private static final double DRIVETRAIN_TRIGGER_DEADBAND = 0.05;
-    private static final double DRIVETRAIN_STICK_DEADBAND = 0.2;
+    private static final double DRIVETRAIN_STICK_DEADBAND = 0.1;
     private static final double INDEXER_DEADBAND = 0.2;
 
     // Cooldowns (ms)
@@ -26,6 +27,10 @@ public class Controls {
 
     // Call timestamps
     private long lastGearChange = 0;
+
+    SlewRateLimiter leftTriggerLimiter = new SlewRateLimiter(0.9);
+    SlewRateLimiter rightTriggerLimiter = new SlewRateLimiter(0.9);
+    SlewRateLimiter turnLimiter = new SlewRateLimiter(1.2);
 
     /**
      * Requires robot dependancy
@@ -86,11 +91,14 @@ public class Controls {
                  */
 
                 // Drive
+                double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
+                double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
+                double turn = turnLimiter.calculate(getGamepad1().getLeftX() / 2);
                 robot.getDriveTrain().arcadeDrive(
-                        MathUtil.applyDeadband(getGamepad1().getRightTriggerAxis(), DRIVETRAIN_TRIGGER_DEADBAND)
-                                - MathUtil.applyDeadband(getGamepad1().getLeftTriggerAxis(),
+                        MathUtil.applyDeadband(rightTrigger, DRIVETRAIN_TRIGGER_DEADBAND)
+                                - MathUtil.applyDeadband(leftTrigger,
                                         DRIVETRAIN_TRIGGER_DEADBAND),
-                        MathUtil.applyDeadband(getGamepad1().getLeftX(), DRIVETRAIN_STICK_DEADBAND));
+                        MathUtil.applyDeadband(turn, DRIVETRAIN_STICK_DEADBAND));
 
                 // Change gear w/ cooldown
                 if (getGamepad1().getRightBumper()
@@ -137,7 +145,7 @@ public class Controls {
                     if(!robot.getVision().hasTarget()) {
                         System.out.println("no target, assuming close shot");
                         robot.getDriveTrain().stop();
-                        // robot.getFlywheel().update(1300, 410);
+                        robot.getFlywheel().update(1300, 410);
                         return;
                     }
 
@@ -149,7 +157,7 @@ public class Controls {
                         robot.getDriveTrain().stop();
                     }
 
-                    // robot.getFlywheel().updateDistance(robot.getVision().getDistance());
+                    robot.getFlywheel().updateDistance(robot.getVision().getDistance());
                 }
                 else {
                     startedShootingProcess = false;

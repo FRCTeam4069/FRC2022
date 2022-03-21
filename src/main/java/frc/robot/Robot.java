@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auto.routines.AutoRoutine;
@@ -74,6 +75,7 @@ public class Robot extends TimedRobot {
 	// Active mode
 	private RobotMode mode = RobotMode.DISABLED;
 
+	boolean chooserLaunched = false;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -117,10 +119,10 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption("Splines", pathFollower);
 		autoChooser.addOption(twoBall.name(), twoBall);
 		autoChooser.addOption(fourBall.name(), fourBall);
-
 		SmartDashboard.putData(autoChooser);
+	
 
-		LiveWindow.disableAllTelemetry();
+	//	LiveWindow.disableAllTelemetry();
 	}
 
 	/**
@@ -134,6 +136,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
+
 		scheduler.runRepeatingTasks();
 	}
 
