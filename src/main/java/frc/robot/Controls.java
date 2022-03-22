@@ -95,8 +95,11 @@ public class Controls {
                 // Drive
                 double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
                 double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
-                double turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
+                double turn;
+                if(robot.getDriveTrain().getIsHighGear()) turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
+                else turn = turnLimiter.calculate(0.5 * Math.pow(getGamepad1().getLeftX(), 3));
 
+                System.out.println(turn);
                 if(getGamepad1().getBackButton()) turn = -0.225;
                 else if(getGamepad1().getStartButton()) turn = 0.225;
                 robot.getDriveTrain().arcadeDrive(
@@ -106,7 +109,7 @@ public class Controls {
                         MathUtil.applyDeadband(turn, DRIVETRAIN_STICK_DEADBAND));
 
                 // Change gear w/ cooldown
-                if (getGamepad1().getRightBumper()
+                if (getGamepad1().getRightBumperPressed()
                         && lastGearChange + GEAR_CHANGE_CD < System.currentTimeMillis()) {
                     robot.getDriveTrain().changeGear();
                     lastGearChange = System.currentTimeMillis();
@@ -145,21 +148,19 @@ public class Controls {
                 else robot.getIndexer().drive(0);
 
                 boolean startedShootingProcess = false;
+                boolean enableLED = false;
                 // Shooter
                 if(getGamepad1().getAButton()) {
 
                     intakeUp = false;
                     shooterIntakeLockout = true;
+                    enableLED = true;
 
                     if(!startedShootingProcess) {
                         startedShootingProcess = true;
                         robot.getDriveTrain().resetTurnError();
-                        robot.getVision().enableLED();
-                        robot.getDriveTrain().setGear(false);
+                    //    robot.getDriveTrain().setGear(false);
                     }
-
-    
-
 
                     if(Math.abs(robot.getDriveTrain().getTurnError()) > 3.0) {
                         robot.getDriveTrain().alignToGoal();
@@ -172,7 +173,6 @@ public class Controls {
                 }
                 else {
                     startedShootingProcess = false;
-                    robot.getVision().disableLED();
                     robot.getFlywheel().update(0, 0);
                     robot.getDriveTrain().alignFirstTime = true;
                     robot.getDriveTrain().endLockout();
@@ -181,15 +181,31 @@ public class Controls {
                 }
 
                 if(getGamepad1().getXButton()) {
+                    enableLED = true;
+                    shooterIntakeLockout = true;
+                    intakeUp = false;
                     if(!robot.getVision().hasTarget()) {
                         System.out.println("no target, assuming close shot");
-                        robot.getDriveTrain().stop();
                         robot.getFlywheel().update(1300, 410);
                     }
                     else robot.getFlywheel().updateDistance(robot.getVision().getDistance());
-
-
                 }
+                if(enableLED) { 
+                    robot.getVision().enableLED();
+                    
+                }
+                else robot.getVision().disableLED();
+
+
+                //chip shot
+                if(getGamepad1().getLeftBumper()) {
+                    robot.getFlywheel().update(400, 400);
+                }
+                else if(getGamepad1().getYButton()) {
+                    robot.getFlywheel().update(1300, 1300);
+                }
+
+
                 break;
 
 

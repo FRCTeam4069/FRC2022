@@ -110,7 +110,7 @@ public class DriveTrain {
         leftPid = new PIDController(LEFT_P, LEFT_I, LEFT_D, TIME_PERIOD);
         rightPid = new PIDController(RIGHT_P, RIGHT_I, RIGHT_D, TIME_PERIOD);
 
-        shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, SHIFTER_FWD, SHIFTER_BCK);
+        shifter = new DoubleSolenoid(PneumaticsModuleType.REVPH, SHIFTER_BCK, SHIFTER_FWD);
 
         leftFilter = LinearFilter.singlePoleIIR(FILTER_TIME_CONSTANT, TIME_PERIOD);
         rightFilter = LinearFilter.singlePoleIIR(FILTER_TIME_CONSTANT, TIME_PERIOD);
@@ -126,6 +126,8 @@ public class DriveTrain {
     public double getTurnError() {
         return turnError;
     }
+
+    public boolean getIsHighGear() {return highGear;}
 
     public void resetTurnError() {
         turnError = 1000;
@@ -146,6 +148,7 @@ public class DriveTrain {
         turnError = 0 - offsetToGoal;
 
         double turnKP = -0.015;
+        if(!highGear) turnKP = -0.03;
 
         double output = turnKP * turnError;
 
