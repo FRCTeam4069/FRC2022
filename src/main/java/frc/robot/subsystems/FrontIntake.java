@@ -70,13 +70,7 @@ public class FrontIntake {
     }
 
     public void rawArticulate(double percent) {
-        System.out.println("Percent: " + percent);
-        if (Math.abs(percent) > 0.25 && Math.abs(percent) < 0.5)
-            articulate.set(percent);
-        else if(Math.abs(percent) > 0.5)
-            articulate.set(0.5 * Math.signum(percent));
-        else
-            articulate.set(0);
+        articulate.set(percent);
     }
 
     public void driveIntakeOnly(double speed) {

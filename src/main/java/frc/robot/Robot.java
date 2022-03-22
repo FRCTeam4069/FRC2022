@@ -118,11 +118,6 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption("Splines", pathFollower);
 		autoChooser.addOption(twoBall.name(), twoBall);
 		autoChooser.addOption(fourBall.name(), fourBall);
-<<<<<<< HEAD
-=======
-		autoChooser.setDefaultOption(testAuto.name(), fourBall);
-
->>>>>>> 77d80706df3de82d3beb050a8748537d54bf4c31
 		SmartDashboard.putData(autoChooser);
 	
 

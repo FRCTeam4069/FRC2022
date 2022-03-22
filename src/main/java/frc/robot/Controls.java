@@ -30,7 +30,9 @@ public class Controls {
 
     SlewRateLimiter leftTriggerLimiter = new SlewRateLimiter(0.9);
     SlewRateLimiter rightTriggerLimiter = new SlewRateLimiter(0.9);
-    SlewRateLimiter turnLimiter = new SlewRateLimiter(1.2);
+    SlewRateLimiter turnLimiter = new SlewRateLimiter(1.8);
+
+    private boolean downforce = false;
 
     /**
      * Requires robot dependancy
@@ -93,7 +95,10 @@ public class Controls {
                 // Drive
                 double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
                 double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
-                double turn = turnLimiter.calculate(getGamepad1().getLeftX() / 2);
+                double turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
+
+                if(getGamepad1().getBackButton()) turn = -0.225;
+                else if(getGamepad1().getStartButton()) turn = 0.225;
                 robot.getDriveTrain().arcadeDrive(
                         MathUtil.applyDeadband(rightTrigger, DRIVETRAIN_TRIGGER_DEADBAND)
                                 - MathUtil.applyDeadband(leftTrigger,
@@ -114,8 +119,19 @@ public class Controls {
 
                 if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
 
-                if(intakeUp) robot.getFrontIntake().raise();
-                else robot.getFrontIntake().dropForShot();
+                if(!intakeUp && getGamepad2().getRightY() > 0.25) {
+                    downforce = true;
+                }
+                else downforce = false;
+
+                if(!intakeUp && downforce) {
+                    robot.getFrontIntake().driveIntakeOnly(1);
+                    robot.getFrontIntake().rawArticulate(-0.2);
+                }
+                else if(intakeUp && !downforce) robot.getFrontIntake().raise();
+                else if(!intakeUp && !downforce) robot.getFrontIntake().dropForShot();
+
+                
                 
 
                 // Rear Intake
@@ -142,12 +158,7 @@ public class Controls {
                         robot.getDriveTrain().setGear(false);
                     }
 
-                    if(!robot.getVision().hasTarget()) {
-                        System.out.println("no target, assuming close shot");
-                        robot.getDriveTrain().stop();
-                        robot.getFlywheel().update(1300, 410);
-                        return;
-                    }
+    
 
 
                     if(Math.abs(robot.getDriveTrain().getTurnError()) > 3.0) {
@@ -157,7 +168,7 @@ public class Controls {
                         robot.getDriveTrain().stop();
                     }
 
-                    robot.getFlywheel().updateDistance(robot.getVision().getDistance());
+                   
                 }
                 else {
                     startedShootingProcess = false;
@@ -169,13 +180,16 @@ public class Controls {
                     shooterIntakeLockout = false;
                 }
 
-                //Chip shot - Speeds need testing and updating
-                if(getGamepad1().getBButton()) robot.getFlywheel().update(0, 0);
+                if(getGamepad1().getXButton()) {
+                    if(!robot.getVision().hasTarget()) {
+                        System.out.println("no target, assuming close shot");
+                        robot.getDriveTrain().stop();
+                        robot.getFlywheel().update(1300, 410);
+                    }
+                    else robot.getFlywheel().updateDistance(robot.getVision().getDistance());
 
-                //Protected shot - Speeds need testing and updating
-                if(getGamepad1().getXButton()) robot.getFlywheel().update(0, 0);
 
-
+                }
                 break;
 
 
