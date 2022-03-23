@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 /** Shooter flywheel subsystem */
 public class Flywheel {
@@ -24,6 +26,9 @@ public class Flywheel {
     private static final int ENC_TOP_B = 7;
     private static final int ENC_BOTTOM_A = 4;
     private static final int ENC_BOTTOM_B = 5;
+
+    // the max amount you can deviate from the desired speed before the driver station shows a red box
+    private final double MAX_SPEED_DIFFERENCE = 0.05;
 
     TalonFX topMotor, bottomMotor;
     Encoder topEnc, bottomEnc;
@@ -50,6 +55,9 @@ public class Flywheel {
     private double kV_bottom = 0.46247;
     private double kA_bottom = 3.4751;
 
+    private double desiredSpeedTop = 0;
+    private double desiredSpeedBottom = 0;
+
     double topV = 0;
     double bottomV = 0;
 
@@ -58,8 +66,11 @@ public class Flywheel {
     EncoderSim encSim;
     FlywheelSim sim;
 
-    /** @param useInternalEncoders true if Falcon built in encoders are being used */
-    public Flywheel(boolean useInternalEncoders) {
+    /**
+     * @param Robot robot instance 
+     * @param useInternalEncoders true if Falcon built in encoders are being used
+     */
+    public Flywheel(Robot robot, boolean useInternalEncoders) {
         this.useInternalEncoders = useInternalEncoders;
         cpr = useInternalEncoders ? 2048 : 8192;
 
@@ -99,6 +110,11 @@ public class Flywheel {
                 0.0023      //Moment of inertia
                 );
         }
+
+        robot.getScheduler().schedule(() -> {
+            while (true)
+                SmartDashboard.putBoolean("Shooter Ready", atDesiredSpeed());
+        });
     }
 
     //For Update
@@ -137,6 +153,9 @@ public class Flywheel {
      */
     public void update(double topRPM, double bottomRPM) {
         //Using REVCoder
+        desiredSpeedTop = topRPM;
+        desiredSpeedBottom = bottomRPM;
+
         if(!useInternalEncoders) {
             double topCurPos = topEnc.getDistance();
             double bottomCurPos = bottomEnc.getDistance();
@@ -248,4 +267,16 @@ public class Flywheel {
 
         return sim.getAngularVelocityRPM();
     }
+
+    /**
+     * Gets if the flywheel is moving at the desired speed
+     * <p>
+     * This is primarly meant to check for updates 
+     * @return
+     */
+    public boolean atDesiredSpeed() {
+        return (Math.abs(desiredSpeedTop - MAX_SPEED_DIFFERENCE) > MAX_SPEED_DIFFERENCE)
+            || (Math.abs(desiredSpeedBottom - MAX_SPEED_DIFFERENCE) > MAX_SPEED_DIFFERENCE);
+    }
+
 }

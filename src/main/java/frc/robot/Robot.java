@@ -85,18 +85,14 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-
-		
 		// Scheduler init
 		scheduler = new Scheduler();
-
-		
 
 		// Subsystem init
 		frontIntake = new FrontIntake(this);
 		rearIntake = new RearIntake();
 		driveTrain = new DriveTrain(this);
-		shooter = new Flywheel(false);
+		shooter = new Flywheel(this, false);
 		indexer = new Indexer();
 		vision = new Vision();
 		climber = new Climber();
@@ -140,7 +136,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotPeriodic() {
-
 		scheduler.runRepeatingTasks();
 	}
 
