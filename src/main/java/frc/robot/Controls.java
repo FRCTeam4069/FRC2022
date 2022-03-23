@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Scheduler.RobotRepeatingTask;
 import frc.robot.subsystems.Climber;
@@ -35,6 +36,18 @@ public class Controls {
 
     private boolean downforce = false;
     private boolean horizontal = true;
+
+    int climbingSequencerCount = 0;
+    boolean climbing = false;
+    boolean firstSequenceFive = true;
+    double sequenceFiveTimer = 0;
+    boolean fiveRetracted = false;
+    boolean fiveFired = false;
+
+    boolean firstSequenceEight = true;
+    double sequenceEightTimer = 0;
+    boolean eightRetracted = false;
+    boolean eightFired = false;
 
     /**
      * Requires robot dependancy
@@ -95,134 +108,203 @@ public class Controls {
                  * 
                  */
 
-                // Drive
-                double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
-                double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
-                double turn;
-                if(robot.getDriveTrain().highGear) turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
-                else turn = turnLimiter.calculate(0.5 * Math.pow(getGamepad1().getLeftX(), 3));
+                if(!climbing) {
 
-                System.out.println(turn);
-                if(getGamepad1().getBackButton()) turn = -0.225;
-                else if(getGamepad1().getStartButton()) turn = 0.225;
-                robot.getDriveTrain().arcadeDrive(
-                        MathUtil.applyDeadband(rightTrigger, DRIVETRAIN_TRIGGER_DEADBAND)
-                                - MathUtil.applyDeadband(leftTrigger,
-                                        DRIVETRAIN_TRIGGER_DEADBAND),
-                        MathUtil.applyDeadband(turn, DRIVETRAIN_STICK_DEADBAND));
+                    // Drive
+                    double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
+                    double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
+                    double turn;
+                    if(robot.getDriveTrain().highGear) turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
+                    else turn = turnLimiter.calculate(0.5 * Math.pow(getGamepad1().getLeftX(), 3));
 
-                // Change gear w/ cooldown
-                if (getGamepad1().getRightBumperPressed()
-                        && lastGearChange + GEAR_CHANGE_CD < System.currentTimeMillis()) {
-                    robot.getDriveTrain().changeGear();
-                    lastGearChange = System.currentTimeMillis();
-                }
+                    System.out.println(turn);
+                    if(getGamepad1().getBackButton()) turn = -0.225;
+                    else if(getGamepad1().getStartButton()) turn = 0.225;
+                    robot.getDriveTrain().arcadeDrive(
+                            MathUtil.applyDeadband(rightTrigger, DRIVETRAIN_TRIGGER_DEADBAND)
+                                    - MathUtil.applyDeadband(leftTrigger,
+                                            DRIVETRAIN_TRIGGER_DEADBAND),
+                            MathUtil.applyDeadband(turn, DRIVETRAIN_STICK_DEADBAND));
 
-                // Front Intake
-                if(getGamepad2().getRightTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(-1);
-                else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(1);
-                else robot.getFrontIntake().driveIntakeOnly(0);
-
-                if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
-
-                if(!intakeUp && getGamepad2().getRightY() > 0.25) {
-                    downforce = true;
-                }
-                else downforce = false;
-
-                if(!intakeUp && downforce) {
-                    robot.getFrontIntake().driveIntakeOnly(1);
-                    robot.getFrontIntake().rawArticulate(-0.2);
-                }
-                else if(intakeUp && !downforce) robot.getFrontIntake().raise();
-                else if(!intakeUp && !downforce) robot.getFrontIntake().dropForShot();
-
-                
-                
-
-                // Rear Intake
-                robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
-                        getGamepad2().getLeftBumper());
-
-                // Indexer
-                if(getGamepad2().getLeftBumper()) robot.getIndexer().drive(1);
-                else if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(1);
-                else if(getGamepad2().getLeftY() < -0.5) robot.getIndexer().drive(-1);
-                else robot.getIndexer().drive(0);
-
-                boolean startedShootingProcess = false;
-                boolean enableLED = false;
-                // Shooter
-                if(getGamepad1().getAButton()) {
-
-                    intakeUp = false;
-                    shooterIntakeLockout = true;
-                    enableLED = true;
-
-                    if(!startedShootingProcess) {
-                        startedShootingProcess = true;
-                        robot.getDriveTrain().resetTurnError();
-                    //    robot.getDriveTrain().setGear(false);
+                    // Change gear w/ cooldown
+                    if (getGamepad1().getRightBumperPressed()
+                            && lastGearChange + GEAR_CHANGE_CD < System.currentTimeMillis()) {
+                        robot.getDriveTrain().changeGear();
+                        lastGearChange = System.currentTimeMillis();
                     }
 
-                    if(Math.abs(robot.getDriveTrain().getTurnError()) > 3.0) {
-                        robot.getDriveTrain().alignToGoal();
+                    // Front Intake
+                    if(getGamepad2().getRightTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(-1);
+                    else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(1);
+                    else robot.getFrontIntake().driveIntakeOnly(0);
+
+                    if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
+
+                    if(!intakeUp && getGamepad2().getRightY() > 0.25) {
+                        downforce = true;
+                    }
+                    else downforce = false;
+
+                    if(!intakeUp && downforce) {
+                        robot.getFrontIntake().driveIntakeOnly(1);
+                        robot.getFrontIntake().rawArticulate(-0.2);
+                    }
+                    else if(intakeUp && !downforce) robot.getFrontIntake().raise();
+                    else if(!intakeUp && !downforce) robot.getFrontIntake().dropForShot();
+
+                    
+                    
+
+                    // Rear Intake
+                    robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
+                            getGamepad2().getLeftBumper());
+
+                    // Indexer
+                    if(getGamepad2().getLeftBumper()) robot.getIndexer().drive(1);
+                    else if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(1);
+                    else if(getGamepad2().getLeftY() < -0.5) robot.getIndexer().drive(-1);
+                    else robot.getIndexer().drive(0);
+
+                    boolean startedShootingProcess = false;
+                    boolean enableLED = false;
+                    // Shooter
+                    if(getGamepad1().getAButton()) {
+
+                        intakeUp = false;
+                        shooterIntakeLockout = true;
+                        enableLED = true;
+
+                        if(!startedShootingProcess) {
+                            startedShootingProcess = true;
+                            robot.getDriveTrain().resetTurnError();
+                        //    robot.getDriveTrain().setGear(false);
+                        }
+
+                        if(Math.abs(robot.getDriveTrain().getTurnError()) > 3.0) {
+                            robot.getDriveTrain().alignToGoal();
+                        }
+                        else {
+                            robot.getDriveTrain().stop();
+                        }
+
+                    
                     }
                     else {
-                        robot.getDriveTrain().stop();
+                        startedShootingProcess = false;
+                        if(!funkyShot) robot.getFlywheel().update(0, 0);
+                        robot.getDriveTrain().alignFirstTime = true;
+                        robot.getDriveTrain().endLockout();
+                        robot.getFrontIntake().shooterLock = false;
+                        shooterIntakeLockout = false;
                     }
 
-                   
-                }
-                else {
-                    startedShootingProcess = false;
-                    if(!funkyShot) robot.getFlywheel().update(0, 0);
-                    robot.getDriveTrain().alignFirstTime = true;
-                    robot.getDriveTrain().endLockout();
-                    robot.getFrontIntake().shooterLock = false;
-                    shooterIntakeLockout = false;
-                }
-
-                if(getGamepad1().getXButton()) {
-                    enableLED = true;
-                    shooterIntakeLockout = true;
-                    intakeUp = false;
-                    if(!robot.getVision().hasTarget()) {
-                        System.out.println("no target, assuming close shot");
-                        robot.getFlywheel().update(1300, 410);
+                    if(getGamepad1().getXButton()) {
+                        enableLED = true;
+                        shooterIntakeLockout = true;
+                        intakeUp = false;
+                        if(!robot.getVision().hasTarget()) {
+                            System.out.println("no target, assuming close shot");
+                            robot.getFlywheel().update(1300, 410);
+                        }
+                        else robot.getFlywheel().updateDistance(robot.getVision().getDistance());
                     }
-                    else robot.getFlywheel().updateDistance(robot.getVision().getDistance());
-                }
-                if(enableLED) { 
-                    robot.getVision().enableLED();
-                    
-                }
-                else robot.getVision().disableLED();
+                    if(enableLED) { 
+                        robot.getVision().enableLED();
+                        
+                    }
+                    else robot.getVision().disableLED();
 
 
-                //chip shot
-                if(getGamepad1().getLeftBumper()) {
-                    robot.getFlywheel().update(400, 400);
-                    funkyShot = true;
+                    //chip shot
+                    if(getGamepad1().getLeftBumper()) {
+                        robot.getFlywheel().update(400, 400);
+                        funkyShot = true;
+                    }
+                    else if(getGamepad1().getYButton()) {
+                        robot.getFlywheel().update(1300, 800);
+                        funkyShot = true;
+                    }
+                    else funkyShot = false;
+
                 }
-                else if(getGamepad1().getYButton()) {
-                    robot.getFlywheel().update(1300, 800);
-                    funkyShot = true;
-                }
-                else funkyShot = false;
 
                 //Climber stufffffff
-                if(getGamepad2().getYButtonPressed()) horizontal = !horizontal;
 
-                if(horizontal) robot.getClimber().update(0, false);
-                else robot.getClimber().update(-90, false);
+                if(getGamepad2().getStartButtonPressed()) climbingSequencerCount++;
 
+                if(climbingSequencerCount == 1) {
+                    robot.getClimber().update(90, false);
+                    shooterIntakeLockout = true;
+                    robot.getFrontIntake().dropForShot();
+                }
 
+                else if(climbingSequencerCount == 2 && robot.getClimber().getCurrent() < 40) {
+                    robot.getDriveTrain().stop();
+                    robot.getIndexer().drive(0);
+                    robot.getFlywheel().updatePercentage(0, 0);
+                    robot.getRearIntake().drive(false, false);
+                    robot.getFrontIntake().rawArticulate(0);
+                    robot.getFrontIntake().driveIntakeOnly(0);
+                    climbing = true;
+                    robot.getClimber().test(0.75);
+                }
+
+                else if(climbingSequencerCount == 3 || (robot.getClimber().getCurrent() >= 40 && climbingSequencerCount == 2)) {
+                    climbingSequencerCount = 3;
+                    robot.getClimber().test(0);
+                }
+
+                else if(climbingSequencerCount == 4) {
+                    robot.getClimber().test(getGamepad2().getRightY());
+                } 
+
+                else if(climbingSequencerCount == 5 && robot.getClimber().getCurrent() < 40) {
+                    if(!fiveRetracted) {
+                        robot.getClimber().retractLong();
+                        fiveRetracted = true;
+                    }
+                    robot.getClimber().test(0.75);
+                    if(firstSequenceFive) {
+                        firstSequenceFive = false;
+                        sequenceFiveTimer = Timer.getFPGATimestamp();
+                    }
+
+                    if(Timer.getFPGATimestamp() > sequenceFiveTimer + 1 && !fiveFired) {
+                        robot.getClimber().fireLong();
+                        fiveFired = true;
+                    }
+                }
+
+                else if(climbingSequencerCount == 6 || (robot.getClimber().getCurrent() >= 40 && climbingSequencerCount == 5)) {
+                    climbingSequencerCount = 6;
+                    robot.getClimber().test(0);
+                }
+
+                else if(climbingSequencerCount == 7) {
+                    robot.getClimber().test(getGamepad2().getRightY());
+                }
+
+                else if(climbingSequencerCount == 8 && robot.getClimber().getCurrent() < 40) {
+                    if(!eightRetracted) {
+                        robot.getClimber().retractShort();
+                        eightRetracted = true;
+                    }
+                }
+
+                if(getGamepad2().getLeftStickButton()) {
+                    climbingSequencerCount = 0;
+                    climbing = false;
+                    firstSequenceFive = true;
+                    sequenceFiveTimer = 0;
+                    fiveRetracted = false;
+                    fiveFired = false;
+                    firstSequenceEight = true;
+                    sequenceEightTimer = 0;
+                    eightRetracted = false;
+                    eightFired = false;
+                }
 
                 break;
-
-
-
             case TEST:
 
                 /**

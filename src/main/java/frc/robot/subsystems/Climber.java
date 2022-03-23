@@ -17,17 +17,17 @@ public class Climber {
     private static final int LEFT = 15;
     private static final int RIGHT = 16;
 
-    private final int LEFT_LONG_FIRE = 0;
-    private final int LEFT_LONG_RETRACT = 0;
+    private final int LEFT_LONG_FIRE = 13;
+    private final int LEFT_LONG_RETRACT = 2;
 
-    private final int RIGHT_LONG_FIRE = 0;
-    private final int RIGHT_LONG_RETRACT = 0;
+    private final int RIGHT_LONG_FIRE = 12;
+    private final int RIGHT_LONG_RETRACT = 3;
 
-    private final int LEFT_SHORT_FIRE = 0;
-    private final int LEFT_SHORT_RETRACT = 0;
+    private final int LEFT_SHORT_FIRE = 11;
+    private final int LEFT_SHORT_RETRACT = 4;
 
-    private final int RIGHT_SHORT_FIRE = 0;
-    private final int RIGHT_SHORT_RETRACT = 0;
+    private final int RIGHT_SHORT_FIRE = 10;
+    private final int RIGHT_SHORT_RETRACT = 5;
 
     private DoubleSolenoid rightLong, leftLong, rightShort, leftShort;
 
@@ -165,6 +165,7 @@ public class Climber {
         else {
             right.set(ControlMode.PercentOutput, 0);
         }
+
         
 
         System.out.println("Left Reading: " + ((left.getSelectedSensorPosition() / (2048 * 240.0)) * 360) + " degrees");
@@ -178,7 +179,9 @@ public class Climber {
         //System.out.println("Raw Left Enc: " + left.getSelectedSensorPosition());
         //System.out.println("Raw Right Enc: " + right.getSelectedSensorPosition());
     }
-
+    public double getCurrent() {
+        return right.getStatorCurrent();
+    }
 
 
 }
