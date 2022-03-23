@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Scheduler.RobotRepeatingTask;
+import frc.robot.subsystems.Climber;
 
 
 /** Controls handlingß */
@@ -33,6 +34,7 @@ public class Controls {
     SlewRateLimiter turnLimiter = new SlewRateLimiter(1.8);
 
     private boolean downforce = false;
+    private boolean horizontal = true;
 
     /**
      * Requires robot dependancy
@@ -51,6 +53,7 @@ public class Controls {
     boolean intakeUp = true;
     boolean shooterIntakeLockout = false;
     private void controlsCheck() {
+    boolean funkyShot = false;
         // CONTROLS MAPPING
         switch (robot.getMode()) {
             case AUTO:
@@ -96,7 +99,7 @@ public class Controls {
                 double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
                 double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
                 double turn;
-                if(robot.getDriveTrain().getIsHighGear()) turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
+                if(robot.getDriveTrain().highGear) turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
                 else turn = turnLimiter.calculate(0.5 * Math.pow(getGamepad1().getLeftX(), 3));
 
                 System.out.println(turn);
@@ -173,7 +176,7 @@ public class Controls {
                 }
                 else {
                     startedShootingProcess = false;
-                    robot.getFlywheel().update(0, 0);
+                    if(!funkyShot) robot.getFlywheel().update(0, 0);
                     robot.getDriveTrain().alignFirstTime = true;
                     robot.getDriveTrain().endLockout();
                     robot.getFrontIntake().shooterLock = false;
@@ -200,10 +203,20 @@ public class Controls {
                 //chip shot
                 if(getGamepad1().getLeftBumper()) {
                     robot.getFlywheel().update(400, 400);
+                    funkyShot = true;
                 }
                 else if(getGamepad1().getYButton()) {
-                    robot.getFlywheel().update(1300, 1300);
+                    robot.getFlywheel().update(1300, 800);
+                    funkyShot = true;
                 }
+                else funkyShot = false;
+
+                //Climber stufffffff
+                if(getGamepad2().getYButtonPressed()) horizontal = !horizontal;
+
+                if(horizontal) robot.getClimber().update(0, false);
+                else robot.getClimber().update(-90, false);
+
 
 
                 break;
@@ -239,8 +252,7 @@ public class Controls {
 
                 robot.getClimber().test(getGamepad1().getRightY());
 
-
-
+          //     robot.getClimber().update(180, false);
                 robot.getDriveTrain().stop();
                 //robot.getFrontIntake().driveIntakeOnly(0);
                 // // // Flywheel - Close Shot

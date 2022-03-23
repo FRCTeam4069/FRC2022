@@ -72,7 +72,7 @@ public class DriveTrain {
     double lastLeft = 0;
     double lastRight = 0;
 
-    private boolean highGear = false;
+    public boolean highGear = true;
 
     /** Lockout for when aligning in teleOp */
     public void lockout() {

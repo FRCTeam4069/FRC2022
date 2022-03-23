@@ -23,6 +23,7 @@ import frc.robot.auto.routines.PathFollowingTest;
 import frc.robot.auto.routines.TestAuto;
 import frc.robot.auto.routines.TestAutonomousScheduler;
 import frc.robot.auto.routines.TwoBallAuto;
+import frc.robot.auto.routines.TwoBallLeft;
 import frc.robot.auto.routines.FourBallAuto;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
@@ -70,6 +71,7 @@ public class Robot extends TimedRobot {
 	private PathFollowingTest pathFollower;
 	private TwoBallAuto twoBall;
 	private FourBallAuto fourBall;
+	private TwoBallLeft twoLeft;
 	private AutoRoutine autoRoutine = null;
 
 	// Active mode
@@ -112,12 +114,15 @@ public class Robot extends TimedRobot {
 		pathFollower = new PathFollowingTest(this);
 		twoBall = new TwoBallAuto(this);
 		fourBall = new FourBallAuto(this);
+		twoLeft = new TwoBallLeft(this);
 
 		// Send auto selector
 		autoChooser.addOption("Test", testAutoScheduler);
 		autoChooser.addOption("Splines", pathFollower);
 		autoChooser.addOption(twoBall.name(), twoBall);
 		autoChooser.addOption(fourBall.name(), fourBall);
+		autoChooser.addOption(twoLeft.name(), twoLeft);
+		autoChooser.setDefaultOption(twoLeft.name(), twoBall);
 		SmartDashboard.putData(autoChooser);
 	
 

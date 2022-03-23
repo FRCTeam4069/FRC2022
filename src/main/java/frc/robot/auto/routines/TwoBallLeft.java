@@ -11,8 +11,10 @@ import frc.robot.auto.commands.backIntake.DisableBackIntake;
 import frc.robot.auto.commands.backIntake.EnableBakIntake;
 import frc.robot.auto.commands.drivetrain.TrajectoryFollowerCommand;
 import frc.robot.auto.commands.frontIntake.DisableIntakeCommand;
+import frc.robot.auto.commands.frontIntake.EnableIntakeCommand;
 import frc.robot.auto.commands.indexer.DisableIndexer;
 import frc.robot.auto.commands.indexer.EnableIndexer;
+import frc.robot.auto.commands.miscCommands.WaitCommand;
 import frc.robot.auto.commands.shooter.ShootCommand;
 
 public class TwoBallLeft implements AutoRoutine {
@@ -37,11 +39,13 @@ public class TwoBallLeft implements AutoRoutine {
         scheduler.addCommand(new EnableIndexer(1));
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
-        var end = new Pose2d(new Translation2d(0, 0), new Rotation2d(Math.toRadians(0)));
+        var end = new Pose2d(new Translation2d(-2.7, -0.2), new Rotation2d(Math.toRadians(7)));
         scheduler.addCommand(new TrajectoryFollowerCommand(start, interiorWaypoints, end, true));
+        scheduler.addCommand(new WaitCommand(0.25));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
-        scheduler.addCommand(new ShootCommand(1300, 750, 5));
+        scheduler.addCommand(new EnableIntakeCommand());
+        scheduler.addCommand(new ShootCommand(1300, 730, 5));
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new DisableBackIntake());
@@ -49,8 +53,7 @@ public class TwoBallLeft implements AutoRoutine {
 
     @Override
     public void loop() {
-        // TODO Auto-generated method stub
-        
+        scheduler.run();
     }
 
     
