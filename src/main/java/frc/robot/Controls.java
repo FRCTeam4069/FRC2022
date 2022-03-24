@@ -307,18 +307,16 @@ public class Controls {
                 //     robot.getClimber().test(output);
                 // }
 
-                else if(climbingSequencerCount == 6) {
+                else if(climbingSequencerCount > 5) {
                     if(!eightRetracted) {
                         robot.getClimber().retractShort();
                         eightRetracted = true;
                     }
-                }
-                
-                else if(climbingSequencerCount > 6) {
                     double output = 0;
-                    if(getGamepad2().getRightY() < -0.25) output = -1;
+                    if(getGamepad2().getRightY() < -0.25) output = 1;
                     robot.getClimber().test(output);
                 }
+                
 
                 if(getGamepad2().getLeftStickButton()) {
                     climbingSequencerCount = 0;
@@ -331,6 +329,10 @@ public class Controls {
                     sequenceEightTimer = 0;
                     eightRetracted = false;
                     eightFired = false;
+                }
+
+                if(getGamepad2().getYButton()) {
+                    robot.getClimber().test(0);
                 }
 
                 System.out.println("Current Step: " + climbingSequencerCount);
