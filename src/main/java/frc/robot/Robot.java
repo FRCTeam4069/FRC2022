@@ -14,8 +14,6 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auto.routines.AutoRoutine;
@@ -118,9 +116,8 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption(twoBall.name(), twoBall);
 		autoChooser.addOption(fourBall.name(), fourBall);
 		autoChooser.addOption(twoLeft.name(), twoLeft);
-		autoChooser.setDefaultOption(twoLeft.name(), twoBall);
+		autoChooser.setDefaultOption(fourBall.name(), fourBall);
 		SmartDashboard.putData(autoChooser);
-	
 
 	//	LiveWindow.disableAllTelemetry();
 	}
@@ -156,7 +153,7 @@ public class Robot extends TimedRobot {
 		mode = RobotMode.AUTO;
 
 		// Gets selected routine
-		autoRoutine = autoChooser.getSelected();
+		autoRoutine = twoLeft;
 		if (autoRoutine == null)
 			return;
 

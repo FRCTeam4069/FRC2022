@@ -138,7 +138,7 @@ public class Flywheel {
     public void updateDistance(double distance) {
 
         double interpolatedM = 3.85417;
-        double interpolatedB = 155;
+        double interpolatedB = 145;
         double bottomWheelSpeed = interpolatedM * distance + interpolatedB;
 
         update(1300, bottomWheelSpeed);
@@ -275,8 +275,8 @@ public class Flywheel {
      * @return
      */
     public boolean atDesiredSpeed() {
-        return (Math.abs(desiredSpeedTop - MAX_SPEED_DIFFERENCE) > MAX_SPEED_DIFFERENCE)
-            || (Math.abs(desiredSpeedBottom - MAX_SPEED_DIFFERENCE) > MAX_SPEED_DIFFERENCE);
+        return (Math.abs(desiredSpeedTop - (desiredSpeedTop * 0.05)) > getTopVel())
+            && (Math.abs(desiredSpeedBottom - (desiredSpeedBottom * 0.05)) > getBottomVel());
     }
 
 }

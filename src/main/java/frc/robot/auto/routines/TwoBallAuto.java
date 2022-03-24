@@ -47,7 +47,7 @@ public class TwoBallAuto implements AutoRoutine {
     
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 730, 5));
+        scheduler.addCommand(new ShootCommand(1300, 720, 5));
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new DisableBackIntake());

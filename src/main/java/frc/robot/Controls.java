@@ -2,12 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Scheduler.RobotRepeatingTask;
-import frc.robot.subsystems.Climber;
-
 
 /** Controls handlingß */
 public class Controls {
@@ -48,6 +45,9 @@ public class Controls {
     double sequenceEightTimer = 0;
     boolean eightRetracted = false;
     boolean eightFired = false;
+
+    boolean shortFired = true;
+    boolean longFired = true;
 
     /**
      * Requires robot dependancy
@@ -120,6 +120,9 @@ public class Controls {
                     System.out.println(turn);
                     if(getGamepad1().getBackButton()) turn = -0.225;
                     else if(getGamepad1().getStartButton()) turn = 0.225;
+
+                    if(climbingSequencerCount == 1 && getGamepad1().getLeftTriggerAxis() > 0.15) leftTrigger = 0.23;
+                    else if(climbingSequencerCount == 1) leftTrigger = 0;
                     robot.getDriveTrain().arcadeDrive(
                             MathUtil.applyDeadband(rightTrigger, DRIVETRAIN_TRIGGER_DEADBAND)
                                     - MathUtil.applyDeadband(leftTrigger,
@@ -228,6 +231,19 @@ public class Controls {
 
                 }
 
+                if(getGamepad2().getBackButtonPressed()) {
+                    if(shortFired) robot.getClimber().retractShort();
+                    else robot.getClimber().fireShort();
+                    System.out.println(shortFired);
+                    shortFired = !shortFired;
+                }
+                if(getGamepad2().getRightStickButtonPressed()) {
+                    if(longFired) robot.getClimber().retractLong();
+                    else robot.getClimber().fireLong();
+                    System.out.println(longFired);
+                    longFired =  !longFired;
+                }
+
                 //Climber stufffffff
 
                 if(getGamepad2().getStartButtonPressed()) climbingSequencerCount++;
@@ -238,7 +254,7 @@ public class Controls {
                     robot.getFrontIntake().dropForShot();
                 }
 
-                else if(climbingSequencerCount == 2 && robot.getClimber().getCurrent() < 40) {
+                else if(climbingSequencerCount == 2 && robot.getClimber().getCurrent() < 70) {
                     robot.getDriveTrain().stop();
                     robot.getIndexer().drive(0);
                     robot.getFlywheel().updatePercentage(0, 0);
@@ -246,49 +262,62 @@ public class Controls {
                     robot.getFrontIntake().rawArticulate(0);
                     robot.getFrontIntake().driveIntakeOnly(0);
                     climbing = true;
-                    robot.getClimber().test(0.75);
+                    robot.getClimber().test(-1);
                 }
 
-                else if(climbingSequencerCount == 3 || (robot.getClimber().getCurrent() >= 40 && climbingSequencerCount == 2)) {
+                else if(climbingSequencerCount == 3 || (robot.getClimber().getCurrent() >= 50 && climbingSequencerCount == 2)) {
                     climbingSequencerCount = 3;
                     robot.getClimber().test(0);
                 }
 
-                else if(climbingSequencerCount == 4) {
-                    robot.getClimber().test(getGamepad2().getRightY());
-                } 
+                // else if(climbingSequencerCount == 4) {
+                //     double output = 0;
+                //     if(getGamepad2().getRightY() > 0.25) output = 1;
+                //     else if(getGamepad2().getRightY() < -0.25) output = -1;
+                //     robot.getClimber().test(output);
+                // } 
 
-                else if(climbingSequencerCount == 5 && robot.getClimber().getCurrent() < 40) {
+                else if(climbingSequencerCount == 4 && robot.getClimber().getCurrent() < 70) {
                     if(!fiveRetracted) {
-                        robot.getClimber().retractLong();
+                        robot.getClimber().fireLong();
                         fiveRetracted = true;
                     }
-                    robot.getClimber().test(0.75);
                     if(firstSequenceFive) {
                         firstSequenceFive = false;
                         sequenceFiveTimer = Timer.getFPGATimestamp();
                     }
 
+                    if(Timer.getFPGATimestamp() > sequenceFiveTimer + 0.25) robot.getClimber().test(-1);
+
                     if(Timer.getFPGATimestamp() > sequenceFiveTimer + 1 && !fiveFired) {
-                        robot.getClimber().fireLong();
+                        robot.getClimber().retractLong();
                         fiveFired = true;
                     }
                 }
 
-                else if(climbingSequencerCount == 6 || (robot.getClimber().getCurrent() >= 40 && climbingSequencerCount == 5)) {
+                else if(climbingSequencerCount == 5 || (robot.getClimber().getCurrent() >= 70 && climbingSequencerCount == 5)) {
                     climbingSequencerCount = 6;
                     robot.getClimber().test(0);
                 }
 
-                else if(climbingSequencerCount == 7) {
-                    robot.getClimber().test(getGamepad2().getRightY());
-                }
+                // else if(climbingSequencerCount == 7) {
+                //     double output = 0;
+                //     if(getGamepad2().getRightY() > 0.25) output = 1;
+                //     else if(getGamepad2().getRightY() < -0.25) output = -1;
+                //     robot.getClimber().test(output);
+                // }
 
-                else if(climbingSequencerCount == 8 && robot.getClimber().getCurrent() < 40) {
+                else if(climbingSequencerCount == 6) {
                     if(!eightRetracted) {
                         robot.getClimber().retractShort();
                         eightRetracted = true;
                     }
+                }
+                
+                else if(climbingSequencerCount > 6) {
+                    double output = 0;
+                    if(getGamepad2().getRightY() < -0.25) output = -1;
+                    robot.getClimber().test(output);
                 }
 
                 if(getGamepad2().getLeftStickButton()) {
@@ -303,6 +332,8 @@ public class Controls {
                     eightRetracted = false;
                     eightFired = false;
                 }
+
+                System.out.println("Current Step: " + climbingSequencerCount);
 
                 break;
             case TEST:
@@ -331,8 +362,10 @@ public class Controls {
                 // System.out.println("X: " + robot.getDriveTrain().getPose().getX());
                 // System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
                 // System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
-
-                robot.getClimber().test(getGamepad1().getRightY());
+                double output = 0;
+                if(getGamepad1().getRightY() < -0.25) output = 1;
+                else if(getGamepad1().getRightY() > 0.25) output = -1; 
+                robot.getClimber().test(output);
 
           //     robot.getClimber().update(180, false);
                 robot.getDriveTrain().stop();

@@ -17,17 +17,17 @@ public class Climber {
     private static final int LEFT = 15;
     private static final int RIGHT = 16;
 
-    private final int LEFT_LONG_FIRE = 13;
-    private final int LEFT_LONG_RETRACT = 2;
+    private final int LEFT_SHORT_FIRE = 3;
+    private final int LEFT_SHORT_RETRACT = 2;
 
-    private final int RIGHT_LONG_FIRE = 12;
-    private final int RIGHT_LONG_RETRACT = 3;
+    private final int LEFT_LONG_FIRE = 4;
+    private final int LEFT_LONG_RETRACT = 5;
 
-    private final int LEFT_SHORT_FIRE = 11;
-    private final int LEFT_SHORT_RETRACT = 4;
+    private final int RIGHT_LONG_FIRE = 11;
+    private final int RIGHT_LONG_RETRACT = 10;
 
-    private final int RIGHT_SHORT_FIRE = 10;
-    private final int RIGHT_SHORT_RETRACT = 5;
+    private final int RIGHT_SHORT_FIRE = 12;
+    private final int RIGHT_SHORT_RETRACT = 13;
 
     private DoubleSolenoid rightLong, leftLong, rightShort, leftShort;
 
@@ -56,10 +56,10 @@ public class Climber {
         left.setInverted(true);
         left.follow(right);
 
-        // leftLong = new DoubleSolenoid(PneumaticsModuleType.REVPH, LEFT_LONG_FIRE, LEFT_LONG_RETRACT);
-        // rightLong = new DoubleSolenoid(PneumaticsModuleType.REVPH, RIGHT_LONG_FIRE, RIGHT_LONG_RETRACT);
-        // leftShort = new DoubleSolenoid(PneumaticsModuleType.REVPH, LEFT_SHORT_FIRE, LEFT_SHORT_FIRE);
-        // rightShort = new DoubleSolenoid(PneumaticsModuleType.REVPH, RIGHT_SHORT_FIRE, RIGHT_SHORT_RETRACT);
+        leftShort = new DoubleSolenoid(PneumaticsModuleType.REVPH, LEFT_LONG_FIRE, LEFT_LONG_RETRACT);
+        rightShort = new DoubleSolenoid(PneumaticsModuleType.REVPH, RIGHT_LONG_FIRE, RIGHT_LONG_RETRACT);
+        leftLong = new DoubleSolenoid(PneumaticsModuleType.REVPH, LEFT_SHORT_FIRE, LEFT_SHORT_RETRACT);
+        rightLong = new DoubleSolenoid(PneumaticsModuleType.REVPH, RIGHT_SHORT_FIRE, RIGHT_SHORT_RETRACT);
     }
 
     double lastTime = 0;
@@ -78,7 +78,7 @@ public class Climber {
         double kI = isLoaded ? 0.0 : 0.0;
         double kD = isLoaded ? 0.0 : 0.0;
 
-        double Err = desiredPosition - ((right.getSelectedSensorPosition() / (320.0 * 2048)) * 360);
+        double Err = desiredPosition - ((right.getSelectedSensorPosition() / (227.5 * 2048)) * 360);
 
         if(Math.abs(Err) < 1) {
             right.set(ControlMode.PercentOutput, 0);
@@ -134,7 +134,7 @@ public class Climber {
         }
 
         // System.out.println("Left Reading: " + (left.getSelectedSensorPosition() / (320 * 2048)) * 360);
-        System.out.println("Right Reading: " + (right.getSelectedSensorPosition() / (320 * 2048)) * 360);
+        System.out.println("Right Reading: " + (right.getSelectedSensorPosition() / (182 * 2048)) * 360);
 
         // System.out.println("Left Current: " + left.getStatorCurrent());
         // System.out.println("Right Current: " + right.getStatorCurrent());
