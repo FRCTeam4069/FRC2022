@@ -147,7 +147,7 @@ public class DriveTrain {
 
         turnError = 0 - offsetToGoal;
 
-        double turnKP = -0.015;
+        double turnKP = -0.018;
         if(!highGear) turnKP = -0.03;
 
         double output = turnKP * turnError;

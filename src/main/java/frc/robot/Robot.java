@@ -11,6 +11,7 @@ package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -120,6 +121,13 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData(autoChooser);
 
 	//	LiveWindow.disableAllTelemetry();
+
+		PortForwarder.add(5800, "lmelght.local", 5800);
+		PortForwarder.add(5800, "lmelght.local", 5801);
+		PortForwarder.add(5800, "lmelght.local", 5802);
+		PortForwarder.add(5800, "lmelght.local", 5803);
+		PortForwarder.add(5800, "lmelght.local", 5804);
+		PortForwarder.add(5800, "lmelght.local", 5805);
 	}
 
 	/**
@@ -153,7 +161,7 @@ public class Robot extends TimedRobot {
 		mode = RobotMode.AUTO;
 
 		// Gets selected routine
-		autoRoutine = fourBall;
+		autoRoutine = twoLeft;
 		if (autoRoutine == null)
 			return;
 

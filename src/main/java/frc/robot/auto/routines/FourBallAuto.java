@@ -39,25 +39,25 @@ public class FourBallAuto implements AutoRoutine {
         scheduler.addCommand(new EnableIndexer(1));
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
-        var end = new Pose2d(new Translation2d(-2.7, -0.2), new Rotation2d(Math.toRadians(10)));
+        var end = new Pose2d(new Translation2d(-2.6, -0.2), new Rotation2d(Math.toRadians(12)));
         scheduler.addCommand(new TrajectoryFollowerCommand(start,
          interiorWaypoints, end, true));
     
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 720, 2.7));
+        scheduler.addCommand(new ShootCommand(1300, 725, 2.7));
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
-        var backPickup = end.transformBy(new Transform2d(new Translation2d(-3.1, 1.35), new Rotation2d(Math.toRadians(-10))));
+        var backPickup = end.transformBy(new Transform2d(new Translation2d(-3.075, 1.35), new Rotation2d(Math.toRadians(-10))));
         scheduler.addCommand(new TrajectoryFollowerCommand(end, interiorWaypoints, backPickup, true));
 
-        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0.4, 0), new Rotation2d(Math.toRadians(-3))));
+        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0.4, 0), new Rotation2d(Math.toRadians(0))));
         scheduler.addCommand(new TrajectoryFollowerCommand(backPickup, interiorWaypoints, totalEnd, false));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 725, 3));
+        scheduler.addCommand(new ShootCommand(1300, 735, 3));
         scheduler.addCommand(new DisableIntakeCommand());
         
 
