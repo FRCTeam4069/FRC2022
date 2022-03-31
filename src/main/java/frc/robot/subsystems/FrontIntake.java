@@ -39,6 +39,18 @@ public class FrontIntake {
         this.robot = robot;
         encoder = articulate.getEncoder();
 
+        /*
+            Plan for new intake:
+
+            drive down until hits hard stop and current spikes (need to make sure it clears
+            other bar so it doesnt stop early)
+
+            on spike set the current position as a ref for positional P control, so if
+            the intake gets pushed up itll drive back down.
+
+            On retract drive up till current spike
+
+        */
 
     }
     public void dropForShot() {
