@@ -166,6 +166,7 @@ public class Controls {
 
                     // Indexer
                     if(getGamepad2().getLeftBumper()) robot.getIndexer().drive(1);
+                    else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getIndexer().drive(1);
                     else if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(1);
                     else if(getGamepad2().getLeftY() < -0.5) robot.getIndexer().drive(-1);
                     else robot.getIndexer().drive(0);
@@ -250,12 +251,15 @@ public class Controls {
 
                 if(getGamepad2().getStartButtonPressed()) climbingSequencerCount++;
 
+
+                // Arms flip up 90 degrees
                 if(climbingSequencerCount == 1) {
                     robot.getClimber().update(90, false);
                     shooterIntakeLockout = true;
                     robot.getFrontIntake().dropForShot();
                 }
 
+                // Rotate up to grab high bar, stp at current spike or press
                 else if(climbingSequencerCount == 2 && robot.getClimber().getCurrent() < 70) {
                     robot.getDriveTrain().stop();
                     robot.getIndexer().drive(0);
@@ -267,11 +271,16 @@ public class Controls {
                     robot.getClimber().test(-1);
                 }
 
+                // No power, suspended between mid and high
                 else if(climbingSequencerCount == 3 || (robot.getClimber().getCurrent() >= 70 && climbingSequencerCount == 2)) {
                     climbingSequencerCount = 3;
-                    robot.getClimber().test(0);
+                    double power = 0;
+                    if(getGamepad2().getRightY() > 0.25) power = -1;
+                    else if(getGamepad2().getRightY() < -0.25) power = 1;
+                    robot.getClimber().test(power);
                 }
 
+                // Arms drive back and hooks release, manual control to drive it back if needed, high hang
                 else if(climbingSequencerCount == 4) {
                     if(firstSequenceFive) {
                         firstSequenceFive = false;
@@ -293,7 +302,7 @@ public class Controls {
 
                     if(Timer.getFPGATimestamp() >= sequenceFiveTimer + 0.75) {
                         double output = 0;
-                        if(getGamepad2().getLeftY() < -0.25) output = 1;
+                        if(getGamepad2().getRightY() < -0.25) output = 1;
                         robot.getClimber().test(output);
                     }
 
@@ -304,6 +313,7 @@ public class Controls {
                     // }
                 }
 
+                // Hooks fire back closed, rotate up to grab traversal bar, stop on press or current
                 if(climbingSequencerCount == 5 && robot.getClimber().getCurrent() < 70) {
                     if(!fiveFired) {
                         fiveFired = true;
@@ -312,9 +322,13 @@ public class Controls {
                     robot.getClimber().test(-1);
                 }
 
-                else if(climbingSequencerCount == 6 || (robot.getClimber().getCurrent() >= 70 && climbingSequencerCount == 6)) {
-                    climbingSequencerCount = 5;
-                    robot.getClimber().test(0);
+                //Suspended between high and traversal
+                else if(climbingSequencerCount == 6 || (robot.getClimber().getCurrent() >= 70 && climbingSequencerCount == 5)) {
+                    climbingSequencerCount = 6;
+                    double power = 0;
+                    if(getGamepad2().getRightY() > 0.25) power = -1;
+                    else if(getGamepad2().getRightY() < -0.25) power = 1;
+                    robot.getClimber().test(power);
                 }
 
                 // else if(climbingSequencerCount == 7) {
@@ -324,6 +338,7 @@ public class Controls {
                 //     robot.getClimber().test(output);
                 // }
 
+                // Drives back and disengages, manual control ensues should further backdriving be required
                 else if(climbingSequencerCount > 6) {
 
                     if(firstSequenceEight) {
@@ -332,16 +347,16 @@ public class Controls {
                     }
 
                     if(Timer.getFPGATimestamp() < sequenceEightTimer + 0.75) {
-                        robot.getClimber().test(-1);
+                        robot.getClimber().test(1);
                     }
-                    if(!eightRetracted && Timer.getFPGATimestamp() > sequenceFiveTimer + 0.6) {
-                        robot.getClimber().fireLong();
+                    if(!eightRetracted && Timer.getFPGATimestamp() > sequenceEightTimer + 0.6) {
+                        robot.getClimber().retractShort();
                         eightRetracted = true;
                     }
     
-                    if(Timer.getFPGATimestamp() >= sequenceFiveTimer + 0.75) {
+                    if(Timer.getFPGATimestamp() >= sequenceEightTimer + 0.75) {
                         double output = 0;
-                        if(getGamepad2().getLeftY() < -0.25) output = 1;
+                        if(getGamepad2().getRightY() < -0.25) output = 1;
                         robot.getClimber().test(output);
                     }
                 }
@@ -388,18 +403,38 @@ public class Controls {
                  * 
                  */
 
-                if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
+                    // Indexer
+                    if(getGamepad1().getLeftBumper()) robot.getIndexer().drive(1);
+                    else if(getGamepad1().getLeftTriggerAxis() > 0.5) robot.getIndexer().drive(1);
+                    else if(getGamepad1().getLeftY() > 0.5) robot.getIndexer().drive(1);
+                    else if(getGamepad1().getLeftY() < -0.5) robot.getIndexer().drive(-1);
+                    else robot.getIndexer().drive(0);
+
+                //  robot.getFrontIntake().rawArticulate(getGamepad1().getLeftY());
+                //  double power = 0;
+                //  if(getGamepad1().getLeftTriggerAxis() > 0.5) power = -1;
+                //  else if(getGamepad1().getRightTriggerAxis() > 0.5) power = 1;
+
+                //  robot.getFrontIntake().driveIntakeOnly(power);
+                // robot.getFrontIntake().printColourVals();
+
+                 if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 750);
+                 else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 760);
+                 else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 770);
+                 else robot.getFlywheel().updatePercentage(0, 0);
+
+               // if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
                 // robot.getDriveTrain().updatePos();
                 // System.out.println("X: " + robot.getDriveTrain().getPose().getX());
                 // System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
                 // System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
                 double output = 0;
-                if(getGamepad1().getRightY() < -0.25) output = 1;
-                else if(getGamepad1().getRightY() > 0.25) output = -1; 
-                robot.getClimber().test(output);
+        //         if(getGamepad1().getRightY() < -0.25) output = 1;
+        //         else if(getGamepad1().getRightY() > 0.25) output = -1; 
+        //         //robot.getClimber().test(output);
 
-          //     robot.getClimber().update(180, false);
-                robot.getDriveTrain().stop();
+        //   //     robot.getClimber().update(180, false);
+        //         robot.getDriveTrain().stop();
                 //robot.getFrontIntake().driveIntakeOnly(0);
                 // // // Flywheel - Close Shot
                 // if (getGamepad1().getStartButton())
@@ -457,9 +492,9 @@ public class Controls {
                 // // Drivetrain
                 // #arcadeDrive(speed = right trigger - left trigger, turn = left joystick x
                 //  axis)
-                robot.getDriveTrain().arcadeDrive(
-                        getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(),
-                        getGamepad1().getLeftX());
+                // robot.getDriveTrain().arcadeDrive(
+                //         getGamepad1().getRightTriggerAxis() - getGamepad1().getLeftTriggerAxis(),
+                //         getGamepad1().getLeftX());
 
                 break;
             default:

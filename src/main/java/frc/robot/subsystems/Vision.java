@@ -8,7 +8,7 @@ public class Vision {
 
     NetworkTable table;
 
-    public final double limelightMountingAngleDegs = 25.5;
+    public final double limelightMountingAngleDegs = 28;
     public final double limelightMountHeightInches = 30.0;
     public final double goalHeightInches = 101.5;
 
@@ -24,7 +24,7 @@ public class Vision {
 
         double angleToGoal = (verticalOffsetDegs + limelightMountingAngleDegs) * (3.1415926 / 180.0);
         double distance = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
-        double realDistance = (1.48856 * distance) - 45.0587;
+        double realDistance =  (0.946791 * distance) - 4.80403;
         System.out.println("Distance to goal: " + realDistance);
     }
 

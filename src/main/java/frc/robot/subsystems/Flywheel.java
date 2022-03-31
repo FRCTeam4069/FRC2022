@@ -47,13 +47,13 @@ public class Flywheel {
     SimpleMotorFeedforward feedforward_top;
     SimpleMotorFeedforward feedforward_bottom;
 
-    private double kS_top = 0.19816;
-    private double kV_top = 0.4825;
-    private double kA_top = 1.6034;
+    private double kS_top = 3.4116;
+    private double kV_top = 0.39299;
+    private double kA_top = 7.9824;
 
-    private double kS_bottom = 1.3065;
-    private double kV_bottom = 0.46247;
-    private double kA_bottom = 3.4751;
+    private double kS_bottom = 1.519;
+    private double kV_bottom = 0.45238;
+    private double kA_bottom = 3.6465;
 
     private double desiredSpeedTop = 0;
     private double desiredSpeedBottom = 0;
@@ -191,11 +191,11 @@ public class Flywheel {
             bottomMotor.set(ControlMode.PercentOutput, bottomOutput);
             topMotor.set(ControlMode.PercentOutput, topOutput);
             
-            // System.out.println("Top Vel: " + topV);
+             System.out.println("Top Vel: " + topV);
             // System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
             // System.out.println("Top Current Draw: " + topMotor.getSupplyCurrent());
 
-            //System.out.println("Bottom Vel: " + bottomV);
+            System.out.println("Bottom Vel: " + bottomV);
             // System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
             // System.out.println("Bottom Current Draw: " + bottomMotor.getSupplyCurrent());
 

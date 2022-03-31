@@ -15,6 +15,7 @@ import frc.robot.auto.commands.frontIntake.EnableIntakeCommand;
 import frc.robot.auto.commands.indexer.DisableIndexer;
 import frc.robot.auto.commands.indexer.EnableIndexer;
 import frc.robot.auto.commands.miscCommands.WaitCommand;
+import frc.robot.auto.commands.shooter.PreFireShooterCommand;
 import frc.robot.auto.commands.shooter.ShootCommand;
 
 public class TwoBallLeft implements AutoRoutine {
@@ -41,6 +42,7 @@ public class TwoBallLeft implements AutoRoutine {
         var start = robot.getDriveTrain().getPose();
         var end = new Pose2d(new Translation2d(-2.5, -0.2), new Rotation2d(Math.toRadians(10)));
         scheduler.addCommand(new TrajectoryFollowerCommand(start, interiorWaypoints, end, true));
+        scheduler.addCommand(new PreFireShooterCommand(1300, 740));
         scheduler.addCommand(new WaitCommand(0.25));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());

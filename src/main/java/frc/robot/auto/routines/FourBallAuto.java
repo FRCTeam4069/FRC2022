@@ -15,6 +15,7 @@ import frc.robot.auto.commands.frontIntake.DisableIntakeCommand;
 import frc.robot.auto.commands.frontIntake.EnableIntakeCommand;
 import frc.robot.auto.commands.indexer.DisableIndexer;
 import frc.robot.auto.commands.indexer.EnableIndexer;
+import frc.robot.auto.commands.shooter.PreFireShooterCommand;
 import frc.robot.auto.commands.shooter.ShootCommand;
 
 public class FourBallAuto implements AutoRoutine {
@@ -37,6 +38,7 @@ public class FourBallAuto implements AutoRoutine {
         robot.getDriveTrain().setBrake();
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
+        scheduler.addCommand(new PreFireShooterCommand(1300, 725));
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
         var end = new Pose2d(new Translation2d(-2.6, -0.2), new Rotation2d(Math.toRadians(12)));
