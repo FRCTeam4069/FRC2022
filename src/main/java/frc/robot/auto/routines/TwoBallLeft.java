@@ -41,13 +41,13 @@ public class TwoBallLeft implements AutoRoutine {
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
         var end = new Pose2d(new Translation2d(-2.5, -0.2), new Rotation2d(Math.toRadians(10)));
+        // scheduler.addCommand(new PreFireShooterCommand(1300, 650));
         scheduler.addCommand(new TrajectoryFollowerCommand(start, interiorWaypoints, end, true));
-        scheduler.addCommand(new PreFireShooterCommand(1300, 740));
-        scheduler.addCommand(new WaitCommand(0.25));
+        scheduler.addCommand(new WaitCommand(1.5));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootCommand(1300, 740, 5));
+        scheduler.addCommand(new ShootCommand(1300, 650, 5));
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new DisableBackIntake());

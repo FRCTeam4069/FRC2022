@@ -33,7 +33,7 @@ public class ShootCommand extends Command {
     public void loop() {
         robot.getFlywheel().update(topWheelSpeed, bottomWheelSpeed);
         
-        if(robot.getFlywheel().getTopVel() > topWheelSpeed - 10) robot.getIndexer().drive(-1);
+        if(robot.getFlywheel().getTopVel() > topWheelSpeed) robot.getIndexer().drive(-1);
     }
 
     @Override

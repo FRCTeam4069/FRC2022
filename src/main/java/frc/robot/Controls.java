@@ -145,20 +145,8 @@ public class Controls {
 
                     if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
 
-                    if(!intakeUp && getGamepad2().getRightY() > 0.25) {
-                        downforce = true;
-                    }
-                    else downforce = false;
-
-                    if(!intakeUp && downforce) {
-                        robot.getFrontIntake().driveIntakeOnly(1);
-                        robot.getFrontIntake().rawArticulate(-0.2);
-                    }
-                    else if(intakeUp && !downforce) robot.getFrontIntake().raise();
-                    else if(!intakeUp && !downforce) robot.getFrontIntake().dropForShot();
-
-                    
-                    
+                    else if(intakeUp) robot.getFrontIntake().raise();
+                    else if(!intakeUp) robot.getFrontIntake().dropForShot();
 
                     // Rear Intake
                     robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
@@ -168,7 +156,10 @@ public class Controls {
                     if(getGamepad2().getLeftBumper()) robot.getIndexer().drive(1);
                     else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getIndexer().drive(1);
                     else if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(1);
-                    else if(getGamepad2().getLeftY() < -0.5) robot.getIndexer().drive(-1);
+                    else if(getGamepad2().getLeftY() < -0.5) {
+                        robot.getIndexer().drive(-1);
+                        robot.getFrontIntake().driveIntakeOnly(1);
+                    } 
                     else robot.getIndexer().drive(0);
 
                     boolean startedShootingProcess = false;
@@ -410,18 +401,18 @@ public class Controls {
                     else if(getGamepad1().getLeftY() < -0.5) robot.getIndexer().drive(-1);
                     else robot.getIndexer().drive(0);
 
-                //  robot.getFrontIntake().rawArticulate(getGamepad1().getLeftY());
-                //  double power = 0;
-                //  if(getGamepad1().getLeftTriggerAxis() > 0.5) power = -1;
-                //  else if(getGamepad1().getRightTriggerAxis() > 0.5) power = 1;
+                if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
+                else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
+                else robot.getFrontIntake().driveIntakeOnly(0);
+                if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
+                else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
+                else robot.getFrontIntake().rawArticulate(0);
+                robot.getFrontIntake().printColourVals();
 
-                //  robot.getFrontIntake().driveIntakeOnly(power);
-                // robot.getFrontIntake().printColourVals();
-
-                 if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 750);
-                 else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 760);
-                 else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 770);
-                 else robot.getFlywheel().updatePercentage(0, 0);
+                //  if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 750);
+                //  else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 760);
+                //  else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 770);
+                //  else robot.getFlywheel().updatePercentage(0, 0);
 
                // if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
                 // robot.getDriveTrain().updatePos();

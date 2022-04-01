@@ -27,6 +27,10 @@ public class FrontIntake {
 
     public boolean shooterLock = false;
 
+    private final double bottomPos = 4.95;
+    double down_kP = 0.75;
+    double up_kP = 1.5;
+
     // True/false is up/down state of intake
     private boolean articulateUp = true;
 
@@ -39,22 +43,23 @@ public class FrontIntake {
         this.robot = robot;
         encoder = articulate.getEncoder();
 
-
     }
     public void dropForShot() {
-        articulate.set(0);
+        double error = bottomPos - encoder.getPosition();
+        double output = down_kP * error;
+        double sign = Math.signum(output);
+        if(Math.abs(output) > 0.25) output = 0.25 * sign; 
+        articulate.set(output);
     }
 
     public void raise() {
-        articulate.set(0);
+        double error = 0 - encoder.getPosition();
+        if(Math.abs(error) < 0.5) return;
+
+        double output = up_kP * error;
+        articulate.set(output);
     }
 
-    /** Update the drive state of the front intake */
-    public void update(boolean intake) {
-
-      
-        articulate.set(0);
-    }
 
     public void rawArticulate(double percent) {
         articulate.set(percent);
