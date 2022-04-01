@@ -145,8 +145,8 @@ public class Controls {
 
                     if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
 
-                    else if(intakeUp) robot.getFrontIntake().raise();
-                    else if(!intakeUp) robot.getFrontIntake().dropForShot();
+                    // else if(intakeUp) robot.getFrontIntake().raise();
+                    // else if(!intakeUp) robot.getFrontIntake().dropForShot();
 
                     // Rear Intake
                     robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),

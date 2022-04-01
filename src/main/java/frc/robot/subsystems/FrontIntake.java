@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.Robot;
 
@@ -21,15 +22,15 @@ public class FrontIntake {
 
     private final CANSparkMax drive, articulate;
     //private final ColorSensorV3 colorSensor;
-    private RelativeEncoder encoder;
+    private Encoder encoder;
 
     private final Robot robot;
 
     public boolean shooterLock = false;
 
-    private final double bottomPos = 4.95;
-    double down_kP = 0.75;
-    double up_kP = 1.5;
+    private final double bottomPos = 1040;
+    double down_kP = 0.005;
+    double up_kP = 0.008;
 
     // True/false is up/down state of intake
     private boolean articulateUp = true;
@@ -41,11 +42,15 @@ public class FrontIntake {
         articulate = new CANSparkMax(ARTICULATE_CAN, MotorType.kBrushless);
        // colorSensor = new ColorSensorV3(Port.kOnboard);
         this.robot = robot;
-        encoder = articulate.getEncoder();
-
+        encoder = new Encoder(8, 9, true, EncodingType.k1X);
     }
     public void dropForShot() {
-        double error = bottomPos - encoder.getPosition();
+        double error = bottomPos - encoder.getDistance();
+
+        if(Math.abs(error) < 100) {
+            articulate.set(0);
+            return;
+        }
         double output = down_kP * error;
         double sign = Math.signum(output);
         if(Math.abs(output) > 0.25) output = 0.25 * sign; 
@@ -53,8 +58,11 @@ public class FrontIntake {
     }
 
     public void raise() {
-        double error = 0 - encoder.getPosition();
-        if(Math.abs(error) < 0.5) return;
+        double error = 0 - encoder.getDistance();
+        if(Math.abs(error) < 100) {
+            articulate.set(0);
+            return;
+        } 
 
         double output = up_kP * error;
         articulate.set(output);
@@ -71,7 +79,7 @@ public class FrontIntake {
     }
 
     public void printColourVals() {
-            System.out.println("Encoder Val: " + encoder.getPosition());
+            System.out.println("Encoder Val: " + encoder.getDistance());
             System.out.println("Current: " + articulate.getOutputCurrent());
         
     }
