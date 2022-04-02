@@ -394,6 +394,8 @@ public class Controls {
                  * 
                  */
 
+                 robot.getFrontIntake().rawArticulate(getGamepad1().getRightY());
+
                     // Indexer
                     if(getGamepad1().getLeftBumper()) robot.getIndexer().drive(1);
                     else if(getGamepad1().getLeftTriggerAxis() > 0.5) robot.getIndexer().drive(1);
@@ -401,13 +403,15 @@ public class Controls {
                     else if(getGamepad1().getLeftY() < -0.5) robot.getIndexer().drive(-1);
                     else robot.getIndexer().drive(0);
 
-                if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
-                else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
-                else robot.getFrontIntake().driveIntakeOnly(0);
-                if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
-                else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
-                else robot.getFrontIntake().rawArticulate(0);
-                robot.getFrontIntake().printColourVals();
+                    ///////INTAKE TESTING CODE IN THE NEXT COMMENT BLOCK
+
+                // if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
+                // else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
+                // else robot.getFrontIntake().driveIntakeOnly(0);
+                // if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
+                // else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
+                // else robot.getFrontIntake().rawArticulate(0);
+                // robot.getFrontIntake().printColourVals();
 
                 //  if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 750);
                 //  else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 760);

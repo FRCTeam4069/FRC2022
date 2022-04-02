@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
@@ -8,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.Robot;
@@ -20,6 +23,8 @@ public class FrontIntake {
     private static final int ARTICULATE_CAN = 11;
     private static final double ARTICULATE_MAGNITUDE = 0.3;
 
+    private final double currentSpikeThreshold = 50;
+
     private final CANSparkMax drive, articulate;
     //private final ColorSensorV3 colorSensor;
     private Encoder encoder;
@@ -28,7 +33,12 @@ public class FrontIntake {
 
     public boolean shooterLock = false;
 
-    private final double bottomPos = 1040;
+    private double upPosition = 0;
+    private double downPosition = 1040;
+
+    private boolean currentSpikeLast = false;
+    private double currentSpikeStartTimer = 0;
+
     double down_kP = 0.005;
     double up_kP = 0.008;
 
@@ -44,18 +54,39 @@ public class FrontIntake {
         this.robot = robot;
         encoder = new Encoder(8, 9, true, EncodingType.k1X);
     }
+
+
     public void dropForShot() {
-        double error = bottomPos - encoder.getDistance();
+        double error = downPosition - encoder.getDistance();
 
         if(Math.abs(error) < 100) {
             articulate.set(0);
             return;
         }
+
+        if(!currentSpikeLast && articulate.getCurrentOutput() > currentSpikeThreshold) {
+            currentSpikeStartTimer = Timer.getFPGATimestamp();
+            currentSpikeLast = true;
+        }
+        else if(currentSpikeLast && articulate.getCurrentOutput() > currentSpikeThreshold) {
+            if(Timer.getFPGATimestamp() > currentSpikeStartTimer + 1) {
+                encoder.reset();
+                upPosition = -1040;
+                downPosition = 0;
+            }
+        }
+        else {
+            currentSpikeStartTimer = 0;
+            currentSpikeLast = false;
+        }
+
         double output = down_kP * error;
         double sign = Math.signum(output);
         if(Math.abs(output) > 0.25) output = 0.25 * sign; 
         articulate.set(output);
     }
+
+
 
     public void raise() {
         double error = 0 - encoder.getDistance();
@@ -64,6 +95,22 @@ public class FrontIntake {
             return;
         } 
 
+        if(!currentSpikeLast && articulate.getCurrentOutput() > currentSpikeThreshold) {
+            currentSpikeStartTimer = Timer.getFPGATimestamp();
+            currentSpikeLast = true;
+        }
+        else if(currentSpikeLast && articulate.getCurrentOutput() > currentSpikeThreshold) {
+            if(Timer.getFPGATimestamp() > currentSpikeStartTimer + 1) {
+                encoder.reset();
+                upPosition = 0;
+                downPosition = 1040;
+            }
+        }
+        else {
+            currentSpikeStartTimer = 0;
+            currentSpikeLast = false;
+        }
+
         double output = up_kP * error;
         articulate.set(output);
     }
@@ -71,6 +118,7 @@ public class FrontIntake {
 
     public void rawArticulate(double percent) {
         articulate.set(percent);
+        System.out.println("Current: " + articulate.getCurrentOutput());
     }
 
     public void driveIntakeOnly(double speed) {
