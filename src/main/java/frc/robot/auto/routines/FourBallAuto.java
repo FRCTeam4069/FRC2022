@@ -55,10 +55,10 @@ public class FourBallAuto implements AutoRoutine {
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
-        var backPickup = end.transformBy(new Transform2d(new Translation2d(-3, 1.3), new Rotation2d(Math.toRadians(25))));
+        var backPickup = end.transformBy(new Transform2d(new Translation2d(-2.9, 1.3), new Rotation2d(Math.toRadians(25))));
         scheduler.addCommand(new TrajectoryFollowerCommand(end, interiorWaypoints, backPickup, true));
 
-        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0.4, 0), new Rotation2d(Math.toRadians(5))));
+        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0.4, 0), new Rotation2d(Math.toRadians(2))));
         scheduler.addCommand(new TrajectoryFollowerCommand(backPickup, interiorWaypoints, totalEnd, false));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
