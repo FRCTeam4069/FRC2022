@@ -23,11 +23,11 @@ public class FrontIntake {
     private static final int ARTICULATE_CAN = 11;
     private static final double ARTICULATE_MAGNITUDE = 0.3;
 
-    private final double currentSpikeThreshold = 50;
+    private final double currentSpikeThreshold = 30;
 
     private final CANSparkMax drive, articulate;
     //private final ColorSensorV3 colorSensor;
-    private Encoder encoder;
+    public Encoder encoder;
 
     private final Robot robot;
 
@@ -40,10 +40,16 @@ public class FrontIntake {
     private double currentSpikeStartTimer = 0;
 
     double down_kP = 0.005;
-    double up_kP = 0.008;
+    double up_kP = 0.005;
 
     // True/false is up/down state of intake
     private boolean articulateUp = true;
+
+    public void reset() {
+        encoder.reset();
+        upPosition = 0;
+        downPosition= 1040;
+    }
 
     private volatile boolean locked = false;
 
@@ -64,12 +70,12 @@ public class FrontIntake {
             return;
         }
 
-        if(!currentSpikeLast && articulate.getCurrentOutput() > currentSpikeThreshold) {
+        if(!currentSpikeLast && articulate.getOutputCurrent() > currentSpikeThreshold) {
             currentSpikeStartTimer = Timer.getFPGATimestamp();
             currentSpikeLast = true;
         }
-        else if(currentSpikeLast && articulate.getCurrentOutput() > currentSpikeThreshold) {
-            if(Timer.getFPGATimestamp() > currentSpikeStartTimer + 1) {
+        else if(currentSpikeLast && articulate.getOutputCurrent() > currentSpikeThreshold) {
+            if(Timer.getFPGATimestamp() > currentSpikeStartTimer + 0.5) {
                 encoder.reset();
                 upPosition = -1040;
                 downPosition = 0;
@@ -82,25 +88,25 @@ public class FrontIntake {
 
         double output = down_kP * error;
         double sign = Math.signum(output);
-        if(Math.abs(output) > 0.25) output = 0.25 * sign; 
+        if(Math.abs(output) > 0.35) output = 0.35 * sign; 
         articulate.set(output);
     }
 
 
 
     public void raise() {
-        double error = 0 - encoder.getDistance();
+        double error = upPosition - encoder.getDistance();
         if(Math.abs(error) < 100) {
             articulate.set(0);
             return;
         } 
 
-        if(!currentSpikeLast && articulate.getCurrentOutput() > currentSpikeThreshold) {
+        if(!currentSpikeLast && articulate.getOutputCurrent() > currentSpikeThreshold) {
             currentSpikeStartTimer = Timer.getFPGATimestamp();
             currentSpikeLast = true;
         }
-        else if(currentSpikeLast && articulate.getCurrentOutput() > currentSpikeThreshold) {
-            if(Timer.getFPGATimestamp() > currentSpikeStartTimer + 1) {
+        else if(currentSpikeLast && articulate.getOutputCurrent() > currentSpikeThreshold) {
+            if(Timer.getFPGATimestamp() > currentSpikeStartTimer + 0.5) {
                 encoder.reset();
                 upPosition = 0;
                 downPosition = 1040;
@@ -112,13 +118,16 @@ public class FrontIntake {
         }
 
         double output = up_kP * error;
+        double sign = Math.signum(output);
+        if(Math.abs(output) > 0.35) output = 0.35 * sign; 
         articulate.set(output);
     }
 
 
     public void rawArticulate(double percent) {
         articulate.set(percent);
-        System.out.println("Current: " + articulate.getCurrentOutput());
+
+    if(Math.abs(percent) > 0.1) System.out.println("Current: " + articulate.getOutputCurrent());
     }
 
     public void driveIntakeOnly(double speed) {

@@ -39,32 +39,35 @@ public class FourBallAuto implements AutoRoutine {
         robot.getDriveTrain().setBrake();
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
-        scheduler.addCommand(new PreFireShooterCommand(1300, 580));
+        scheduler.addCommand(new PreFireShooterCommand(1300, 575)); //UNCOMMENT IF RED
+       // scheduler.addCommand(new PreFireShooterCommand(1300, 595)); //UNCOMMENT IF BLUE
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
-        var end = new Pose2d(new Translation2d(-2.6, -0.2), new Rotation2d(Math.toRadians(12)));
+        var end = new Pose2d(new Translation2d(-2.65, -0.2), new Rotation2d(Math.toRadians(12)));
         scheduler.addCommand(new TrajectoryFollowerCommand(start,
          interiorWaypoints, end, true));
     
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
         scheduler.addCommand(new WaitCommand(0.25));
-        scheduler.addCommand(new ShootCommand(1300, 580, 2.7));
+        scheduler.addCommand(new ShootCommand(1300, 575, 2.7));// UNCOMMEBNT IF RED
+       // scheduler.addCommand(new ShootCommand(1300, 595, 2.7)); // UNCOMMENT IF VLUE
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
-        var backPickup = end.transformBy(new Transform2d(new Translation2d(-2.9, 1.3), new Rotation2d(Math.toRadians(25))));
+        var backPickup = end.transformBy(new Transform2d(new Translation2d(-3, 1.3), new Rotation2d(Math.toRadians(25))));
         scheduler.addCommand(new TrajectoryFollowerCommand(end, interiorWaypoints, backPickup, true));
 
-        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0.4, 0), new Rotation2d(Math.toRadians(2))));
-        // scheduler.addCommand(new PreFireShooterCommand(1300, 670));
+        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0.4, 0), new Rotation2d(Math.toRadians(5))));
         scheduler.addCommand(new TrajectoryFollowerCommand(backPickup, interiorWaypoints, totalEnd, false));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new PreFireShooterCommand(1300, 600));
+        scheduler.addCommand(new PreFireShooterCommand(1300, 580)); //UNCOMMENT IF RED
+       // scheduler.addCommand(new PreFireShooterCommand(1300, 600)); //UNCOMMENT IF BLUE
         scheduler.addCommand(new WaitCommand(0.25));
-        scheduler.addCommand(new ShootCommand(1300, 600, 3));
+        scheduler.addCommand(new ShootCommand(1300, 580, 3)); //UNCOMMENT IF RED
+        //scheduler.addCommand(new ShootCommand(1300, 600, 3)); // UNCOMMENT IF BLUE
         scheduler.addCommand(new DisableIntakeCommand());
         
 

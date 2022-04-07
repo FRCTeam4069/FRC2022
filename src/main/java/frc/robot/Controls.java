@@ -36,6 +36,8 @@ public class Controls {
     private boolean downforce = false;
     private boolean horizontal = true;
 
+    boolean manualAdjustment = false;
+
     int climbingSequencerCount = 0;
     boolean climbing = false;
     boolean firstSequenceFive = true;
@@ -139,14 +141,29 @@ public class Controls {
                     }
 
                     // Front Intake
+
+                    if(getGamepad2().getRightY() < -0.25) manualAdjustment = true;
+
                     if(getGamepad2().getRightTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(-1);
                     else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(1);
                     else robot.getFrontIntake().driveIntakeOnly(0);
 
-                    if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
+                    if(!manualAdjustment) {
+                        if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
+                        else if(intakeUp) robot.getFrontIntake().raise();
+                        else if(!intakeUp) robot.getFrontIntake().dropForShot();
+                    }
+                    else {
+                        if(getGamepad2().getRightY() < -0.25) robot.getFrontIntake().rawArticulate(-0.25);
+                        else if(getGamepad2().getRightY() > 0.25) robot.getFrontIntake().rawArticulate(0.25);
+                        else robot.getFrontIntake().rawArticulate(0);
 
-                    // else if(intakeUp) robot.getFrontIntake().raise();
-                    // else if(!intakeUp) robot.getFrontIntake().dropForShot();
+                        if(getGamepad2().getYButton()) {
+                            robot.getFrontIntake().rawArticulate(0);
+                            robot.getFrontIntake().encoder.reset();
+                            manualAdjustment = false;
+                        }
+                    }
 
                     // Rear Intake
                     robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
@@ -162,12 +179,14 @@ public class Controls {
                     } 
                     else robot.getIndexer().drive(0);
 
+
+
                     boolean startedShootingProcess = false;
                     boolean enableLED = false;
                     // Shooter
                     if(getGamepad1().getAButton()) {
 
-                        intakeUp = false;
+                       // intakeUp = false;
                         shooterIntakeLockout = true;
                         enableLED = true;
 
@@ -198,7 +217,7 @@ public class Controls {
                     if(getGamepad1().getXButton()) {
                         enableLED = true;
                         shooterIntakeLockout = true;
-                        intakeUp = false;
+               //         intakeUp = false;
                         if(!robot.getVision().hasTarget()) {
                             System.out.println("no target, assuming close shot");
                             robot.getFlywheel().update(1300, 410);
@@ -247,7 +266,7 @@ public class Controls {
                 if(climbingSequencerCount == 1) {
                     robot.getClimber().update(90, false);
                     shooterIntakeLockout = true;
-                    robot.getFrontIntake().dropForShot();
+                  //  robot.getFrontIntake().dropForShot();
                 }
 
                 // Rotate up to grab high bar, stp at current spike or press
@@ -337,7 +356,7 @@ public class Controls {
                         sequenceEightTimer = Timer.getFPGATimestamp();
                     }
 
-                    if(Timer.getFPGATimestamp() < sequenceEightTimer + 0.75) {
+                    if(Timer.getFPGATimestamp() < sequenceEightTimer + 1) {
                         robot.getClimber().test(1);
                     }
                     if(!eightRetracted && Timer.getFPGATimestamp() > sequenceEightTimer + 0.6) {
@@ -345,10 +364,13 @@ public class Controls {
                         eightRetracted = true;
                     }
     
-                    if(Timer.getFPGATimestamp() >= sequenceEightTimer + 0.75) {
+                    if(Timer.getFPGATimestamp() >= sequenceEightTimer + 1) {
                         double output = 0;
                         if(getGamepad2().getRightY() < -0.25) output = 1;
+                        else if(getGamepad2().getRightY() > 0.25) output = -1;
                         robot.getClimber().test(output);
+
+                        if(getGamepad2().getBackButtonPressed()) robot.getClimber().retractShort();
                     }
                 }
                 
@@ -394,7 +416,7 @@ public class Controls {
                  * 
                  */
 
-                 robot.getFrontIntake().rawArticulate(getGamepad1().getRightY());
+               //  robot.getFrontIntake().rawArticulate(getGamepad1().getRightY());
 
                     // Indexer
                     if(getGamepad1().getLeftBumper()) robot.getIndexer().drive(1);
@@ -405,13 +427,13 @@ public class Controls {
 
                     ///////INTAKE TESTING CODE IN THE NEXT COMMENT BLOCK
 
-                // if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
-                // else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
-                // else robot.getFrontIntake().driveIntakeOnly(0);
-                // if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
-                // else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
-                // else robot.getFrontIntake().rawArticulate(0);
-                // robot.getFrontIntake().printColourVals();
+                if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
+                else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
+                else robot.getFrontIntake().driveIntakeOnly(0);
+                if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
+                else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
+                else robot.getFrontIntake().rawArticulate(0);
+                robot.getFrontIntake().printColourVals();
 
                 //  if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 750);
                 //  else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 760);
