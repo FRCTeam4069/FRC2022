@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Vision {
 
-    NetworkTable table;
+    public NetworkTable table;
 
     public final double limelightMountingAngleDegs = 28;
     public final double limelightMountHeightInches = 30.0;

@@ -9,6 +9,7 @@ import frc.robot.Robot;
 import frc.robot.auto.AutoScheduler;
 import frc.robot.auto.commands.backIntake.DisableBackIntake;
 import frc.robot.auto.commands.backIntake.EnableBakIntake;
+import frc.robot.auto.commands.drivetrain.AutoAlignCommand;
 import frc.robot.auto.commands.drivetrain.TrajectoryFollowerCommand;
 import frc.robot.auto.commands.frontIntake.DisableIntakeCommand;
 import frc.robot.auto.commands.frontIntake.EnableIntakeCommand;
@@ -17,6 +18,7 @@ import frc.robot.auto.commands.indexer.EnableIndexer;
 import frc.robot.auto.commands.miscCommands.WaitCommand;
 import frc.robot.auto.commands.shooter.PreFireShooterCommand;
 import frc.robot.auto.commands.shooter.ShootCommand;
+import frc.robot.auto.commands.vision.EnableLimelightLEDCommand;
 
 public class TwoBallLeft implements AutoRoutine {
 
@@ -43,9 +45,11 @@ public class TwoBallLeft implements AutoRoutine {
         var end = new Pose2d(new Translation2d(-2.5, -0.2), new Rotation2d(Math.toRadians(11)));
         // scheduler.addCommand(new PreFireShooterCommand(1300, 650));
         scheduler.addCommand(new TrajectoryFollowerCommand(start, interiorWaypoints, end, true));
-        scheduler.addCommand(new WaitCommand(1.5));
+        scheduler.addCommand(new EnableLimelightLEDCommand());
+        scheduler.addCommand(new WaitCommand(1.0));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
+        scheduler.addCommand(new AutoAlignCommand());
         scheduler.addCommand(new EnableIntakeCommand());
         scheduler.addCommand(new ShootCommand(1300, 660, 7)); //Uncomment if red
      //   scheduler.addCommand(new ShootCommand(1300, 630, 5)); UNCOMMENT IF BLUE

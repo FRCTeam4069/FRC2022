@@ -301,6 +301,11 @@ public class DriveTrain {
         return currentPose;
     }
 
+    public void rawPowerSetting(double left, double right) {
+        leftMaster.set(ControlMode.PercentOutput, left);
+        rightMaster.set(ControlMode.PercentOutput, right);
+    }
+
     public void printImportantStuff() {
         // System.out.println("X: " + currentPose.getX());
         // System.out.println("Y: " + currentPose.getY());
