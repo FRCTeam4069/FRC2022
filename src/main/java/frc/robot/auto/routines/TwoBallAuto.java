@@ -53,7 +53,7 @@ public class TwoBallAuto implements AutoRoutine {
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new AutoAlignCommand());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootWithVisionCommand(1300, 660, 7)); //Uncomment if red
+        scheduler.addCommand(new ShootWithVisionCommand(1300, 650, 7)); //Uncomment if red
      //   scheduler.addCommand(new ShootCommand(1300, 630, 5)); UNCOMMENT IF BLUE
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new DisableIndexer());

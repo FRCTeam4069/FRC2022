@@ -24,7 +24,7 @@ public class AutoAlignCommand extends Command {
             offsetToGoal = robot.getVision().table.getEntry("tx").getDouble(0.0);
 
             double error = 0 - offsetToGoal;
-            double output = Math.signum(offsetToGoal) * 0.125;
+            double output = Math.signum(offsetToGoal) * 0.1;
 
             robot.getDriveTrain().rawPowerSetting(output, -output);
             System.out.println("Aligning, has target");

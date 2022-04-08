@@ -49,7 +49,7 @@ public class Flywheel {
     SimpleMotorFeedforward feedforward_top;
     SimpleMotorFeedforward feedforward_bottom;
 
-    private double kS_top = 3.4116;
+    private double kS_top = 1.3116;  //Good
     private double kV_top = 0.39299;
     private double kA_top = 7.9824;
 
@@ -84,7 +84,7 @@ public class Flywheel {
         kD_top = useInternalEncoders ? 0 : 0;
 
         //PID bottom   internalEncoder : REVCoder
-        kP_bottom = useInternalEncoders ? 0 : 4.1404;
+        kP_bottom = useInternalEncoders ? 0 : 0;
         kI_bottom = useInternalEncoders ? 0 : 0;
         kD_bottom = useInternalEncoders ? 0 : 0;
 
@@ -142,7 +142,7 @@ public class Flywheel {
     public void updateDistance(double distance) {
 
         //Cubic form: a = 0.000331549, b = -0.107732, c = 14.2529, d = -230.951
-        bottomWheelSpeed = 0.000331549 * Math.pow(distance, 3) -0.107732 * Math.pow(distance, 2) + 14.2529 * distance - 230.951;
+        bottomWheelSpeed = -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 259.126;
         update(1300, bottomWheelSpeed);
 
     }
@@ -161,6 +161,8 @@ public class Flywheel {
         //Using REVCoder
         desiredSpeedTop = topRPM;
         desiredSpeedBottom = bottomRPM;
+
+        bottomRPM = bottomRPM - 180;
 
         if(!useInternalEncoders) {
             double topCurPos = topEnc.getDistance();
@@ -185,20 +187,22 @@ public class Flywheel {
             double topFeedforwardOutput = feedforward_top.calculate(topRPM / 60);
 
             double bottomOutput;
-            if(pidOutput_bottom > 0) bottomOutput = (bottomFeedforwardOutput + pidOutput_bottom) / bottomMotor.getBusVoltage();
+            if(Math.abs(pidOutput_bottom) > 0) bottomOutput = (bottomFeedforwardOutput + pidOutput_bottom) / bottomMotor.getBusVoltage();
             else bottomOutput = bottomFeedforwardOutput / bottomMotor.getBusVoltage();
 
             double topOutput;
-            if(pidOutput_top > 0) topOutput = (topFeedforwardOutput + pidOutput_top) / topMotor.getBusVoltage();
+            if(Math.abs(pidOutput_top) > 0) topOutput = (topFeedforwardOutput + pidOutput_top) / topMotor.getBusVoltage();
             else topOutput = topFeedforwardOutput / topMotor.getBusVoltage();
 
             bottomMotor.set(ControlMode.PercentOutput, bottomOutput);
             topMotor.set(ControlMode.PercentOutput, topOutput);
             
+            System.out.println("Top Desired" + topRPM);
              System.out.println("Top Vel: " + topV);
             // System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
             // System.out.println("Top Current Draw: " + topMotor.getSupplyCurrent());
 
+            System.out.println("Bottom Desired: " + bottomRPM);
             System.out.println("Bottom Vel: " + bottomV);
             // System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
             // System.out.println("Bottom Current Draw: " + bottomMotor.getSupplyCurrent());

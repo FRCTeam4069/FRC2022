@@ -25,9 +25,11 @@ public class Vision {
         double verticalOffsetDegs = ty.getDouble(0.0);
 
         double angleToGoal = (verticalOffsetDegs + limelightMountingAngleDegs) * (3.1415926 / 180.0);
-        double distance = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
-        double realDistance =  (0.946791 * distance) - 4.80403;
+        double distance1 = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
+        double distance =  (0.946791 * distance1) - 4.80403;
+        double realDistance =  0.0001496 * Math.pow(distance, 3) - 0.058627 * Math.pow(distance, 2) + 8.8964 * distance - 319.774;
         System.out.println("Distance to goal: " + realDistance);
+
 
         lastReadDistance = realDistance;
     }
@@ -41,8 +43,9 @@ public class Vision {
         double verticalOffsetDegs = ty.getDouble(0.0);
 
         double angleToGoal = (verticalOffsetDegs + limelightMountingAngleDegs) * (3.1415926 / 180.0);
-        double distance = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
-        double realDistance = (0.946791 * distance) - 4.80403;
+        double distance1 = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
+        double distance = (0.946791 * distance1) - 4.80403;
+        double realDistance =  0.0001496 * Math.pow(distance, 3) - 0.058627 * Math.pow(distance, 2) + 8.8964 * distance - 319.774;
         return realDistance;
     }
 

@@ -45,6 +45,10 @@ public class Controls {
     boolean fiveRetracted = false;
     boolean fiveFired = false;
 
+    boolean currentStopFive = false;
+    boolean currentSpikeLast = false;
+    double currentSpikeStartTime = 0;
+
     boolean firstSequenceEight = true;
     double sequenceEightTimer = 0;
     boolean eightRetracted = false;
@@ -179,8 +183,6 @@ public class Controls {
                     } 
                     else robot.getIndexer().drive(0);
 
-
-
                     boolean startedShootingProcess = false;
                     boolean enableLED = false;
                     // Shooter
@@ -207,7 +209,7 @@ public class Controls {
                     }
                     else {
                         startedShootingProcess = false;
-                        if(!funkyShot) robot.getFlywheel().update(0, 0);
+                        if(!funkyShot) robot.getFlywheel().updatePercentage(0, 0);
                         robot.getDriveTrain().alignFirstTime = true;
                         robot.getDriveTrain().endLockout();
                         robot.getFrontIntake().shooterLock = false;
@@ -324,16 +326,29 @@ public class Controls {
                 }
 
                 // Hooks fire back closed, rotate up to grab traversal bar, stop on press or current
-                if(climbingSequencerCount == 5 && robot.getClimber().getCurrent() < 70) {
+                if(climbingSequencerCount == 5 && !currentStopFive) {
                     if(!fiveFired) {
                         fiveFired = true;
                         robot.getClimber().retractLong();
                     }
+
+                    if(robot.getClimber().getCurrent() > 70 && !currentSpikeLast) {
+                        currentSpikeStartTime = Timer.getFPGATimestamp();
+                        currentSpikeLast = true;
+                    }
+                    else if(robot.getClimber().getCurrent() > 70 && currentSpikeLast) {
+                        if(Timer.getFPGATimestamp() > 0.125 + currentSpikeStartTime) currentStopFive = true;
+                    }
+                    else {
+                        currentSpikeStartTime = 0;
+                        currentSpikeLast = false;
+                    }
+
                     robot.getClimber().test(-1);
                 }
 
                 //Suspended between high and traversal
-                else if(climbingSequencerCount == 6 || (robot.getClimber().getCurrent() >= 70 && climbingSequencerCount == 5)) {
+                else if(climbingSequencerCount == 6 || (currentStopFive && climbingSequencerCount == 5)) {
                     climbingSequencerCount = 6;
                     double power = 0;
                     if(getGamepad2().getRightY() > 0.25) power = -1;
@@ -392,7 +407,7 @@ public class Controls {
                     robot.getClimber().test(0);
                 }
 
-                System.out.println("Current Step: " + climbingSequencerCount);
+             //   System.out.println("Current Step: " + climbingSequencerCount);
 
                 break;
             case TEST:
@@ -427,18 +442,18 @@ public class Controls {
 
                     ///////INTAKE TESTING CODE IN THE NEXT COMMENT BLOCK
 
-                if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
-                else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
-                else robot.getFrontIntake().driveIntakeOnly(0);
-                if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
-                else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
-                else robot.getFrontIntake().rawArticulate(0);
-                robot.getFrontIntake().printColourVals();
+                // if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
+                // else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
+                // else robot.getFrontIntake().driveIntakeOnly(0);
+                // if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
+                // else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
+                // else robot.getFrontIntake().rawArticulate(0);
+                // robot.getFrontIntake().printColourVals();
 
-                //  if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 750);
-                //  else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 760);
-                //  else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 770);
-                //  else robot.getFlywheel().updatePercentage(0, 0);
+                 if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 1100);
+                 else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 1050);
+                 else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 1075);
+                 else robot.getFlywheel().updatePercentage(0, 0);
 
                // if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
                 // robot.getDriveTrain().updatePos();
@@ -485,7 +500,7 @@ public class Controls {
                 // else if(getGamepad1().getRightBumper()) robot.getFrontIntake().drive(-1);
                 // else robot.getFrontIntake().drive(0);
 
-                // robot.getVision().printDistanceToGoal();
+         //      robot.getVision().printDistanceToGoal();
 
 
 //TEST CODE ENDS
