@@ -11,7 +11,7 @@ public class AutoAlignCommand extends Command {
         
     }
 
-    double kP = -0.018;
+    
     double offsetToGoal;
     double noTargetTimer = -1;
     boolean noTargetLast = false;
@@ -24,10 +24,11 @@ public class AutoAlignCommand extends Command {
             offsetToGoal = robot.getVision().table.getEntry("tx").getDouble(0.0);
 
             double error = 0 - offsetToGoal;
-            double output = error * kP;
+            double output = Math.signum(offsetToGoal) * 0.125;
 
             robot.getDriveTrain().rawPowerSetting(output, -output);
             System.out.println("Aligning, has target");
+            System.out.println("Offset: " + offsetToGoal);
         }
         else {
             if(!noTargetLast) {
@@ -43,7 +44,7 @@ public class AutoAlignCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(offsetToGoal) < 1.5 || (Timer.getFPGATimestamp() - noTargetTimer > 1 && noTargetTimer != -1);
+        return Math.abs(offsetToGoal) < 1.0 || (Timer.getFPGATimestamp() - noTargetTimer > 1 && noTargetTimer != -1);
     }
 
     @Override

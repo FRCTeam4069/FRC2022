@@ -60,6 +60,8 @@ public class Flywheel {
     private double desiredSpeedTop = 0;
     private double desiredSpeedBottom = 0;
 
+    public double bottomWheelSpeed = 0;
+
     double topV = 0;
     double bottomV = 0;
 
@@ -140,10 +142,13 @@ public class Flywheel {
     public void updateDistance(double distance) {
 
         //Cubic form: a = 0.000331549, b = -0.107732, c = 14.2529, d = -230.951
-         double bottomWheelSpeed = 0.000331549 * Math.pow(distance, 3) -0.107732 * Math.pow(distance, 2) + 14.2529 * distance - 240.951; // UNCOMMENT IF RED
-    // double bottomWheelSpeed = 0.000331549 * Math.pow(distance, 3) -0.107732 * Math.pow(distance, 2) + 14.2529 * distance - 230.951; // UNCOMMENT IF BLUE
+        bottomWheelSpeed = 0.000331549 * Math.pow(distance, 3) -0.107732 * Math.pow(distance, 2) + 14.2529 * distance - 230.951;
         update(1300, bottomWheelSpeed);
 
+    }
+
+    public double getBottomWheelSpeed() {
+        return bottomWheelSpeed;
     }
 
     /**

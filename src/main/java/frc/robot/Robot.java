@@ -161,7 +161,7 @@ public class Robot extends TimedRobot {
 		mode = RobotMode.AUTO;
 
 		// Gets selected routine
-		autoRoutine = fourBall;
+		autoRoutine = twoBall;
 		if (autoRoutine == null)
 			return;
 

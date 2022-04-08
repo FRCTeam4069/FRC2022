@@ -12,6 +12,8 @@ public class Vision {
     public final double limelightMountHeightInches = 30.0;
     public final double goalHeightInches = 101.5;
 
+    private double lastReadDistance = 0;
+
     public Vision() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         table.getEntry("").setNumber(1);
@@ -26,6 +28,12 @@ public class Vision {
         double distance = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
         double realDistance =  (0.946791 * distance) - 4.80403;
         System.out.println("Distance to goal: " + realDistance);
+
+        lastReadDistance = realDistance;
+    }
+
+    public double getLastReadDistance() {
+        return lastReadDistance;
     }
 
     public double getDistance() {
@@ -34,7 +42,7 @@ public class Vision {
 
         double angleToGoal = (verticalOffsetDegs + limelightMountingAngleDegs) * (3.1415926 / 180.0);
         double distance = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
-        double realDistance = (1.48856 * distance) - 45.0587;
+        double realDistance = (0.946791 * distance) - 4.80403;
         return realDistance;
     }
 
