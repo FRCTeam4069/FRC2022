@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Scheduler.RobotRepeatingTask;
 import frc.robot.subsystems.Flywheel.PressureState;
 
@@ -224,7 +225,7 @@ public class Controls {
                         //    robot.getDriveTrain().setGear(false);
                         }
 
-                        if(Math.abs(robot.getDriveTrain().getTurnError()) > 2.5) {
+                        if(Math.abs(robot.getDriveTrain().getTurnError()) > 2.0) {
                             robot.getDriveTrain().alignToGoal();
                         }
                         else {
@@ -363,7 +364,7 @@ public class Controls {
                         currentSpikeLast = true;
                     }
                     else if(robot.getClimber().getCurrent() > 70 && currentSpikeLast) {
-                        if(Timer.getFPGATimestamp() > 0.125 + currentSpikeStartTime) currentStopFive = true;
+                        if(Timer.getFPGATimestamp() > 0.5 + currentSpikeStartTime) currentStopFive = true;
                     }
                     else {
                         currentSpikeStartTime = 0;
@@ -372,7 +373,6 @@ public class Controls {
 
                     robot.getClimber().test(-1);
                 }
-
                 //Suspended between high and traversal
                 else if(climbingSequencerCount == 6 || (currentStopFive && climbingSequencerCount == 5)) {
                     climbingSequencerCount = 6;
@@ -433,6 +433,8 @@ public class Controls {
                     robot.getClimber().test(0);
                 }
 
+                SmartDashboard.putString("Work in controls?", "You betcha");
+
              //   System.out.println("Current Step: " + climbingSequencerCount);
 
                 break;
@@ -460,26 +462,32 @@ public class Controls {
                //  robot.getFrontIntake().rawArticulate(getGamepad1().getRightY());
 
                     // Indexer
-                    if(getGamepad1().getLeftBumper()) robot.getIndexer().drive(1);
-                    else if(getGamepad1().getLeftTriggerAxis() > 0.5) robot.getIndexer().drive(1);
-                    else if(getGamepad1().getLeftY() > 0.5) robot.getIndexer().drive(1);
-                    else if(getGamepad1().getLeftY() < -0.5) robot.getIndexer().drive(-1);
-                    else robot.getIndexer().drive(0);
+                    // if(getGamepad1().getLeftBumper()) robot.getIndexer().drive(1);
+                    // else if(getGamepad1().getLeftTriggerAxis() > 0.5) robot.getIndexer().drive(1);
+                    // else if(getGamepad1().getLeftY() > 0.5) robot.getIndexer().drive(1);
+                    // else if(getGamepad1().getLeftY() < -0.5) robot.getIndexer().drive(-1);
+                    // else robot.getIndexer().drive(0);
 
                     ///////INTAKE TESTING CODE IN THE NEXT COMMENT BLOCK
 
                 if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
                 else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
                 else robot.getFrontIntake().driveIntakeOnly(0);
+
+                if(getGamepad1().getRightY() < -0.25) robot.getFrontIntake().rawArticulate(0.3);
+                else if(getGamepad1().getRightY() > 0.25) robot.getFrontIntake().rawArticulate(-0.3);
+                else robot.getFrontIntake().rawArticulate(0);
+
+                System.out.println("Velocity of intake (tick/sec): " + robot.getFrontIntake().getVel());
                 // if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
                 // else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
                 // else robot.getFrontIntake().rawArticulate(0);
                 // robot.getFrontIntake().printColourVals();
 
-                 if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 1080);
-                 else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 1090);
-                 else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 1085);
-                 else robot.getFlywheel().updatePercentage(0, 0);
+                //  if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 1080);
+                //  else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 1090);
+                //  else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 1085);
+                //  else robot.getFlywheel().updatePercentage(0, 0);
 
                // if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
                 // robot.getDriveTrain().updatePos();

@@ -18,12 +18,15 @@ import frc.robot.Robot;
 /** Front Intake Component */
 public class FrontIntake {
 
+    double lastTime = 0;
+    double lastPos = 0;
+
     private static final int DRIVE_CAN = 10;
 
     private static final int ARTICULATE_CAN = 11;
     private static final double ARTICULATE_MAGNITUDE = 0.3;
 
-    private final double currentSpikeThreshold = 30;
+    private final double currentSpikeThreshold = 5;
 
     private final CANSparkMax drive, articulate;
     //private final ColorSensorV3 colorSensor;
@@ -61,11 +64,22 @@ public class FrontIntake {
         encoder = new Encoder(8, 9, true, EncodingType.k1X);
     }
 
+    public double getVel() {
+        double vel = (encoder.getDistance() - lastPos) / (Timer.getFPGATimestamp() - lastTime);
+        lastPos = encoder.getDistance();
+        lastTime = Timer.getFPGATimestamp();
+
+        return vel;
+    }
+
 
     public void dropForShot() {
+        System.out.println("Desired Position: " + downPosition);
+        System.out.println("ACtual Position: " + encoder.getDistance());
+        System.out.println("Current: " + articulate.getOutputCurrent());
         double error = downPosition - encoder.getDistance();
 
-        if(Math.abs(error) < 100) {
+        if(Math.abs(error) < 150) {
             articulate.set(0);
             return;
         }
@@ -96,7 +110,11 @@ public class FrontIntake {
 
     public void raise() {
         double error = upPosition - encoder.getDistance();
-        if(Math.abs(error) < 100) {
+
+        System.out.println("Desired Position: " + upPosition);
+        System.out.println("ACtual Position: " + encoder.getDistance());
+        System.out.println("Current: " + articulate.getOutputCurrent());
+        if(Math.abs(error) < 150) {
             articulate.set(0);
             return;
         } 

@@ -147,10 +147,15 @@ public class DriveTrain {
 
         turnError = 0 - offsetToGoal;
 
+        if(Math.abs(turnError) < 2.0) {
+            rawPowerSetting(0, 0);
+            return;
+        } 
+
         double turnKP = -0.018;
         if(!highGear) turnKP = -0.03;
 
-        double output = turnKP * turnError;
+        double output = Math.signum(offsetToGoal) * 0.115;
 
         System.out.println("Current vision offset: " + robot.getVision().table.getEntry("tx").getDouble(0));
         leftMaster.set(ControlMode.PercentOutput, output);

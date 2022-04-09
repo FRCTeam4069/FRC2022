@@ -146,6 +146,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic() {
 		scheduler.runRepeatingTasks();
+		SmartDashboard.putString("Does this work?", "Indeed it does");
+		SmartDashboard.putData(autoChooser);
+		SmartDashboard.updateValues();
 	}
 
 	/**
