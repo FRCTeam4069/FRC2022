@@ -65,6 +65,8 @@ public class Flywheel {
     double topV = 0;
     double bottomV = 0;
 
+    private boolean highPressure;
+
     //For Sim
     DCMotor drive;
     EncoderSim encSim;
@@ -74,9 +76,11 @@ public class Flywheel {
      * @param Robot robot instance 
      * @param useInternalEncoders true if Falcon built in encoders are being used
      */
-    public Flywheel(Robot robot, boolean useInternalEncoders) {
+    public Flywheel(Robot robot, boolean useInternalEncoders, boolean highPressure) {
         this.useInternalEncoders = useInternalEncoders;
         cpr = useInternalEncoders ? 2048 : 8192;
+
+        this.highPressure = highPressure;
 
         //PID top    internalEncoder : REVCoder
         kP_top = useInternalEncoders ? 0 : 0;
@@ -135,14 +139,23 @@ public class Flywheel {
         return (velUnits / cpr) * 600;
     }
 
+    private double calcWheelSpeedHighPressure(double distance) {
+        return -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 345.126;
+    }
+
+    private double calcWheelSpeedLowPressure(double distance) {
+        return 0.000180845 * Math.pow(distance, 3) - 0.084635 * Math.pow(distance, 2) + 16.4323 * distance - 224.313;
+    }
+
     /**
      * Upates the shooter RPM based on the distance in inches from the goal
      * @param distance distance in inches
      */
     public void updateDistance(double distance) {
-
-        //Cubic form: a = 0.000331549, b = -0.107732, c = 14.2529, d = -230.951
-        bottomWheelSpeed = -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 345.126;
+    
+        if(highPressure) bottomWheelSpeed = calcWheelSpeedHighPressure(distance);
+        else bottomWheelSpeed = calcWheelSpeedLowPressure(distance);
+        
         update(1300, bottomWheelSpeed);
 
     }

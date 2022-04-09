@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
 		frontIntake = new FrontIntake(this);
 		rearIntake = new RearIntake();
 		driveTrain = new DriveTrain(this);
-		shooter = new Flywheel(this, false);
+		shooter = new Flywheel(this, false, false);
 		indexer = new Indexer();
 		vision = new Vision();
 		climber = new Climber();

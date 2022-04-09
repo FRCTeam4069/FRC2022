@@ -442,17 +442,17 @@ public class Controls {
 
                     ///////INTAKE TESTING CODE IN THE NEXT COMMENT BLOCK
 
-                // if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
-                // else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
-                // else robot.getFrontIntake().driveIntakeOnly(0);
+                if(getGamepad1().getLeftTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(1);
+                else if(getGamepad1().getRightTriggerAxis() > 0.25) robot.getFrontIntake().driveIntakeOnly(-1);
+                else robot.getFrontIntake().driveIntakeOnly(0);
                 // if(getGamepad1().getBackButton()) robot.getFrontIntake().dropForShot();
                 // else if(getGamepad1().getStartButton()) robot.getFrontIntake().raise();
                 // else robot.getFrontIntake().rawArticulate(0);
                 // robot.getFrontIntake().printColourVals();
 
-                 if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 1100);
-                 else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 1050);
-                 else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 1075);
+                 if(getGamepad1().getXButton()) robot.getFlywheel().update(1300, 1080);
+                 else if(getGamepad1().getBButton()) robot.getFlywheel().update(1300, 1090);
+                 else if(getGamepad1().getYButton()) robot.getFlywheel().update(1300, 1085);
                  else robot.getFlywheel().updatePercentage(0, 0);
 
                // if(getGamepad1().getAButton()) robot.getDriveTrain().resetPos();
@@ -500,7 +500,7 @@ public class Controls {
                 // else if(getGamepad1().getRightBumper()) robot.getFrontIntake().drive(-1);
                 // else robot.getFrontIntake().drive(0);
 
-               robot.getVision().printDistanceToGoal();
+              // robot.getVision().printDistanceToGoal();
 
 
 //TEST CODE ENDS
