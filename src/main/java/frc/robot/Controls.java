@@ -7,6 +7,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Scheduler.RobotRepeatingTask;
+import frc.robot.subsystems.Flywheel.PressureState;
 
 /** Controls handlingß */
 public class Controls {
@@ -36,6 +37,8 @@ public class Controls {
     private boolean downforce = false;
     private boolean horizontal = true;
 
+    public PressureState state;
+
     boolean manualAdjustment = false;
 
     int climbingSequencerCount = 0;
@@ -56,6 +59,8 @@ public class Controls {
 
     boolean shortFired = true;
     boolean longFired = true;
+
+    int lastDPAD = -1;
 
     /**
      * Requires robot dependancy
@@ -117,7 +122,7 @@ public class Controls {
                  */
 
                 if(!climbing) {
-
+                    
                     // Drive
                     double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
                     double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
@@ -186,6 +191,27 @@ public class Controls {
                     boolean startedShootingProcess = false;
                     boolean enableLED = false;
                     // Shooter
+
+                    int currentDPAD = getGamepad1().getPOV(0);
+                    if(currentDPAD != lastDPAD) {
+                        lastDPAD = currentDPAD;
+                        if(currentDPAD != -1) {
+                            if(currentDPAD == 0 || currentDPAD == 315 || currentDPAD == 45) {
+                                if(state == PressureState.LOW) state = PressureState.MID;
+                                else if(state == PressureState.MID) state = PressureState.HIGH;
+                                else state = PressureState.LOW;
+                            }
+                            else if(currentDPAD == 180 || currentDPAD == 135 || currentDPAD == 225) {
+                                if(state == PressureState.HIGH) state = PressureState.MID;
+                                else if(state == PressureState.MID) state = PressureState.LOW;
+                                else state = PressureState.HIGH;
+                            }
+                            robot.getFlywheel().setPressureState(state);
+                        }
+                    }
+
+                    System.out.println("State: " + state);
+
                     if(getGamepad1().getAButton()) {
 
                        // intakeUp = false;

@@ -65,7 +65,7 @@ public class Flywheel {
     double topV = 0;
     double bottomV = 0;
 
-    private boolean highPressure;
+    private PressureState state;
 
     //For Sim
     DCMotor drive;
@@ -76,11 +76,11 @@ public class Flywheel {
      * @param Robot robot instance 
      * @param useInternalEncoders true if Falcon built in encoders are being used
      */
-    public Flywheel(Robot robot, boolean useInternalEncoders, boolean highPressure) {
+    public Flywheel(Robot robot, boolean useInternalEncoders, PressureState state) {
         this.useInternalEncoders = useInternalEncoders;
         cpr = useInternalEncoders ? 2048 : 8192;
 
-        this.highPressure = highPressure;
+        this.state = state;
 
         //PID top    internalEncoder : REVCoder
         kP_top = useInternalEncoders ? 0 : 0;
@@ -139,8 +139,16 @@ public class Flywheel {
         return (velUnits / cpr) * 600;
     }
 
+    public void setPressureState(PressureState state) {
+        this.state = state;
+    }
+
     private double calcWheelSpeedHighPressure(double distance) {
         return -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 345.126;
+    }
+
+    private double calcWheelSpeedMidPressure(double distance) {
+        return -0.00124008 * Math.pow(distance, 2) + 4.1369 * distance + 349.25;
     }
 
     private double calcWheelSpeedLowPressure(double distance) {
@@ -153,7 +161,8 @@ public class Flywheel {
      */
     public void updateDistance(double distance) {
     
-        if(highPressure) bottomWheelSpeed = calcWheelSpeedHighPressure(distance);
+        if(state == PressureState.HIGH) bottomWheelSpeed = calcWheelSpeedHighPressure(distance);
+        else if(state == PressureState.MID) bottomWheelSpeed = calcWheelSpeedMidPressure(distance);
         else bottomWheelSpeed = calcWheelSpeedLowPressure(distance);
         
         update(1300, bottomWheelSpeed);
@@ -171,8 +180,8 @@ public class Flywheel {
      * @param bottomRPM Angilar velocity of bottom wheel (RPM)
      */
     public void update(double topRPM, double bottomRPM) {
-      //  System.out.println("Deired Top" + topRPM);
-       // System.out.println("Desired Bottom" + bottomRPM);
+       System.out.println("Deired Top" + topRPM);
+       System.out.println("Desired Bottom" + bottomRPM);
         //Using REVCoder
         desiredSpeedTop = topRPM;
         desiredSpeedBottom = bottomRPM;
@@ -302,6 +311,12 @@ public class Flywheel {
     public boolean atDesiredSpeed() {
         return (Math.abs(desiredSpeedTop - (desiredSpeedTop * 0.05)) > getTopVel())
             && (Math.abs(desiredSpeedBottom - (desiredSpeedBottom * 0.05)) > getBottomVel());
+    }
+
+    public enum PressureState {
+        HIGH,
+        MID,
+        LOW
     }
 
 }
