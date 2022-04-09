@@ -46,6 +46,7 @@ public class Vision {
         double distance1 = (goalHeightInches - limelightMountHeightInches) / Math.tan(angleToGoal);
         double distance = (0.946791 * distance1) - 4.80403;
         double realDistance =  0.0001496 * Math.pow(distance, 3) - 0.058627 * Math.pow(distance, 2) + 8.8964 * distance - 319.774;
+        System.out.println("Distance to goal: " + realDistance);
         return realDistance;
     }
 

@@ -125,7 +125,7 @@ public class Controls {
                     if(robot.getDriveTrain().highGear) turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
                     else turn = turnLimiter.calculate(0.5 * Math.pow(getGamepad1().getLeftX(), 3));
 
-                    System.out.println(turn);
+                   // System.out.println(turn);
                     if(getGamepad1().getBackButton()) turn = -0.225;
                     else if(getGamepad1().getStartButton()) turn = 0.225;
 
@@ -198,7 +198,7 @@ public class Controls {
                         //    robot.getDriveTrain().setGear(false);
                         }
 
-                        if(Math.abs(robot.getDriveTrain().getTurnError()) > 3.0) {
+                        if(Math.abs(robot.getDriveTrain().getTurnError()) > 2.5) {
                             robot.getDriveTrain().alignToGoal();
                         }
                         else {
@@ -209,7 +209,6 @@ public class Controls {
                     }
                     else {
                         startedShootingProcess = false;
-                        if(!funkyShot) robot.getFlywheel().updatePercentage(0, 0);
                         robot.getDriveTrain().alignFirstTime = true;
                         robot.getDriveTrain().endLockout();
                         robot.getFrontIntake().shooterLock = false;
@@ -226,6 +225,7 @@ public class Controls {
                         }
                         else robot.getFlywheel().updateDistance(robot.getVision().getDistance());
                     }
+                    else {if(!funkyShot) robot.getFlywheel().updatePercentage(0, 0);}
                     if(enableLED) { 
                         robot.getVision().enableLED();
                         
@@ -500,7 +500,7 @@ public class Controls {
                 // else if(getGamepad1().getRightBumper()) robot.getFrontIntake().drive(-1);
                 // else robot.getFrontIntake().drive(0);
 
-         //      robot.getVision().printDistanceToGoal();
+               robot.getVision().printDistanceToGoal();
 
 
 //TEST CODE ENDS

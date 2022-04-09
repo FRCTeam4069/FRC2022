@@ -19,6 +19,7 @@ public class ParallelCommand extends Command {
 
     @Override
     public void loop() {
+        System.out.println("looping parallel");
         if(!c1.isFinished()) c1.loop();
         if(!c2.isFinished()) c2.loop();
     }

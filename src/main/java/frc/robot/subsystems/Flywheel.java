@@ -142,7 +142,7 @@ public class Flywheel {
     public void updateDistance(double distance) {
 
         //Cubic form: a = 0.000331549, b = -0.107732, c = 14.2529, d = -230.951
-        bottomWheelSpeed = -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 259.126;
+        bottomWheelSpeed = -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 345.126;
         update(1300, bottomWheelSpeed);
 
     }
@@ -158,6 +158,8 @@ public class Flywheel {
      * @param bottomRPM Angilar velocity of bottom wheel (RPM)
      */
     public void update(double topRPM, double bottomRPM) {
+      //  System.out.println("Deired Top" + topRPM);
+       // System.out.println("Desired Bottom" + bottomRPM);
         //Using REVCoder
         desiredSpeedTop = topRPM;
         desiredSpeedBottom = bottomRPM;
@@ -197,13 +199,13 @@ public class Flywheel {
             bottomMotor.set(ControlMode.PercentOutput, bottomOutput);
             topMotor.set(ControlMode.PercentOutput, topOutput);
             
-            System.out.println("Top Desired" + topRPM);
-             System.out.println("Top Vel: " + topV);
+           // System.out.println("Top Desired" + topRPM);
+           //  System.out.println("Top Vel: " + topV);
             // System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
             // System.out.println("Top Current Draw: " + topMotor.getSupplyCurrent());
 
-            System.out.println("Bottom Desired: " + bottomRPM);
-            System.out.println("Bottom Vel: " + bottomV);
+        //    System.out.println("Bottom Desired: " + bottomRPM);
+        //    System.out.println("Bottom Vel: " + bottomV);
             // System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
             // System.out.println("Bottom Current Draw: " + bottomMotor.getSupplyCurrent());
 

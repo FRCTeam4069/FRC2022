@@ -20,6 +20,7 @@ import frc.robot.auto.commands.shooter.ShootCommand;
 import frc.robot.auto.commands.shooter.ShootWithVisionCommand;
 import frc.robot.auto.commands.vision.DisableLimelightLEDCommand;
 import frc.robot.auto.commands.vision.EnableLimelightLEDCommand;
+import frc.robot.auto.commands.miscCommands.ParallelCommand;
 import frc.robot.auto.commands.miscCommands.WaitCommand;
 
 public class TwoBallAuto implements AutoRoutine {
@@ -48,11 +49,14 @@ public class TwoBallAuto implements AutoRoutine {
         // scheduler.addCommand(new PreFireShooterCommand(1300, 650));
         scheduler.addCommand(new TrajectoryFollowerCommand(start, interiorWaypoints, end, true));
         scheduler.addCommand(new EnableLimelightLEDCommand());
+        scheduler.addCommand(new DisableIndexer());
+        scheduler.addCommand(new EnableIndexer(1));
         scheduler.addCommand(new WaitCommand(1.0));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new AutoAlignCommand());
         scheduler.addCommand(new EnableIntakeCommand());
+        scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new ShootWithVisionCommand(1300, 650, 7)); //Uncomment if red
      //   scheduler.addCommand(new ShootCommand(1300, 630, 5)); UNCOMMENT IF BLUE
         scheduler.addCommand(new DisableIntakeCommand());

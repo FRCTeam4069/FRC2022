@@ -50,7 +50,7 @@ public class AutoAlignCommand extends Command {
     @Override
     public void close() {
         robot.getDriveTrain().rawPowerSetting(0, 0);
-        robot.getVision().disableLED();
+        // robot.getVision().disableLED();
     }
     
 }
