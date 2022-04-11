@@ -158,22 +158,9 @@ public class Controls {
                     else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(1);
                     else robot.getFrontIntake().driveIntakeOnly(0);
 
-                    if(!manualAdjustment) {
-                        if(getGamepad2().getXButtonPressed() && !shooterIntakeLockout) intakeUp = !intakeUp;
-                        else if(intakeUp) robot.getFrontIntake().raise();
-                        else if(!intakeUp) robot.getFrontIntake().dropForShot();
-                    }
-                    else {
-                        if(getGamepad2().getRightY() < -0.25) robot.getFrontIntake().rawArticulate(-0.25);
+                    if(getGamepad2().getRightY() < -0.25) robot.getFrontIntake().rawArticulate(-0.25);
                         else if(getGamepad2().getRightY() > 0.25) robot.getFrontIntake().rawArticulate(0.25);
                         else robot.getFrontIntake().rawArticulate(0);
-
-                        if(getGamepad2().getYButton()) {
-                            robot.getFrontIntake().rawArticulate(0);
-                            robot.getFrontIntake().encoder.reset();
-                            manualAdjustment = false;
-                        }
-                    }
 
                     // Rear Intake
                     robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
