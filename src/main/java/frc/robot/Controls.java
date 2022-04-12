@@ -63,6 +63,10 @@ public class Controls {
 
     int lastDPAD = -1;
 
+    double autoAlignStartTime = 0;
+    boolean autoAlignStarted = false;
+    boolean autoIdexerOut = false;
+
     /**
      * Requires robot dependancy
      * 
@@ -174,6 +178,7 @@ public class Controls {
                         robot.getIndexer().drive(-1);
                         robot.getFrontIntake().driveIntakeOnly(1);
                     } 
+                    else if(autoIdexerOut) robot.getIndexer().drive(1);
                     else robot.getIndexer().drive(0);
 
                     boolean startedShootingProcess = false;
@@ -184,23 +189,36 @@ public class Controls {
                     if(currentDPAD != lastDPAD) {
                         lastDPAD = currentDPAD;
                         if(currentDPAD != -1) {
-                            if(currentDPAD == 0 || currentDPAD == 315 || currentDPAD == 45) {
-                                if(state == PressureState.LOW) state = PressureState.MID;
+                            if(currentDPAD == 180 || currentDPAD == 135 || currentDPAD == 225) {
+                                if(robot.getFlywheel().constant > 0) robot.getFlywheel().constant -= 10;
+                                else if(state == PressureState.LOW) state = PressureState.MID;
                                 else if(state == PressureState.MID) state = PressureState.HIGH;
-                                else state = PressureState.LOW;
+                                else {
+                                    robot.getFlywheel().constant -= 10;
+                                }
                             }
-                            else if(currentDPAD == 180 || currentDPAD == 135 || currentDPAD == 225) {
-                                if(state == PressureState.HIGH) state = PressureState.MID;
+                            else if(currentDPAD == 0 || currentDPAD == 315 || currentDPAD == 45) {
+                                if(robot.getFlywheel().constant < 0) robot.getFlywheel().constant += 10;
+                                else if(state == PressureState.HIGH) state = PressureState.MID;
                                 else if(state == PressureState.MID) state = PressureState.LOW;
-                                else state = PressureState.HIGH;
+                                else robot.getFlywheel().constant += 10;
                             }
                             robot.getFlywheel().setPressureState(state);
                         }
                     }
 
                     System.out.println("State: " + state);
+                    System.out.println("Constant: " + robot.getFlywheel().constant);
 
                     if(getGamepad1().getAButton()) {
+
+                        if(!autoAlignStarted) {
+                            autoAlignStarted = true;
+                            autoAlignStartTime = Timer.getFPGATimestamp();
+                        }
+
+                        if(autoAlignStartTime != 0 && autoAlignStartTime + 0.5 > Timer.getFPGATimestamp()) autoIdexerOut = true;
+                        else autoIdexerOut = false;
 
                        // intakeUp = false;
                         shooterIntakeLockout = true;
@@ -212,16 +230,18 @@ public class Controls {
                         //    robot.getDriveTrain().setGear(false);
                         }
 
-                        if(Math.abs(robot.getDriveTrain().getTurnError()) > 2.0) {
+                        if(Math.abs(robot.getDriveTrain().getTurnError()) > 1.75) {
                             robot.getDriveTrain().alignToGoal();
                         }
                         else {
                             robot.getDriveTrain().stop();
                         }
-
-                    
                     }
                     else {
+                        autoAlignStarted = false;
+                        autoIdexerOut = false;
+                        autoAlignStartTime = 0;
+
                         startedShootingProcess = false;
                         robot.getDriveTrain().alignFirstTime = true;
                         robot.getDriveTrain().endLockout();

@@ -67,6 +67,8 @@ public class Flywheel {
 
     private PressureState state;
 
+    public double constant = 0;
+
     //For Sim
     DCMotor drive;
     EncoderSim encSim;
@@ -144,15 +146,15 @@ public class Flywheel {
     }
 
     private double calcWheelSpeedHighPressure(double distance) {
-        return -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 345.126;
+        return -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 345.126 + constant;
     }
 
     private double calcWheelSpeedMidPressure(double distance) {
-        return -0.00124008 * Math.pow(distance, 2) + 4.1369 * distance + 349.25;
+        return -0.00124008 * Math.pow(distance, 2) + 4.1369 * distance + 349.25 + constant;
     }
 
     private double calcWheelSpeedLowPressure(double distance) {
-        return 0.000180845 * Math.pow(distance, 3) - 0.084635 * Math.pow(distance, 2) + 16.4323 * distance - 224.313;
+        return 0.000180845 * Math.pow(distance, 3) - 0.084635 * Math.pow(distance, 2) + 16.4323 * distance - 224.313 + constant;
     }
 
     /**

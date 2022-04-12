@@ -147,7 +147,7 @@ public class DriveTrain {
 
         turnError = 0 - offsetToGoal;
 
-        if(Math.abs(turnError) < 2.0) {
+        if(Math.abs(turnError) < 1.75) {
             rawPowerSetting(0, 0);
             return;
         } 
