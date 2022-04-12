@@ -21,9 +21,11 @@ import frc.robot.auto.routines.AutoRoutine;
 import frc.robot.auto.routines.PathFollowingTest;
 import frc.robot.auto.routines.TestAuto;
 import frc.robot.auto.routines.TestAutonomousScheduler;
+import frc.robot.auto.routines.TestParallel;
 import frc.robot.auto.routines.TwoBallAuto;
 import frc.robot.auto.routines.TwoBallLeft;
 import frc.robot.auto.routines.FourBallAuto;
+import frc.robot.auto.routines.NewFourBall;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
@@ -72,7 +74,9 @@ public class Robot extends TimedRobot {
 	private TwoBallAuto twoBall;
 	private FourBallAuto fourBall;
 	private TwoBallLeft twoLeft;
+	private TestParallel parallel;
 	private AutoRoutine autoRoutine = null;
+	private NewFourBall newFour;
 
 	// Active mode
 	private RobotMode mode = RobotMode.DISABLED;
@@ -114,6 +118,8 @@ public class Robot extends TimedRobot {
 		twoBall = new TwoBallAuto(this);
 		fourBall = new FourBallAuto(this);
 		twoLeft = new TwoBallLeft(this);
+		parallel = new TestParallel(this);
+		newFour = new NewFourBall(this);
 
 		// Send auto selector
 		autoChooser.addOption("Test", testAutoScheduler);
@@ -168,7 +174,7 @@ public class Robot extends TimedRobot {
 		mode = RobotMode.AUTO;
 
 		// Gets selected routine
-		autoRoutine = twoBall;
+		autoRoutine = newFour;
 		if (autoRoutine == null)
 			return;
 

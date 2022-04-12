@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.sql.Time;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,7 +16,6 @@ public class Controls {
 
     private static final double DRIVETRAIN_TRIGGER_DEADBAND = 0.05;
     private static final double DRIVETRAIN_STICK_DEADBAND = 0.1;
-    private static final double INDEXER_DEADBAND = 0.2;
 
     // Cooldowns (ms)
     private static final int GEAR_CHANGE_CD = 1000; // 1s
@@ -35,8 +32,6 @@ public class Controls {
     SlewRateLimiter rightTriggerLimiter = new SlewRateLimiter(0.9);
     SlewRateLimiter turnLimiter = new SlewRateLimiter(1.8);
 
-    private boolean downforce = false;
-    private boolean horizontal = true;
 
     public PressureState state;
 
@@ -501,7 +496,6 @@ public class Controls {
                 // System.out.println("X: " + robot.getDriveTrain().getPose().getX());
                 // System.out.println("Y: " + robot.getDriveTrain().getPose().getY());
                 // System.out.println("Theta: " + robot.getDriveTrain().getPose().getRotation().getDegrees());
-                double output = 0;
         //         if(getGamepad1().getRightY() < -0.25) output = 1;
         //         else if(getGamepad1().getRightY() > 0.25) output = -1; 
         //         //robot.getClimber().test(output);
