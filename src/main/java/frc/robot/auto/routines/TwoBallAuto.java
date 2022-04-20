@@ -21,6 +21,7 @@ import frc.robot.auto.commands.shooter.ShootWithVisionCommand;
 import frc.robot.auto.commands.vision.DisableLimelightLEDCommand;
 import frc.robot.auto.commands.vision.EnableLimelightLEDCommand;
 import frc.robot.auto.commands.miscCommands.ParallelCommand;
+import frc.robot.auto.commands.miscCommands.ResetGyroCommand;
 import frc.robot.auto.commands.miscCommands.WaitCommand;
 
 public class TwoBallAuto implements AutoRoutine {
@@ -41,7 +42,8 @@ public class TwoBallAuto implements AutoRoutine {
     @Override
     public void init() {
         robot.getDriveTrain().setBrake();
-        scheduler.addCommand(new EnableBakIntake());
+        scheduler.addCommand(new ResetGyroCommand());
+        //scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
         var start = robot.getDriveTrain().getPose();
@@ -57,7 +59,7 @@ public class TwoBallAuto implements AutoRoutine {
         scheduler.addCommand(new AutoAlignCommand());
         scheduler.addCommand(new EnableIntakeCommand());
         scheduler.addCommand(new DisableIndexer());
-        scheduler.addCommand(new ShootWithVisionCommand(1300, 650, 7)); //Uncomment if red
+        scheduler.addCommand(new ShootWithVisionCommand(1300, 850, 7)); //Uncomment if red
      //   scheduler.addCommand(new ShootCommand(1300, 630, 5)); UNCOMMENT IF BLUE
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new DisableIndexer());

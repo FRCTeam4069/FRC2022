@@ -141,8 +141,11 @@ public class DriveTrain {
 
         lockedOut = true;
 
-        if(robot.getVision().table.getEntry("tv").getDouble(0.0) == 0.0) return;
-        
+        if(robot.getVision().table.getEntry("tv").getDouble(0.0) == 0.0) {
+            setPower(0, 0);
+            return;
+        }
+
         offsetToGoal = robot.getVision().table.getEntry("tx").getDouble(0.0);
 
         turnError = 0 - offsetToGoal;

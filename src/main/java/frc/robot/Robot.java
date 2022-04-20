@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
 
 	boolean chooserLaunched = false;
 
-	private PressureState state = PressureState.HIGH;
+	private PressureState state = PressureState.LOW;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -174,7 +174,7 @@ public class Robot extends TimedRobot {
 		mode = RobotMode.AUTO;
 
 		// Gets selected routine
-		autoRoutine = newFour;
+		autoRoutine = twoBall;
 		if (autoRoutine == null)
 			return;
 

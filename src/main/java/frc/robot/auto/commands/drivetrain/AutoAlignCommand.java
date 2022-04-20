@@ -5,10 +5,11 @@ import frc.robot.auto.Command;
 
 public class AutoAlignCommand extends Command {
 
+    double startTime;
     @Override
     public void start() {
         robot.getVision().enableLED();
-        
+        startTime = Timer.getFPGATimestamp();
     }
 
     
@@ -44,13 +45,14 @@ public class AutoAlignCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(offsetToGoal) < 1.0 || (Timer.getFPGATimestamp() - noTargetTimer > 1 && noTargetTimer != -1);
+        return Math.abs(offsetToGoal) < 1.5 || (Timer.getFPGATimestamp() - noTargetTimer > 1 && noTargetTimer != -1) || Timer.getFPGATimestamp() > startTime + 3.0;
     }
 
     @Override
     public void close() {
         robot.getDriveTrain().rawPowerSetting(0, 0);
         // robot.getVision().disableLED();
+        robot.getDriveTrain().setPower(0, 0);
     }
     
 }

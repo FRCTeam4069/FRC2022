@@ -268,7 +268,7 @@ public class Controls {
                         funkyShot = true;
                     }
                     else if(getGamepad1().getYButton()) {
-                        robot.getFlywheel().update(1300, 700);
+                        robot.getFlywheel().update(1300, 775);
                         funkyShot = true;
                     }
                     else funkyShot = false;

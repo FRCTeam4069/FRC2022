@@ -42,6 +42,7 @@ public class NewFourBall implements AutoRoutine {
     @Override
     public void init() {
         robot.getDriveTrain().setBrake();
+        scheduler.addCommand(new ResetGyroCommand());
         scheduler.addCommand(new EnableBakIntake());
         scheduler.addCommand(new EnableIndexer(1));
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<>();
@@ -57,9 +58,9 @@ public class NewFourBall implements AutoRoutine {
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new EnableIntakeCommand());
         scheduler.addCommand(new DisableIndexer());
-        scheduler.addCommand(new PreFireShooterCommand(1300, 650));
+        scheduler.addCommand(new PreFireShooterCommand(1300, 850));
         scheduler.addCommand(new AutoAlignCommand());
-        scheduler.addCommand(new ShootWithVisionCommand(1300, 650, 2.5));
+        scheduler.addCommand(new ShootWithVisionCommand(1300, 850, 3.5));
         scheduler.addCommand(new DisableIntakeCommand());
         scheduler.addCommand(new DisableIndexer());
         scheduler.addCommand(new DisableBackIntake());
@@ -70,14 +71,14 @@ public class NewFourBall implements AutoRoutine {
         scheduler.addCommand(new EnableIndexer(1));
         scheduler.addCommand(new TrajectoryFollowerCommand(end, interiorWaypoints, backPickup, true));
 
-        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0, 0), new Rotation2d(Math.toRadians(8))));
+        var totalEnd = end.transformBy(new Transform2d(new Translation2d(0, 0), new Rotation2d(Math.toRadians(10))));
         scheduler.addCommand(new TrajectoryFollowerCommand(backPickup, interiorWaypoints, totalEnd, false));
         scheduler.addCommand(new DisableBackIntake());
         scheduler.addCommand(new DisableIndexer());
-        scheduler.addCommand(new PreFireShooterCommand(1300, 800));
+        scheduler.addCommand(new PreFireShooterCommand(1300, 900));
         scheduler.addCommand(new AutoAlignCommand());
         scheduler.addCommand(new EnableIntakeCommand());
-        scheduler.addCommand(new ShootWithVisionCommand(1300, 800, 3));
+        scheduler.addCommand(new ShootWithVisionCommand(1300, 900, 3));
         scheduler.addCommand(new DisableIntakeCommand());
     }
 

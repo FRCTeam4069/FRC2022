@@ -182,8 +182,8 @@ public class Flywheel {
      * @param bottomRPM Angilar velocity of bottom wheel (RPM)
      */
     public void update(double topRPM, double bottomRPM) {
-       System.out.println("Deired Top" + topRPM);
-       System.out.println("Desired Bottom" + bottomRPM);
+    //    System.out.println("Deired Top" + topRPM);
+    //    System.out.println("Desired Bottom" + bottomRPM);
         //Using REVCoder
         desiredSpeedTop = topRPM;
         desiredSpeedBottom = bottomRPM;

@@ -32,15 +32,18 @@ public class ShootWithVisionCommand extends Command {
     @Override
     public void loop() {
         double distance;
-        if(robot.getVision().hasTarget()) distance = robot.getVision().getDistance();
+        if(robot.getVision().hasTarget()) {
+            distance = robot.getVision().getDistance();
+            robot.getFlywheel().updateDistance(distance);
+        } 
         else {
             robot.getFlywheel().update(defaultTopWheelSpeed, defaultBottomWheelSpeed);
             if(robot.getFlywheel().getTopVel() > defaultTopWheelSpeed) robot.getIndexer().drive(-1);
             return;
         } 
 
-        robot.getFlywheel().updateDistance(distance);
-        if(robot.getFlywheel().getTopVel() > defaultTopWheelSpeed) robot.getIndexer().drive(-1);
+        
+        if(robot.getFlywheel().getTopVel() > 1275  || Timer.getFPGATimestamp() > startTime + 2) robot.getIndexer().drive(-1);
         
         
     }

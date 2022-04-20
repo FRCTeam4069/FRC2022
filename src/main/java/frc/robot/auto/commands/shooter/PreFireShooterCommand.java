@@ -15,7 +15,6 @@ public class PreFireShooterCommand extends Command {
     @Override
     public void start() {
         robot.getFlywheel().update(topVelRPM, bottomVelRPM);
-        
     }
 
     @Override
