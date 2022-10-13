@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import java.util.spi.ToolProvider;
+
 import org.opencv.core.Mat;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -174,6 +176,7 @@ public class Flywheel {
     public double getBottomWheelSpeed() {
         return bottomWheelSpeed;
     }
+   
 
     /**
      * Update the desired state of the flywheels
@@ -260,6 +263,13 @@ public class Flywheel {
             //System.out.println("Bottom Voltage Draw: " + bottomMotor.getMotorOutputVoltage()); 
         }
     }
+    public double CtopWheelSpeed(){
+        return desiredSpeedTop;
+    }
+    public double CbottomWheelSpeed(){
+        return desiredSpeedBottom;
+    }
+
 
     /**
      * Updates raw percentage outputs of the shooter

@@ -61,7 +61,6 @@ public class FrontIntake {
         articulate = new CANSparkMax(ARTICULATE_CAN, MotorType.kBrushless);
        // colorSensor = new ColorSensorV3(Port.kOnboard);
         this.robot = robot;
-        encoder = new Encoder(8, 9, true, EncodingType.k1X);
     }
 
     public double getVel() {

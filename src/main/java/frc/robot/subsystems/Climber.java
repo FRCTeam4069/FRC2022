@@ -53,6 +53,8 @@ public class Climber {
         left.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35.0, 50.0, 0.5));
         right.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35.0, 50.0, 0.5));
 
+// 
+
         left.setInverted(true);
         left.follow(right);
 

@@ -1,7 +1,11 @@
 package frc.robot;
 
+
+import com.revrobotics.AnalogInput;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,7 +35,6 @@ public class Controls {
     SlewRateLimiter leftTriggerLimiter = new SlewRateLimiter(0.9);
     SlewRateLimiter rightTriggerLimiter = new SlewRateLimiter(0.9);
     SlewRateLimiter turnLimiter = new SlewRateLimiter(1.8);
-
 
     public PressureState state;
 
@@ -70,6 +73,10 @@ public class Controls {
     public Controls(Robot robot) {
         this.robot = robot;
 
+       
+        SmartDashboard.putNumber("lowerRPM", 600);
+        SmartDashboard.putNumber("upperRPM", 750);
+        
         controller1 = new XboxController(GP_1);
         controller2 = new XboxController(GP_2);
 
@@ -119,10 +126,20 @@ public class Controls {
                  * L +Y Joystick - Indexer Up  *
                  * L -Y Joystick - Indexer Down  *
                  * 
+                 * A -Testing Photoelectric Sensor
+                 * 
                  */
 
                 if(!climbing) {
+                    double lowerRPM = SmartDashboard.getNumber("lowerRPM", 750);
+                    double upperRPM = SmartDashboard.getNumber("upperRPM", 750);
+                    SmartDashboard.putNumber("Current Distance", robot.getVision().getDistance());
+                    SmartDashboard.putBoolean("AnalogSensor", robot.getIndexer().getSensor());
+                 
+
                     
+                    // 8 feet - about 495 , 700
+
                     // Drive
                     double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
                     double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
@@ -168,12 +185,13 @@ public class Controls {
                     // Indexer
                     if(getGamepad2().getLeftBumper()) robot.getIndexer().drive(1);
                     else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getIndexer().drive(1);
-                    else if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(1);
-                    else if(getGamepad2().getLeftY() < -0.5) {
-                        robot.getIndexer().drive(-1);
-                        robot.getFrontIntake().driveIntakeOnly(1);
-                    } 
-                    else if(autoIdexerOut) robot.getIndexer().drive(1);
+                    if(!robot.getIndexer().getSensor()){
+                        if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(1);
+                        else if(getGamepad2().getLeftY() < -0.5) { robot.getIndexer().drive(-1);robot.getFrontIntake().driveIntakeOnly(1);}
+                        else if(autoIdexerOut) robot.getIndexer().drive(1);
+                        else robot.getIndexer().drive(0);}
+                    else if(getGamepad2().getAButton()){robot.getIndexer().drive(-1);}
+                    else if(getGamepad2().getYButton()){robot.getIndexer().drive(1);}
                     else robot.getIndexer().drive(0);
 
                     boolean startedShootingProcess = false;
@@ -268,7 +286,7 @@ public class Controls {
                         funkyShot = true;
                     }
                     else if(getGamepad1().getYButton()) {
-                        robot.getFlywheel().update(1300, 775);
+                        robot.getFlywheel().update(upperRPM  , lowerRPM);
                         funkyShot = true;
                     }
                     else funkyShot = false;
