@@ -126,7 +126,8 @@ public class Controls {
                  * L +Y Joystick - Indexer Up  *
                  * L -Y Joystick - Indexer Down  *
                  * 
-                 * A -Testing Photoelectric Sensor
+                 * A - Indexer up when loaded
+                 * Y - Indexer down when loaded
                  * 
                  */
 
