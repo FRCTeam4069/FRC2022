@@ -9,6 +9,7 @@ import org.opencv.core.Mat;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.util.datalog.IntegerArrayLogEntry;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -20,6 +21,21 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+
+// bottom rmp vs read dist.
+// 450 at 11.5
+// 475 at 50
+// 490 at 86
+// 420 at 105
+// 460 at 138
+// 475 at 161
+// 540 at 186
+// 
+//
+
+
+
+
 
 /** Shooter flywheel subsystem */
 public class Flywheel {
@@ -63,12 +79,12 @@ public class Flywheel {
     private double desiredSpeedBottom = 0;
 
     public double bottomWheelSpeed = 0;
+    public double topWheelSpeed = 0;
 
     double topV = 0;
     double bottomV = 0;
 
     private PressureState state;
-
     public double constant = 0;
 
     //For Sim
@@ -146,7 +162,7 @@ public class Flywheel {
     public void setPressureState(PressureState state) {
         this.state = state;
     }
-
+    
     private double calcWheelSpeedHighPressure(double distance) {
         return -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 345.126 + constant;
     }
@@ -158,18 +174,49 @@ public class Flywheel {
     private double calcWheelSpeedLowPressure(double distance) {
         return 0.000180845 * Math.pow(distance, 3) - 0.084635 * Math.pow(distance, 2) + 16.4323 * distance - 224.313 + constant;
     }
+    public double[] clacRpms(double distance){
+    double RpmArrays[] = new double[2]; 
+    double closeShot[] = new double[2];
+    closeShot[0] = 600;
+    closeShot[1] = 490;
+
+    if(distance <=100){RpmArrays[0] = 600; RpmArrays[1]= (395 + (21.5 * Math.log(distance)));}
+    else if(distance >100 && distance <200){ RpmArrays[0] = 750; RpmArrays[1]= 496+(-1.89*distance)+(0.0114*Math.pow(distance, 2));}
+    else if(distance >= 200){ RpmArrays[0] = 900; RpmArrays[1]= (20*distance + 452);} 
+    else return closeShot;
+    return RpmArrays;
+    //return(Math.pow((556*2.761828),(distance*0.00224)));
+    }
+    public double clacBottomRpm(double distance){
+        return distance;
+        
+
+    }
+    
+//    0.000180845 * Math.pow(distance, 3) - 0.084635 * Math.pow(distance, 2) + 16.4323 * distance - 224.313 + constant;
 
     /**
      * Upates the shooter RPM based on the distance in inches from the goal
      * @param distance distance in inches
      */
-    public void updateDistance(double distance) {
+    public void updateDistance(double distance, boolean setManually, double MbottomWheelSpeed) {
     
-        if(state == PressureState.HIGH) bottomWheelSpeed = calcWheelSpeedHighPressure(distance);
-        else if(state == PressureState.MID) bottomWheelSpeed = calcWheelSpeedMidPressure(distance);
-        else bottomWheelSpeed = calcWheelSpeedLowPressure(distance);
+        // if(state == PressureState.HIGH) bottomWheelSpeed = calcWheelSpeedHighPressure(distance);
+        // else if(state == PressureState.MID) bottomWheelSpeed = calcWheelSpeedMidPressure(distance);
+        // else bottomWheelSpeed = calcWheelSpeedLowPressure(distance);
+        double speedsArray[] = clacRpms(distance); 
         
-        update(1300, bottomWheelSpeed);
+        if(setManually){ update(speedsArray[0], MbottomWheelSpeed); }
+        else update(speedsArray[0], speedsArray[1]);
+        SmartDashboard.putNumber("ClacTopRPM", speedsArray[0]);
+        SmartDashboard.putNumber("ClacBottomRPM", speedsArray[1]);
+
+    }
+
+    public void showspeeds(){
+        SmartDashboard.putNumber("TopwheelSpedd", topWheelSpeed);
+        SmartDashboard.putNumber("BottonWheelSpeed", bottomWheelSpeed);
+
 
     }
 
@@ -263,13 +310,8 @@ public class Flywheel {
             //System.out.println("Bottom Voltage Draw: " + bottomMotor.getMotorOutputVoltage()); 
         }
     }
-    public double CtopWheelSpeed(){
-        return desiredSpeedTop;
-    }
-    public double CbottomWheelSpeed(){
-        return desiredSpeedBottom;
-    }
 
+  
 
     /**
      * Updates raw percentage outputs of the shooter
@@ -324,11 +366,14 @@ public class Flywheel {
         return (Math.abs(desiredSpeedTop - (desiredSpeedTop * 0.05)) > getTopVel())
             && (Math.abs(desiredSpeedBottom - (desiredSpeedBottom * 0.05)) > getBottomVel());
     }
+    public void atSpeed(){
+        SmartDashboard.putBoolean("Shotter Status", atDesiredSpeed());
+    }
 
     public enum PressureState {
         HIGH,
         MID,
         LOW
     }
-
+    
 }

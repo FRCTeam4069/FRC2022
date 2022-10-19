@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import java.lang.reflect.Array;
+import java.security.Timestamp;
+import java.util.concurrent.atomic.DoubleAdder;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -13,6 +17,7 @@ public class Vision {
     public final double goalHeightInches = 101.5;
 
     private double lastReadDistance = 0;
+    public double DistanceArray[] = new double[20];
 
     public Vision() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -31,12 +36,9 @@ public class Vision {
         System.out.println("Distance to goal: " + realDistance);
 
 
-        lastReadDistance = realDistance;
+        // lastReadDistance = realDistance;
     }
 
-    public double getLastReadDistance() {
-        return lastReadDistance;
-    }
 
     public double getDistance() {
         NetworkTableEntry ty = table.getEntry("ty");
@@ -54,6 +56,10 @@ public class Vision {
         return table.getEntry("tv").getDouble(0) == 1;
     }
 
+    public double getLastReadDistance() {
+        if(hasTarget()) lastReadDistance = getDistance();
+        return lastReadDistance;
+    }
     public void enableLED() {
         table.getEntry("ledMode").setNumber(3);
     }
@@ -61,6 +67,7 @@ public class Vision {
     public void disableLED() {
         table.getEntry("ledMode").setNumber(1);
     }
+
 
     
 }

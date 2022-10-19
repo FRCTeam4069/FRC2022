@@ -76,6 +76,7 @@ public class Controls {
        
         SmartDashboard.putNumber("lowerRPM", 600);
         SmartDashboard.putNumber("upperRPM", 750);
+        SmartDashboard.putNumber("SimDist", 0);
         
         controller1 = new XboxController(GP_1);
         controller2 = new XboxController(GP_2);
@@ -137,24 +138,18 @@ public class Controls {
                     robot.getVision().enableLED();
                     SmartDashboard.putNumber("Current Distance", robot.getVision().getDistance());
                     SmartDashboard.putBoolean("AnalogSensor", robot.getIndexer().getSensor());
-                 
-                    Boolean GP1_Up = false;
-                    Boolean GP1_Down = false;
-                    Boolean GP1_Right = false;
-                    Boolean GP1_Left = false;
-
-                    if(getGamepad1().getPOV() == 0) GP1_Up = true;
-                    else if(getGamepad1().getPOV() == 90) GP1_Right = true;
-                    else if(getGamepad1().getPOV() == 180) GP1_Down = true;
-                    else if(getGamepad1().getPOV() == 270) GP1_Left = true;
-                    else GP1_Up = false; GP1_Down = false; GP1_Left = false; GP1_Right = false;
-
-
-                    SmartDashboard.putBoolean("GP1_Up", GP1_Up);
-                    SmartDashboard.putBoolean("GP1_Down", GP1_Down);
-                    SmartDashboard.putBoolean("GP1_Right", GP1_Right);
-                    SmartDashboard.putBoolean("GP1_Left", GP1_Left);
+                    robot.getFlywheel().atSpeed();
+                    SmartDashboard.putNumber("CurrentDTopSpeed", robot.getFlywheel().getTopVel());
+                    SmartDashboard.putNumber("CurrentDBottomSpeed", robot.getFlywheel().getBottomVel());
                     
+                    double simulatedDist = SmartDashboard.getNumber("SimDist", 0);
+                    double flyWheelRpm[] = robot.getFlywheel().clacRpms(simulatedDist);
+                    SmartDashboard.putNumber("TTestWheelSpeeds", flyWheelRpm[0] );
+                    SmartDashboard.putNumber("BTestWheelSpeeds", flyWheelRpm[1] );
+
+
+                  
+                   
                     // 8 feet - about 495 , 700
 
                     // Drive
@@ -205,15 +200,16 @@ public class Controls {
                     if(!robot.getIndexer().getSensor()){
                         if(getGamepad2().getLeftY() > 0.5) robot.getIndexer().drive(1);
                         else if(getGamepad2().getLeftY() < -0.5) { robot.getIndexer().drive(-1);robot.getFrontIntake().driveIntakeOnly(1);}
-                        else if(autoIdexerOut) robot.getIndexer().drive(1);
                         else robot.getIndexer().drive(0);}
+                    else if(autoIdexerOut) robot.getIndexer().drive(1);
                     else if(getGamepad2().getAButton()){robot.getIndexer().drive(-1);}
                     else if(getGamepad2().getYButton()){robot.getIndexer().drive(1);}
                     else robot.getIndexer().drive(0);
 
-                    boolean startedShootingProcess = false;
-                    boolean enableLED = false;
+                    
                     // Shooter
+                    boolean startedShootingProcess = false;
+                    boolean enableLED = true;
 
                     int currentDPAD = getGamepad1().getPOV(0);
                     if(currentDPAD != lastDPAD) {
@@ -287,7 +283,7 @@ public class Controls {
                             System.out.println("no target, assuming close shot");
                             robot.getFlywheel().update(1300, 410);
                         }
-                        else robot.getFlywheel().updateDistance(robot.getVision().getDistance());
+                        else robot.getFlywheel().updateDistance(robot.getVision().getDistance(), true, lowerRPM);
                     }
                     else {if(!funkyShot) robot.getFlywheel().updatePercentage(0, 0);}
                     if(enableLED) { 

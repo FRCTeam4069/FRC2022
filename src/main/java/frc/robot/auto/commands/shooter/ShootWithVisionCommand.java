@@ -34,7 +34,7 @@ public class ShootWithVisionCommand extends Command {
         double distance;
         if(robot.getVision().hasTarget()) {
             distance = robot.getVision().getDistance();
-            robot.getFlywheel().updateDistance(distance);
+            robot.getFlywheel().updateDistance(distance, false, 0);
         } 
         else {
             robot.getFlywheel().update(defaultTopWheelSpeed, defaultBottomWheelSpeed);

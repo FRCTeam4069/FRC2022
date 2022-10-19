@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 /** Front Intake Component */
@@ -60,6 +61,7 @@ public class FrontIntake {
         drive = new CANSparkMax(DRIVE_CAN, MotorType.kBrushless);
         articulate = new CANSparkMax(ARTICULATE_CAN, MotorType.kBrushless);
        // colorSensor = new ColorSensorV3(Port.kOnboard);
+       
         this.robot = robot;
     }
 
@@ -156,6 +158,14 @@ public class FrontIntake {
             System.out.println("Encoder Val: " + encoder.getDistance());
             System.out.println("Current: " + articulate.getOutputCurrent());
         
+    }
+    public void printSpeeds(){
+        SmartDashboard.putNumber(null, ARTICULATE_CAN);
+        SmartDashboard.putNumber(null, ARTICULATE_CAN);
+
+        SmartDashboard.putNumber(null, ARTICULATE_CAN);
+        SmartDashboard.putNumber(null, ARTICULATE_CAN);
+
     }
 
 }
