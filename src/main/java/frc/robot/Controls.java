@@ -134,10 +134,26 @@ public class Controls {
                 if(!climbing) {
                     double lowerRPM = SmartDashboard.getNumber("lowerRPM", 750);
                     double upperRPM = SmartDashboard.getNumber("upperRPM", 750);
+                    robot.getVision().enableLED();
                     SmartDashboard.putNumber("Current Distance", robot.getVision().getDistance());
                     SmartDashboard.putBoolean("AnalogSensor", robot.getIndexer().getSensor());
                  
+                    Boolean GP1_Up = false;
+                    Boolean GP1_Down = false;
+                    Boolean GP1_Right = false;
+                    Boolean GP1_Left = false;
 
+                    if(getGamepad1().getPOV() == 0) GP1_Up = true;
+                    else if(getGamepad1().getPOV() == 90) GP1_Right = true;
+                    else if(getGamepad1().getPOV() == 180) GP1_Down = true;
+                    else if(getGamepad1().getPOV() == 270) GP1_Left = true;
+                    else GP1_Up = false; GP1_Down = false; GP1_Left = false; GP1_Right = false;
+
+
+                    SmartDashboard.putBoolean("GP1_Up", GP1_Up);
+                    SmartDashboard.putBoolean("GP1_Down", GP1_Down);
+                    SmartDashboard.putBoolean("GP1_Right", GP1_Right);
+                    SmartDashboard.putBoolean("GP1_Left", GP1_Left);
                     
                     // 8 feet - about 495 , 700
 
