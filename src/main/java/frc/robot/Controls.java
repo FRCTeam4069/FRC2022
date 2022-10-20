@@ -283,7 +283,7 @@ public class Controls {
                             System.out.println("no target, assuming close shot");
                             robot.getFlywheel().update(1300, 410);
                         }
-                        else robot.getFlywheel().updateDistance(robot.getVision().getDistance(), true, lowerRPM);
+                        else robot.getFlywheel().updateDistance(robot.getVision().getDistance(), false, lowerRPM);
                     }
                     else {if(!funkyShot) robot.getFlywheel().updatePercentage(0, 0);}
                     if(enableLED) { 

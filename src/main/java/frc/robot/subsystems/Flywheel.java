@@ -23,15 +23,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 // bottom rmp vs read dist.
+//   close 
 // 450 at 11.5
 // 475 at 50
 // 490 at 86
+//    mid 
 // 420 at 105
 // 460 at 138
 // 475 at 161
 // 540 at 186
-// 
-//
+//    far 
+// 552.5 at 216
+// 580 at 252
+// 625 at 285 
+//https://www.desmos.com/calculator/l0sswpf3m6
 
 
 
@@ -181,8 +186,8 @@ public class Flywheel {
     closeShot[1] = 490;
 
     if(distance <=100){RpmArrays[0] = 600; RpmArrays[1]= (395 + (21.5 * Math.log(distance)));}
-    else if(distance >100 && distance <200){ RpmArrays[0] = 750; RpmArrays[1]= 496+(-1.89*distance)+(0.0114*Math.pow(distance, 2));}
-    else if(distance >= 200){ RpmArrays[0] = 900; RpmArrays[1]= (20*distance + 452);} 
+    else if(distance >100 && distance <200){ RpmArrays[0] = 750; RpmArrays[1]= (496+(-1.89*distance)+(0.0114*Math.pow(distance, 2)));}
+    else if(distance >= 200){ RpmArrays[0] = 900; RpmArrays[1]= (861+(-3.3*distance)+(0.00869*Math.pow(distance, 2)));} 
     else return closeShot;
     return RpmArrays;
     //return(Math.pow((556*2.761828),(distance*0.00224)));
