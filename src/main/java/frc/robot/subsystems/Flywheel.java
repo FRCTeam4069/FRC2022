@@ -86,10 +86,11 @@ public class Flywheel {
     public double bottomWheelSpeed = 0;
     public double topWheelSpeed = 0;
 
+    
+
     double topV = 0;
     double bottomV = 0;
 
-    private PressureState state;
     public double constant = 0;
 
     //For Sim
@@ -101,11 +102,10 @@ public class Flywheel {
      * @param Robot robot instance 
      * @param useInternalEncoders true if Falcon built in encoders are being used
      */
-    public Flywheel(Robot robot, boolean useInternalEncoders, PressureState state) {
+    public Flywheel(Robot robot, boolean useInternalEncoders) {
         this.useInternalEncoders = useInternalEncoders;
         cpr = useInternalEncoders ? 2048 : 8192;
 
-        this.state = state;
 
         //PID top    internalEncoder : REVCoder
         kP_top = useInternalEncoders ? 0 : 0;
@@ -160,25 +160,12 @@ public class Flywheel {
         return (rpm / 600) * cpr;
     }
 
-    private double velUnitsToRPM(double velUnits) {
-        return (velUnits / cpr) * 600;
-    }
-
-    public void setPressureState(PressureState state) {
-        this.state = state;
-    }
-    
-    private double calcWheelSpeedHighPressure(double distance) {
-        return -0.0000208483 * Math.pow(distance, 3) + 0.006647 * Math.pow(distance, 2) + 3.40905 * distance + 345.126 + constant;
-    }
-
-    private double calcWheelSpeedMidPressure(double distance) {
-        return -0.00124008 * Math.pow(distance, 2) + 4.1369 * distance + 349.25 + constant;
-    }
-
-    private double calcWheelSpeedLowPressure(double distance) {
-        return 0.000180845 * Math.pow(distance, 3) - 0.084635 * Math.pow(distance, 2) + 16.4323 * distance - 224.313 + constant;
-    }
+   
+    /**
+     * 
+     * @param distance distance form the Limelight (inches)
+     * @return A double Array with [0] as the Top flywheel Speeds; [1] as the Bottom Flywheel Speeds
+     */
     public double[] clacRpms(double distance){
     double RpmArrays[] = new double[2]; 
     double closeShot[] = new double[2];
@@ -189,20 +176,19 @@ public class Flywheel {
     else if(distance >100 && distance <200){ RpmArrays[0] = 750; RpmArrays[1]= (496+(-1.89*distance)+(0.0114*Math.pow(distance, 2)));}
     else if(distance >= 200){ RpmArrays[0] = 900; RpmArrays[1]= (861+(-3.3*distance)+(0.00869*Math.pow(distance, 2)));} 
     else return closeShot;
+    RpmArrays[1] += constant;
     return RpmArrays;
-    //return(Math.pow((556*2.761828),(distance*0.00224)));
-    }
-    public double clacBottomRpm(double distance){
-        return distance;
-        
 
     }
     
-//    0.000180845 * Math.pow(distance, 3) - 0.084635 * Math.pow(distance, 2) + 16.4323 * distance - 224.313 + constant;
+    
 
     /**
      * Upates the shooter RPM based on the distance in inches from the goal
-     * @param distance distance in inches
+     * @param distance distance 
+     * @param setManually choose to set bottom Rpm manually 
+     * @param MbottomWheelSpeed If setManually then this will be the bottom wheel Speed
+     * @return This command will start the flywheel
      */
     public void updateDistance(double distance, boolean setManually, double MbottomWheelSpeed) {
     
@@ -218,12 +204,7 @@ public class Flywheel {
 
     }
 
-    public void showspeeds(){
-        SmartDashboard.putNumber("TopwheelSpedd", topWheelSpeed);
-        SmartDashboard.putNumber("BottonWheelSpeed", bottomWheelSpeed);
-
-
-    }
+   
 
     public double getBottomWheelSpeed() {
         return bottomWheelSpeed;
@@ -277,16 +258,6 @@ public class Flywheel {
 
             bottomMotor.set(ControlMode.PercentOutput, bottomOutput);
             topMotor.set(ControlMode.PercentOutput, topOutput);
-            
-           // System.out.println("Top Desired" + topRPM);
-           //  System.out.println("Top Vel: " + topV);
-            // System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
-            // System.out.println("Top Current Draw: " + topMotor.getSupplyCurrent());
-
-        //    System.out.println("Bottom Desired: " + bottomRPM);
-        //    System.out.println("Bottom Vel: " + bottomV);
-            // System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
-            // System.out.println("Bottom Current Draw: " + bottomMotor.getSupplyCurrent());
 
             topLastPos = topEnc.getDistance();
             bottomLastPos = bottomEnc.getDistance();
@@ -305,14 +276,6 @@ public class Flywheel {
                 topMotor.set(ControlMode.PercentOutput, 0);
             }
 
-            //System.out.println("Top Vel: " + (topRPM + velUnitsToRPM(topMotor.getClosedLoopError())));
-            //System.out.println("Bottom Vel: " + (bottomRPM + velUnitsToRPM(bottomMotor.getClosedLoopError())));
-
-            //System.out.println("Top Percent Output: " + topMotor.getMotorOutputPercent());
-            //System.out.println("Bottom Percent Output: " + bottomMotor.getMotorOutputPercent());
-
-            //System.out.println("Top Voltage Draw: " + topMotor.getMotorOutputVoltage());
-            //System.out.println("Bottom Voltage Draw: " + bottomMotor.getMotorOutputVoltage()); 
         }
     }
 
@@ -375,10 +338,5 @@ public class Flywheel {
         SmartDashboard.putBoolean("Shotter Status", atDesiredSpeed());
     }
 
-    public enum PressureState {
-        HIGH,
-        MID,
-        LOW
-    }
-    
+   
 }

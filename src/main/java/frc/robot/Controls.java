@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Scheduler.RobotRepeatingTask;
-import frc.robot.subsystems.Flywheel.PressureState;
+import frc.robot.subsystems.FrontIntake;
+import frc.robot.subsystems.DriveTrain.direction;
 
 /** Controls handlingß */
 public class Controls {
@@ -36,7 +37,6 @@ public class Controls {
     SlewRateLimiter rightTriggerLimiter = new SlewRateLimiter(0.9);
     SlewRateLimiter turnLimiter = new SlewRateLimiter(1.8);
 
-    public PressureState state;
 
     boolean manualAdjustment = false;
 
@@ -65,6 +65,15 @@ public class Controls {
     boolean autoAlignStarted = false;
     boolean autoIdexerOut = false;
 
+    double timeSincePressed;
+    boolean FrontIntakeOUT = false;
+    boolean FrontIntakeIN = false;
+
+    boolean stopDriveForClimb = false;
+
+
+    direction WhereRobotGoin;
+
     /**
      * Requires robot dependancy
      * 
@@ -77,6 +86,7 @@ public class Controls {
         SmartDashboard.putNumber("lowerRPM", 600);
         SmartDashboard.putNumber("upperRPM", 750);
         SmartDashboard.putNumber("SimDist", 0);
+        SmartDashboard.putBoolean("Auto Shoot?", false);
         
         controller1 = new XboxController(GP_1);
         controller2 = new XboxController(GP_2);
@@ -133,32 +143,31 @@ public class Controls {
                  */
 
                 if(!climbing) {
+                    robot.getVision().enableLED();
+                    robot.getFlywheel().atSpeed();
+                    robot.getDriveTrain().updateDirection();
+                    WhereRobotGoin = robot.getDriveTrain().getDirection();
+
                     double lowerRPM = SmartDashboard.getNumber("lowerRPM", 750);
                     double upperRPM = SmartDashboard.getNumber("upperRPM", 750);
-                    robot.getVision().enableLED();
+                    Boolean shoootFas = SmartDashboard.getBoolean("Auto Shoot?", false);
+                    
                     SmartDashboard.putNumber("Current Distance", robot.getVision().getDistance());
                     SmartDashboard.putBoolean("AnalogSensor", robot.getIndexer().getSensor());
-                    robot.getFlywheel().atSpeed();
                     SmartDashboard.putNumber("CurrentDTopSpeed", robot.getFlywheel().getTopVel());
                     SmartDashboard.putNumber("CurrentDBottomSpeed", robot.getFlywheel().getBottomVel());
-                    
-                    double simulatedDist = SmartDashboard.getNumber("SimDist", 0);
-                    double flyWheelRpm[] = robot.getFlywheel().clacRpms(simulatedDist);
-                    SmartDashboard.putNumber("TTestWheelSpeeds", flyWheelRpm[0] );
-                    SmartDashboard.putNumber("BTestWheelSpeeds", flyWheelRpm[1] );
 
-
-                  
-                   
                     // 8 feet - about 495 , 700
 
-                    // Drive
+                     // Drive
                     double rightTrigger = rightTriggerLimiter.calculate(getGamepad1().getRightTriggerAxis());
                     double leftTrigger = leftTriggerLimiter.calculate(getGamepad1().getLeftTriggerAxis());
                     double turn;
+                   
+                    if(!stopDriveForClimb){}
                     if(robot.getDriveTrain().highGear) turn = turnLimiter.calculate((1.0 / (10.0 / 3.0)) * Math.pow(getGamepad1().getLeftX(), 3));
                     else turn = turnLimiter.calculate(0.5 * Math.pow(getGamepad1().getLeftX(), 3));
-
+                    
                    // System.out.println(turn);
                     if(getGamepad1().getBackButton()) turn = -0.225;
                     else if(getGamepad1().getStartButton()) turn = 0.225;
@@ -186,13 +195,15 @@ public class Controls {
                     else if(getGamepad2().getLeftTriggerAxis() > 0.5) robot.getFrontIntake().driveIntakeOnly(1);
                     else robot.getFrontIntake().driveIntakeOnly(0);
 
-                    if(getGamepad2().getRightY() < -0.25) robot.getFrontIntake().rawArticulate(-0.25);
-                        else if(getGamepad2().getRightY() > 0.25) robot.getFrontIntake().rawArticulate(0.25);
+                    if(getGamepad2().getRightY() < -0.25) robot.getFrontIntake().rawArticulate(0.25);
+                        else if(getGamepad2().getRightY() > 0.25) robot.getFrontIntake().rawArticulate(-0.25);
                         else robot.getFrontIntake().rawArticulate(0);
+
+
 
                     // Rear Intake
                     robot.getRearIntake().drive(getGamepad2().getLeftBumper() || getGamepad2().getRightBumper(),
-                            getGamepad2().getLeftBumper());
+                            getGamepad2().getLeftBumper(), robot.getFrontIntake());
 
                     // Indexer
                     if(getGamepad2().getLeftBumper()) robot.getIndexer().drive(1);
@@ -216,25 +227,14 @@ public class Controls {
                         lastDPAD = currentDPAD;
                         if(currentDPAD != -1) {
                             if(currentDPAD == 180 || currentDPAD == 135 || currentDPAD == 225) {
-                                if(robot.getFlywheel().constant > 0) robot.getFlywheel().constant -= 10;
-                                else if(state == PressureState.LOW) state = PressureState.MID;
-                                else if(state == PressureState.MID) state = PressureState.HIGH;
-                                else {
-                                    robot.getFlywheel().constant -= 10;
-                                }
+                                robot.getFlywheel().constant -= 10;
+                                
                             }
                             else if(currentDPAD == 0 || currentDPAD == 315 || currentDPAD == 45) {
-                                if(robot.getFlywheel().constant < 0) robot.getFlywheel().constant += 10;
-                                else if(state == PressureState.HIGH) state = PressureState.MID;
-                                else if(state == PressureState.MID) state = PressureState.LOW;
-                                else robot.getFlywheel().constant += 10;
+                                robot.getFlywheel().constant += 10;
                             }
-                            robot.getFlywheel().setPressureState(state);
                         }
                     }
-
-                    System.out.println("State: " + state);
-                    System.out.println("Constant: " + robot.getFlywheel().constant);
 
                     if(getGamepad1().getAButton()) {
 
@@ -253,7 +253,6 @@ public class Controls {
                         if(!startedShootingProcess) {
                             startedShootingProcess = true;
                             robot.getDriveTrain().resetTurnError();
-                        //    robot.getDriveTrain().setGear(false);
                         }
 
                         if(Math.abs(robot.getDriveTrain().getTurnError()) > 1.75) {
@@ -278,10 +277,11 @@ public class Controls {
                     if(getGamepad1().getXButton()) {
                         enableLED = true;
                         shooterIntakeLockout = true;
-               //         intakeUp = false;
+                        timeSincePressed = Timer.getFPGATimestamp();
+                        
                         if(!robot.getVision().hasTarget()) {
                             System.out.println("no target, assuming close shot");
-                            robot.getFlywheel().update(1300, 410);
+                            robot.getFlywheel().update(750 , 425);
                         }
                         else robot.getFlywheel().updateDistance(robot.getVision().getDistance(), false, lowerRPM);
                     }
@@ -306,13 +306,13 @@ public class Controls {
 
                 }
 
-                if(getGamepad2().getBackButtonPressed()) {
+                if(getGamepad1().getBackButtonPressed()) {
                     if(shortFired) robot.getClimber().retractShort();
                     else robot.getClimber().fireShort();
                     System.out.println(shortFired);
                     shortFired = !shortFired;
                 }
-                if(getGamepad2().getRightStickButtonPressed()) {
+                if(getGamepad1().getRightStickButtonPressed()) {
                     if(longFired) robot.getClimber().retractLong();
                     else robot.getClimber().fireLong();
                     System.out.println(longFired);
@@ -321,7 +321,7 @@ public class Controls {
 
                 //Climber stufffffff
 
-                if(getGamepad2().getStartButtonPressed()) climbingSequencerCount++;
+                if(getGamepad1().getStartButtonPressed()) climbingSequencerCount++;
 
 
                 // Arms flip up 90 degrees
@@ -336,7 +336,7 @@ public class Controls {
                     robot.getDriveTrain().stop();
                     robot.getIndexer().drive(0);
                     robot.getFlywheel().updatePercentage(0, 0);
-                    robot.getRearIntake().drive(false, false);
+                    robot.getRearIntake().drive(false, false, robot.getFrontIntake());
                     robot.getFrontIntake().rawArticulate(0);
                     robot.getFrontIntake().driveIntakeOnly(0);
                     climbing = true;
@@ -347,8 +347,8 @@ public class Controls {
                 else if(climbingSequencerCount == 3 || (robot.getClimber().getCurrent() >= 70 && climbingSequencerCount == 2)) {
                     climbingSequencerCount = 3;
                     double power = 0;
-                    if(getGamepad2().getRightY() > 0.25) power = -1;
-                    else if(getGamepad2().getRightY() < -0.25) power = 1;
+                    if(getGamepad1().getRightY() > 0.25) power = -1;
+                    else if(getGamepad1().getRightY() < -0.25) power = 1;
                     robot.getClimber().test(power);
                 }
 
@@ -374,7 +374,7 @@ public class Controls {
 
                     if(Timer.getFPGATimestamp() >= sequenceFiveTimer + 0.75) {
                         double output = 0;
-                        if(getGamepad2().getRightY() < -0.25) output = 1;
+                        if(getGamepad1().getRightY() < -0.25) output = 1;
                         robot.getClimber().test(output);
                     }
 
@@ -410,8 +410,8 @@ public class Controls {
                 else if(climbingSequencerCount == 6 || (currentStopFive && climbingSequencerCount == 5)) {
                     climbingSequencerCount = 6;
                     double power = 0;
-                    if(getGamepad2().getRightY() > 0.25) power = -1;
-                    else if(getGamepad2().getRightY() < -0.25) power = 1;
+                    if(getGamepad1().getRightY() > 0.25) power = -1;
+                    else if(getGamepad1().getRightY() < -0.25) power = 1;
                     robot.getClimber().test(power);
                 }
 
@@ -440,16 +440,16 @@ public class Controls {
     
                     if(Timer.getFPGATimestamp() >= sequenceEightTimer + 1) {
                         double output = 0;
-                        if(getGamepad2().getRightY() < -0.25) output = 1;
-                        else if(getGamepad2().getRightY() > 0.25) output = -1;
+                        if(getGamepad1().getRightY() < -0.25) output = 1;
+                        else if(getGamepad1().getRightY() > 0.25) output = -1;
                         robot.getClimber().test(output);
 
-                        if(getGamepad2().getBackButtonPressed()) robot.getClimber().retractShort();
+                        if(getGamepad1().getBackButtonPressed()) robot.getClimber().retractShort();
                     }
                 }
                 
 
-                if(getGamepad2().getLeftStickButton()) {
+                if(getGamepad1().getLeftStickButton()) {
                     climbingSequencerCount = 0;
                     climbing = false;
                     firstSequenceFive = true;
@@ -462,7 +462,7 @@ public class Controls {
                     eightFired = false;
                 }
 
-                if(getGamepad2().getYButton()) {
+                if(getGamepad1().getYButton()) {
                     robot.getClimber().test(0);
                 }
 

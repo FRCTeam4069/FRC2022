@@ -6,7 +6,7 @@ public class DisableBackIntake extends Command {
 
     @Override
     public void start() {
-        robot.getRearIntake().drive(false, false);
+        robot.getRearIntake().drive(false, false, robot.getFrontIntake());
     }
 
     @Override

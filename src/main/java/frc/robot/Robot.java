@@ -34,7 +34,6 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.PigeonGyro;
 import frc.robot.subsystems.RearIntake;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Flywheel.PressureState;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -83,7 +82,6 @@ public class Robot extends TimedRobot {
 
 	boolean chooserLaunched = false;
 
-	private PressureState state = PressureState.LOW;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -98,7 +96,7 @@ public class Robot extends TimedRobot {
 		frontIntake = new FrontIntake(this);
 		rearIntake = new RearIntake();
 		driveTrain = new DriveTrain(this);
-		shooter = new Flywheel(this, false, state);
+		shooter = new Flywheel(this, false);
 		indexer = new Indexer();
 		vision = new Vision();
 		climber = new Climber();
@@ -111,7 +109,6 @@ public class Robot extends TimedRobot {
 		imu = new PigeonGyro(gyro);
 		imu.resetHeading();
 
-		controls.state = state;
 		pdp = new PowerDistribution(PDP_ID, ModuleType.kRev);
 
 		pathFollower = new PathFollowingTest(this);

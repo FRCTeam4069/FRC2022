@@ -159,12 +159,9 @@ public class FrontIntake {
             System.out.println("Current: " + articulate.getOutputCurrent());
         
     }
-    public void printSpeeds(){
-        SmartDashboard.putNumber(null, ARTICULATE_CAN);
-        SmartDashboard.putNumber(null, ARTICULATE_CAN);
-
-        SmartDashboard.putNumber(null, ARTICULATE_CAN);
-        SmartDashboard.putNumber(null, ARTICULATE_CAN);
+    public void printNumbers(){
+        SmartDashboard.putNumber("Current Pos", ARTICULATE_CAN);
+        SmartDashboard.putNumber("Current", ARTICULATE_CAN);
 
     }
 

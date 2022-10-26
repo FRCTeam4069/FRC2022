@@ -64,6 +64,7 @@ public class DriveTrain {
     private double kA = 0.4833;
 
     private Robot robot;
+    private direction currentDirection;
 
     private boolean lockedOut = false;
 
@@ -184,6 +185,16 @@ public class DriveTrain {
         return leftEncoder.getRate() + rightEncoder.getRate() / 2;
     }
     
+    public void updateDirection(){
+        if(getAvgVelocity() >= 0.25) this.currentDirection = direction.forward;
+        else if(getAvgVelocity() <=0.25) this.currentDirection = direction.reverse;
+        else this.currentDirection = direction.nutral;
+    }
+    
+    public direction getDirection(){
+        return this.currentDirection;
+    }
+
     /** Rate of left encoder */
     public double getLeftVelocity() {
         return leftEncoder.getRate();
@@ -318,5 +329,11 @@ public class DriveTrain {
         // System.out.println("X: " + currentPose.getX());
         // System.out.println("Y: " + currentPose.getY());
         System.out.println("heading: " + robot.getIMU().getCurrentHeading());
+    }
+
+    public enum direction{
+        forward,
+        reverse,
+        nutral;
     }
 }
